@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
-import { Header } from './Header';
-import './page.css';
+import { Header } from './Header'
+import './page.css'
 
 export interface PageProps {
   user?: {};
@@ -64,4 +64,4 @@ export const Page: React.FC<PageProps> = ({ user, onLogin, onLogout, onCreateAcc
       </div>
     </section>
   </article>
-);
+)

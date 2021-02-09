@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
-import { Button } from './Button';
-import './header.css';
+import { Button } from './Button'
+import './header.css'
 
 export interface HeaderProps {
   user?: {};
@@ -44,4 +44,4 @@ export const Header: React.FC<HeaderProps> = ({ user, onLogin, onLogout, onCreat
       </div>
     </div>
   </header>
-);
+)

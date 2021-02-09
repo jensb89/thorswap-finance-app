@@ -23,38 +23,33 @@ import {
   ETH_DECIMAL,
   LTC_DECIMAL,
 } from '../constants/decimals'
-import { Amount } from './amount'
-import { AssetAmount } from './assetAmount'
-import { Pool } from './pool'
-import { Price } from './price'
 
-export type AssetNetwork = 'mainnet' | 'testnet';
+export type AssetNetwork = 'mainnet' | 'testnet'
 
 export interface IAsset {
-  readonly chain: Chain;
-  readonly symbol: string;
-  readonly ticker: string;
-  readonly decimal: number;
+  readonly chain: Chain
+  readonly symbol: string
+  readonly ticker: string
+  readonly decimal: number
 
   // TODO: add asset icon url
 
-  toString(): string;
-  currencySymbol(): string;
-  eq(asset: Asset): boolean;
-  isRUNE(): boolean;
-  isBNB(): boolean;
-  sortsBefore(asset: Asset): boolean;
-  priceIn(quoteAsset: Asset, pools: Pool[]): Price;
+  toString(): string
+  currencySymbol(): string
+  eq(asset: Asset): boolean
+  isRUNE(): boolean
+  isBNB(): boolean
+  sortsBefore(asset: Asset): boolean
 }
 
 export class Asset implements IAsset {
-  public readonly chain: Chain;
+  public readonly chain: Chain
 
-  public readonly symbol: string;
+  public readonly symbol: string
 
-  public readonly ticker: string;
+  public readonly ticker: string
 
-  public readonly decimal: number;
+  public readonly decimal: number
 
   public static BNB(): Asset {
     return new Asset(AssetBNB.chain, AssetBNB.symbol)
@@ -96,55 +91,14 @@ export class Asset implements IAsset {
     return DEFAULT_DECIMAL
   }
 
-  public static getMinAmountByChain(chain: Chain): AssetAmount {
-    if (chain === BNBChain) {
-      return new AssetAmount(
-        Asset.BNB(),
-        Amount.fromBaseAmount(1, Asset.BNB().decimal),
-      )
-    }
-    // 1000 satoshi
-    if (chain === BTCChain) {
-      return new AssetAmount(
-        Asset.BTC(),
-        Amount.fromBaseAmount(1000, Asset.BTC().decimal),
-      )
-    }
-    // 1 Thor
-    if (chain === THORChain) {
-      return new AssetAmount(
-        Asset.RUNE(),
-        Amount.fromBaseAmount(1, Asset.RUNE().decimal),
-      )
-    }
-    // 0 ETH
-    if (chain === ETHChain) {
-      return new AssetAmount(
-        Asset.ETH(),
-        Amount.fromBaseAmount(0, Asset.ETH().decimal),
-      )
-    }
-    if (chain === LTCChain) {
-      return new AssetAmount(
-        Asset.LTC(),
-        Amount.fromBaseAmount(1, Asset.LTC().decimal),
-      )
-    }
-
-    return new AssetAmount(
-      Asset.RUNE(),
-      Amount.fromBaseAmount(1, Asset.RUNE().decimal),
-    )
-  }
-
   constructor(chain: Chain, symbol: string) {
     this.chain = chain
     this.symbol = symbol
-    this.ticker = this.getTicker(symbol)
+    this.ticker = Asset.getTicker(symbol)
     this.decimal = Asset.getDecimalByChain(chain)
   }
 
-  private getTicker(symbol: string): string {
+  public static getTicker(symbol: string): string {
     return symbol.split('-')[0]
   }
 
@@ -183,9 +137,5 @@ export class Asset implements IAsset {
     }
 
     return this.symbol < asset.symbol
-  }
-
-  priceIn(quoteAsset: Asset, pools: Pool[]): Price {
-    return new Price(this, quoteAsset, pools)
   }
 }

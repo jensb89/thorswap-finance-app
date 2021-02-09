@@ -1,3 +1,5 @@
+import { MULTICHAIN_DECIMAL } from 'multichain-sdk/constants'
+
 import { Amount } from './amount'
 import { Asset } from './asset'
 import { AssetAmount } from './assetAmount'
@@ -5,39 +7,42 @@ import { Percent } from './percent'
 import { Pool } from './pool'
 
 export type WithdrawAmount = {
-  runeAmount: AssetAmount;
-  assetAmount: AssetAmount;
-};
+  runeAmount: AssetAmount
+  assetAmount: AssetAmount
+}
 
 export interface ILiquidity {
-  readonly pool: Pool;
-  readonly poolUnits: Amount;
-  readonly liquidityUnits: Amount;
+  readonly pool: Pool
+  readonly poolUnits: Amount
+  readonly liquidityUnits: Amount
 
-  assetShare: AssetAmount;
-  runeShare: AssetAmount;
+  assetShare: AssetAmount
+  runeShare: AssetAmount
 
   getLiquidityUnits(
     runeAddAmount: AssetAmount,
     assetAddAmount: AssetAmount,
-  ): Amount;
+  ): Amount
   getLiquiditySlip(
     runeAddAmount: AssetAmount,
     assetAddAmount: AssetAmount,
-  ): Percent;
-  getWithdrawAmount(percent: Percent): WithdrawAmount;
+  ): Percent
+  getWithdrawAmount(percent: Percent): WithdrawAmount
 }
 
 export class Liquidity implements ILiquidity {
-  public readonly pool: Pool;
+  public readonly pool: Pool
 
-  public readonly poolUnits: Amount;
+  public readonly poolUnits: Amount
 
-  public readonly liquidityUnits: Amount;
+  public readonly liquidityUnits: Amount
 
   constructor(pool: Pool, liquidityUnits: Amount) {
     this.pool = pool
-    this.poolUnits = Amount.fromBaseAmount(pool.detail.units, pool.decimal)
+    this.poolUnits = Amount.fromBaseAmount(
+      pool.detail.units,
+      MULTICHAIN_DECIMAL,
+    )
     this.liquidityUnits = liquidityUnits
   }
 

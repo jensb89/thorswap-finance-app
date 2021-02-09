@@ -5,6 +5,7 @@ import { ThemeProvider } from 'styled-components'
 import { withThemes } from '@react-theming/storybook-addon'
 
 import { AppHolder } from '../src/settings/appStyle'
+import { lightTheme, darkTheme } from '../src/settings'
 
 import 'antd/dist/antd.css'
 import '../src/settings/appStyle/global.css'
@@ -18,7 +19,7 @@ const providerFn = ({ theme, children }) => {
 }
 
 export const decorators = [
-  withThemes(null, themes, { providerFn }),
+  withThemes(null, [lightTheme, darkTheme], { providerFn }),
   (Story) => (
     <Router>
       <Route path="/" component={Story} />

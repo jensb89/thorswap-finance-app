@@ -31,48 +31,48 @@ import {
 } from './types'
 
 export interface MidgardSDKV2 {
-  getVersion: () => string;
-  getBaseUrl: () => string;
-  getHealth: () => Promise<Health>;
-  getPools: (status?: PoolStatus) => Promise<PoolDetail[]>;
-  getPoolDetail: (asset: string) => Promise<PoolDetail>;
+  getVersion: () => string
+  getBaseUrl: () => string
+  getHealth: () => Promise<Health>
+  getPools: (status?: PoolStatus) => Promise<PoolDetail[]>
+  getPoolDetail: (asset: string) => Promise<PoolDetail>
   getPoolStats: (param: {
-    asset: string;
-    period: StatsPeriod;
-  }) => Promise<PoolStatsDetail>;
-  getPoolStatsV1: (asset: string) => Promise<PoolLegacyDetail>;
+    asset: string
+    period: StatsPeriod
+  }) => Promise<PoolStatsDetail>
+  getPoolStatsV1: (asset: string) => Promise<PoolLegacyDetail>
   getDepthHistory: (param: {
-    pool: string;
-    query?: HistoryQuery;
-  }) => Promise<DepthHistory>;
-  getEarningsHistory: (query: HistoryQuery) => Promise<EarningsHistory>;
+    pool: string
+    query?: HistoryQuery
+  }) => Promise<DepthHistory>
+  getEarningsHistory: (query: HistoryQuery) => Promise<EarningsHistory>
   getSwapHistory: (param: {
-    pool?: string;
-    query?: HistoryQuery;
-  }) => Promise<SwapHistory>;
+    pool?: string
+    query?: HistoryQuery
+  }) => Promise<SwapHistory>
   getLiquidityHistory: (param: {
-    pool?: string;
-    query?: HistoryQuery;
-  }) => Promise<LiquidityHistory>;
-  getNodes: () => Promise<Node[]>;
-  getNetworkData: () => Promise<Network>;
-  getActions: (params: ActionListParams) => Promise<ActionsList>;
-  getMembersAddresses: () => Promise<string[]>;
-  getMemberDetail: (address: string) => Promise<MemberDetails>;
-  getStats: () => Promise<StatsData>;
-  getConstants: () => Promise<Constants>;
-  getInboundAddresses: () => Promise<InboundAddresses>;
-  getInboundAddressByChain: (chain: string) => Promise<PoolAddress>;
-  getLastblock: () => Promise<Lastblock>;
-  getQueue: () => Promise<Queue>;
+    pool?: string
+    query?: HistoryQuery
+  }) => Promise<LiquidityHistory>
+  getNodes: () => Promise<Node[]>
+  getNetworkData: () => Promise<Network>
+  getActions: (params: ActionListParams) => Promise<ActionsList>
+  getMembersAddresses: () => Promise<string[]>
+  getMemberDetail: (address: string) => Promise<MemberDetails>
+  getStats: () => Promise<StatsData>
+  getConstants: () => Promise<Constants>
+  getInboundAddresses: () => Promise<InboundAddresses>
+  getInboundAddressByChain: (chain: string) => Promise<PoolAddress>
+  getLastblock: () => Promise<Lastblock>
+  getQueue: () => Promise<Queue>
 }
 
 class MidgardV2 implements MidgardSDKV2 {
-  private baseUrl = '';
+  private baseUrl = ''
 
-  private network: NetworkType;
+  private network: NetworkType
 
-  private readonly version = 'V2';
+  private readonly version = 'V2'
 
   constructor(network: NetworkType = 'testnet') {
     this.network = network
@@ -83,38 +83,30 @@ class MidgardV2 implements MidgardSDKV2 {
    * set midgard base url
    */
   private setBaseUrl = async (noCache = false) => {
-    try {
-      if (this.network === 'testnet') {
-        this.baseUrl = MIDGARD_TESTNET_URL
-      } else {
-        this.baseUrl = await getMidgardBaseUrl(this.network, noCache)
-      }
-    } catch (error) {
-      throw error
+    if (this.network === 'testnet') {
+      this.baseUrl = MIDGARD_TESTNET_URL
+    } else {
+      this.baseUrl = await getMidgardBaseUrl(this.network, noCache)
     }
-  };
+  }
 
   /**
    * get midgard base url
    */
   getMidgard = async (noCache = false): Promise<DefaultApi> => {
-    try {
-      await this.setBaseUrl(noCache)
-      const apiConfig = new Configuration({ basePath: this.baseUrl })
+    await this.setBaseUrl(noCache)
+    const apiConfig = new Configuration({ basePath: this.baseUrl })
 
-      return new DefaultApi(apiConfig)
-    } catch (error) {
-      throw error
-    }
-  };
+    return new DefaultApi(apiConfig)
+  }
 
   getVersion = (): string => {
     return this.version
-  };
+  }
 
   getBaseUrl = (): string => {
     return this.baseUrl
-  };
+  }
 
   async getHealth(): Promise<Health> {
     try {
@@ -153,8 +145,8 @@ class MidgardV2 implements MidgardSDKV2 {
     asset,
     period,
   }: {
-    asset: string;
-    period: StatsPeriod;
+    asset: string
+    period: StatsPeriod
   }): Promise<PoolStatsDetail> {
     try {
       const midgard = await this.getMidgard()
@@ -181,8 +173,8 @@ class MidgardV2 implements MidgardSDKV2 {
     pool,
     query = {},
   }: {
-    pool: string;
-    query?: HistoryQuery;
+    pool: string
+    query?: HistoryQuery
   }): Promise<DepthHistory> {
     try {
       const { interval, count, from, to } = query
@@ -223,8 +215,8 @@ class MidgardV2 implements MidgardSDKV2 {
     pool,
     query = {},
   }: {
-    pool?: string;
-    query?: HistoryQuery;
+    pool?: string
+    query?: HistoryQuery
   }): Promise<SwapHistory> {
     try {
       const { interval, count, from, to } = query
@@ -247,8 +239,8 @@ class MidgardV2 implements MidgardSDKV2 {
     pool,
     query = {},
   }: {
-    pool?: string;
-    query?: HistoryQuery;
+    pool?: string
+    query?: HistoryQuery
   }): Promise<LiquidityHistory> {
     try {
       const { interval, count, from, to } = query
@@ -365,8 +357,8 @@ class MidgardV2 implements MidgardSDKV2 {
         const midgard = await this.getMidgard(true)
         const { data } = await midgard.getProxiedInboundAddresses()
         return data
-      } catch (error) {
-        return Promise.reject(error)
+      } catch (err) {
+        return Promise.reject(err)
       }
     }
   }
@@ -382,9 +374,8 @@ class MidgardV2 implements MidgardSDKV2 {
 
       if (chainAddress) {
         return chainAddress.address
-      } else {
-        throw new Error('pool address not found')
       }
+      throw new Error('pool address not found')
     } catch (error) {
       return Promise.reject(error)
     }

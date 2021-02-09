@@ -11,23 +11,23 @@ import { IClient } from './client'
 import { TxParams, MultiSendParams } from './types'
 
 export interface IBnbChain extends IClient {
-  getClient(): BncClient;
-  multiSend(params: MultiSendParams): Promise<TxHash>;
+  getClient(): BncClient
+  multiSend(params: MultiSendParams): Promise<TxHash>
 }
 
 export class BnbChain implements IBnbChain {
-  private balances: AssetAmount[] = [];
+  private balances: AssetAmount[] = []
 
-  private client: BncClient;
+  private client: BncClient
 
-  public readonly chain: Chain;
+  public readonly chain: Chain
 
   constructor({
     network = 'testnet',
     phrase,
   }: {
-    network?: Network;
-    phrase: string;
+    network?: Network
+    phrase: string
   }) {
     this.chain = BNBChain
     this.client = new BncClient({
@@ -68,7 +68,7 @@ export class BnbChain implements IBnbChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   hasAmountInBalance = async (assetAmount: AssetAmount): Promise<boolean> => {
     try {
@@ -84,7 +84,7 @@ export class BnbChain implements IBnbChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   getAssetBalance = async (asset: Asset): Promise<AssetAmount> => {
     try {
@@ -94,13 +94,14 @@ export class BnbChain implements IBnbChain {
         data.asset.eq(asset),
       )
 
-      if (!assetBalance) return new AssetAmount(asset, Amount.fromAssetAmount(0, asset.decimal))
+      if (!assetBalance)
+        return new AssetAmount(asset, Amount.fromAssetAmount(0, asset.decimal))
 
       return assetBalance
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   /**
    * transfer on binance chain
@@ -110,10 +111,10 @@ export class BnbChain implements IBnbChain {
     // use xchainjs-client standard internally
     try {
       const { assetAmount, recipient, memo } = tx
-      const asset = assetAmount.asset
+      const { asset } = assetAmount
       const amount = baseAmount(assetAmount.amount.baseAmount)
 
-      return this.client.transfer({
+      return await this.client.transfer({
         asset: {
           chain: asset.chain,
           symbol: asset.symbol,
@@ -126,7 +127,7 @@ export class BnbChain implements IBnbChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   /**
    * multiSend on binance chain
@@ -161,12 +162,12 @@ export class BnbChain implements IBnbChain {
         },
       ]
 
-      return this.client.multiSend({
+      return await this.client.multiSend({
         transactions,
         memo,
       })
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 }

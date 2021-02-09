@@ -10,9 +10,9 @@ import {
   MidgardV2,
   NetworkType as MidgardNetwork,
   PoolAddress,
-} from 'midgard-sdk-v2'
+} from 'midgard-sdk'
 
-import { Swap, Memo, Asset } from '../entities'
+import { Swap, Memo, Asset, AssetAmount } from '../entities'
 import { BnbChain } from './binance'
 import { BtcChain } from './bitcoin'
 import { EthChain } from './ethereum'
@@ -24,67 +24,68 @@ import {
   Wallet,
   ChainWallet,
   supportedChains,
+  SupportedChain,
 } from './types'
 
 // thorchain pool address is empty string
 const THORCHAIN_POOL_ADDRESS = ''
 
 export interface IMultiChain {
-  chains: typeof supportedChains;
-  midgard: MidgardV2;
-  phrase: string;
-  network: string;
+  chains: typeof supportedChains
+  midgard: MidgardV2
+  phrase: string
+  network: string
 
-  allWallet: Wallet;
+  allWallet: Wallet
 
-  thor: ThorChain;
-  btc: BtcChain;
-  bnb: BnbChain;
-  eth: EthChain;
+  thor: ThorChain
+  btc: BtcChain
+  bnb: BnbChain
+  eth: EthChain
 
-  getMidgard(): MidgardV2;
-  getChainClient(chain: Chain): void;
-  getPoolAddressByChain(chain: Chain): Promise<PoolAddress>;
-  getWalletByChain(chain: Chain): Promise<ChainWallet>;
-  loadAllBalances(): Promise<Wallet>;
+  getMidgard(): MidgardV2
+  getChainClient(chain: Chain): void
+  getPoolAddressByChain(chain: Chain): Promise<PoolAddress>
+  getWalletByChain(chain: Chain): Promise<ChainWallet>
+  loadAllBalances(): Promise<Wallet>
 
-  transfer(tx: TxParams): Promise<TxHash>;
-  swap(swap: Swap): Promise<TxHash>;
-  addLiquidity(params: AddLiquidityParams): Promise<TxHash>;
-  withdraw(params: WithdrawParams): Promise<TxHash>;
+  transfer(tx: TxParams): Promise<TxHash>
+  swap(swap: Swap): Promise<TxHash>
+  addLiquidity(params: AddLiquidityParams): Promise<TxHash>
+  withdraw(params: WithdrawParams): Promise<TxHash>
 }
 
 export class MultiChain implements IMultiChain {
-  public readonly chains = supportedChains;
+  public readonly chains = supportedChains
 
-  public readonly midgard: MidgardV2;
+  public readonly midgard: MidgardV2
 
-  public readonly phrase: string;
+  public readonly phrase: string
 
-  public readonly network: Network;
+  public readonly network: Network
 
-  private wallet: Wallet;
+  private wallet: Wallet
 
-  public readonly thor: ThorChain;
+  public readonly thor: ThorChain
 
-  public readonly btc: BtcChain;
+  public readonly btc: BtcChain
 
-  public readonly bnb: BnbChain;
+  public readonly bnb: BnbChain
 
-  public readonly eth: EthChain;
+  public readonly eth: EthChain
 
   constructor({
     network = 'testnet',
     phrase,
   }: {
-    network?: Network;
-    phrase: string;
+    network?: Network
+    phrase: string
   }) {
     this.network = network
     this.phrase = phrase
 
     // create midgard client
-    this.midgard = new MidgardV2(this.getMidgardNetwork(network))
+    this.midgard = new MidgardV2(MultiChain.getMidgardNetwork(network))
 
     // create chain clients
     this.thor = new ThorChain({ network, phrase })
@@ -117,7 +118,7 @@ export class MultiChain implements IMultiChain {
    *
    * @param network mainnet or testnet
    */
-  private getMidgardNetwork(network: Network): MidgardNetwork {
+  public static getMidgardNetwork(network: Network): MidgardNetwork {
     if (network === 'testnet') return 'testnet'
     return 'chaosnet'
   }
@@ -144,7 +145,7 @@ export class MultiChain implements IMultiChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   getChainClient = (chain: Chain) => {
     if (chain === THORChain) return this.thor
@@ -153,7 +154,7 @@ export class MultiChain implements IMultiChain {
     if (chain === ETHChain) return this.eth
 
     return null
-  };
+  }
 
   async getWalletByChain(chain: Chain): Promise<ChainWallet> {
     const chainClient = this.getChainClient(chain)
@@ -185,11 +186,15 @@ export class MultiChain implements IMultiChain {
 
   async loadAllBalances(): Promise<Wallet> {
     try {
-      for (let i = 0; i < this.chains.length; i++) {
-        const chain = this.chains[i]
-
-        await this.getWalletByChain(chain)
-      }
+      await Promise.all(
+        this.chains.map((chain: SupportedChain) => {
+          return new Promise((resolve, reject) => {
+            this.getWalletByChain(chain)
+              .then((data) => resolve(data))
+              .catch((err) => reject(err))
+          })
+        }),
+      )
 
       return this.wallet
     } catch (error) {
@@ -202,11 +207,11 @@ export class MultiChain implements IMultiChain {
    * @param {TxParams} tx transfer parameter
    */
   transfer = async (tx: TxParams): Promise<TxHash> => {
-    const chain = tx.assetAmount.asset.chain
+    const { chain } = tx.assetAmount.asset
 
     // for swap, add, withdraw tx in thorchain, send deposit tx
     if (chain === THORChain && tx.recipient === THORCHAIN_POOL_ADDRESS) {
-      return await this.thor.deposit(tx)
+      return this.thor.deposit(tx)
     }
 
     const chainClient = this.getChainClient(chain)
@@ -219,7 +224,7 @@ export class MultiChain implements IMultiChain {
     } else {
       throw new Error('Chain does not exist')
     }
-  };
+  }
 
   /**
    * swap assets
@@ -235,7 +240,7 @@ export class MultiChain implements IMultiChain {
 
     try {
       if (swap.hasInSufficientFee) {
-        return Promise.reject(new Error('Insufficient Fee'))
+        return await Promise.reject(new Error('Insufficient Fee'))
       }
 
       const poolAddress = await this.getPoolAddressByChain(
@@ -251,7 +256,7 @@ export class MultiChain implements IMultiChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   /**
    * add liquidity to pool
@@ -267,14 +272,14 @@ export class MultiChain implements IMultiChain {
 
     try {
       const { pool, runeAmount, assetAmount } = params
-      const chain = pool.asset.chain
+      const { chain } = pool.asset
 
       const poolAddress = await this.getPoolAddressByChain(chain)
 
       // sym stake
       if (runeAmount && runeAmount.gt(runeAmount._0_AMOUNT)) {
         if (assetAmount.lte(assetAmount._0_AMOUNT)) {
-          return Promise.reject(new Error('Invalid Asset Amount'))
+          return await Promise.reject(new Error('Invalid Asset Amount'))
         }
 
         // 1. send rune (NOTE: recipient should be empty string)
@@ -290,22 +295,21 @@ export class MultiChain implements IMultiChain {
           recipient: poolAddress,
           memo: Memo.depositMemo(pool.asset),
         })
-      } else {
-        // asym stake
-        if (assetAmount.lte(assetAmount._0_AMOUNT)) {
-          return Promise.reject(new Error('Invalid Asset Amount'))
-        }
-
-        return await this.transfer({
-          assetAmount,
-          recipient: poolAddress,
-          memo: Memo.depositMemo(pool.asset),
-        })
       }
+      // asym stake
+      if (assetAmount.lte(assetAmount._0_AMOUNT)) {
+        return await Promise.reject(new Error('Invalid Asset Amount'))
+      }
+
+      return await this.transfer({
+        assetAmount,
+        recipient: poolAddress,
+        memo: Memo.depositMemo(pool.asset),
+      })
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   /**
    * withdraw asset from pool
@@ -321,12 +325,12 @@ export class MultiChain implements IMultiChain {
     try {
       const { pool, percent } = params
       const memo = Memo.withdrawMemo(pool.asset, percent)
-      const chain = pool.asset.chain
+      const { chain } = pool.asset
 
       const poolAddress = await this.getPoolAddressByChain(chain)
 
       const txHash = await this.transfer({
-        assetAmount: Asset.getMinAmountByChain(chain),
+        assetAmount: AssetAmount.getMinAmountByChain(chain),
         recipient: poolAddress,
         memo,
       })
@@ -335,5 +339,5 @@ export class MultiChain implements IMultiChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 }

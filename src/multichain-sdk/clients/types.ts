@@ -1,40 +1,34 @@
 import { FeeOptionKey } from '@xchainjs/xchain-client'
-import {
-  Chain,
-  BTCChain,
-  BNBChain,
-  THORChain,
-  ETHChain,
-} from '@xchainjs/xchain-util'
+import { BTCChain, BNBChain, THORChain, ETHChain } from '@xchainjs/xchain-util'
 
 import { AssetAmount, Pool, Percent } from '../entities'
 
-export type Network = 'testnet' | 'mainnet';
+export type Network = 'testnet' | 'mainnet'
 
 export type TxParams = {
-  assetAmount: AssetAmount;
-  recipient: string;
-  memo?: string;
-  feeOptionKey?: FeeOptionKey;
-};
+  assetAmount: AssetAmount
+  recipient: string
+  memo?: string
+  feeOptionKey?: FeeOptionKey
+}
 
 export type MultiSendParams = {
-  assetAmount1: AssetAmount;
-  assetAmount2: AssetAmount;
-  recipient: string;
-  memo?: string;
-};
+  assetAmount1: AssetAmount
+  assetAmount2: AssetAmount
+  recipient: string
+  memo?: string
+}
 
 export type AddLiquidityParams = {
-  pool: Pool;
-  runeAmount?: AssetAmount;
-  assetAmount: AssetAmount;
-};
+  pool: Pool
+  runeAmount?: AssetAmount
+  assetAmount: AssetAmount
+}
 
 export type WithdrawParams = {
-  pool: Pool;
-  percent: Percent;
-};
+  pool: Pool
+  percent: Percent
+}
 
 export const supportedChains = [
   BTCChain,
@@ -42,11 +36,11 @@ export const supportedChains = [
   THORChain,
   ETHChain,
 ] as const
-export type SupportedChain = typeof supportedChains[number];
+export type SupportedChain = typeof supportedChains[number]
 
 export type ChainWallet = {
-  address: string;
-  balance: AssetAmount[];
-};
+  address: string
+  balance: AssetAmount[]
+}
 
-export type Wallet = Record<SupportedChain, ChainWallet>;
+export type Wallet = Record<SupportedChain, ChainWallet>

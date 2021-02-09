@@ -1,35 +1,33 @@
+import { MULTICHAIN_DECIMAL } from 'multichain-sdk/constants'
 import invariant from 'tiny-invariant'
 
 import { Amount } from './amount'
 import { Asset } from './asset'
 
 export interface IPool {
-  readonly asset: Asset;
-  readonly runeDepth: Amount;
-  readonly assetDepth: Amount;
-  readonly decimal: number;
+  readonly asset: Asset
+  readonly runeDepth: Amount
+  readonly assetDepth: Amount
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly detail: any;
+  readonly detail: any
 
-  assetPriceInRune: Amount;
-  runePriceInAsset: Amount;
-  involvesAsset(asset: Asset): boolean;
-  priceOf(asset: Asset): Amount;
-  depthOf(asset: Asset): Amount;
+  assetPriceInRune: Amount
+  runePriceInAsset: Amount
+  involvesAsset(asset: Asset): boolean
+  priceOf(asset: Asset): Amount
+  depthOf(asset: Asset): Amount
 }
 
 export class Pool implements IPool {
-  public readonly asset: Asset;
+  public readonly asset: Asset
 
-  public readonly runeDepth: Amount;
+  public readonly runeDepth: Amount
 
-  public readonly assetDepth: Amount;
-
-  public readonly decimal: number;
+  public readonly assetDepth: Amount
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public readonly detail: any;
+  public readonly detail: any
 
   // get Pool by non-rune asset
   public static byAsset(asset: Asset, pools: Pool[]): Pool | undefined {
@@ -44,9 +42,9 @@ export class Pool implements IPool {
       runeDepth,
       assetDepth,
     }: {
-      asset: string;
-      runeDepth: string;
-      assetDepth: string;
+      asset: string
+      runeDepth: string
+      assetDepth: string
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     detail: any,
@@ -54,8 +52,8 @@ export class Pool implements IPool {
     const assetObj = Asset.fromAssetString(asset)
 
     if (assetObj && runeDepth && assetDepth) {
-      const runeAmount = Amount.fromBaseAmount(runeDepth, assetObj.decimal)
-      const assetAmount = Amount.fromBaseAmount(assetDepth, assetObj.decimal)
+      const runeAmount = Amount.fromBaseAmount(runeDepth, MULTICHAIN_DECIMAL)
+      const assetAmount = Amount.fromBaseAmount(assetDepth, MULTICHAIN_DECIMAL)
 
       return new Pool(assetObj, runeAmount, assetAmount, detail)
     }
@@ -74,7 +72,6 @@ export class Pool implements IPool {
     this.runeDepth = runeDepth
     this.assetDepth = assetDepth
     this.detail = detail
-    this.decimal = asset.decimal
   }
 
   get assetPriceInRune(): Amount {

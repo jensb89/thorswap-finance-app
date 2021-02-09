@@ -1,7 +1,6 @@
-import { DEFAULT_DECIMAL } from 'multichain-sdk/constants/decimals'
 import invariant from 'tiny-invariant'
 
-import { DEFAULT_SLIP_LIMIT } from '../constants'
+import { DEFAULT_SLIP_LIMIT, MULTICHAIN_DECIMAL } from '../constants'
 import { AmountType, Amount } from './amount'
 import { Asset } from './asset'
 import { AssetAmount } from './assetAmount'
@@ -18,8 +17,6 @@ export enum QuoteType {
   EXACT_IN,
   EXACT_OUT,
 }
-
-const _100_ = 100
 
 export interface ISwap {
   readonly swapType: SwapType
@@ -195,10 +192,10 @@ export class Swap implements ISwap {
   }
 
   public get slipLimit(): Amount {
-    return this.outputAmount.mul(this.slipLimitPercent).div(_100_).amount
+    return this.outputAmount.mul(this.slipLimitPercent).div(100).amount
   }
 
-  private getSingleSwapOutput(
+  public static getSingleSwapOutput(
     inputAmount: AssetAmount,
     pool: Pool,
   ): AssetAmount {
@@ -213,7 +210,7 @@ export class Swap implements ISwap {
     const denominator = new Amount(
       x.add(X).assetAmount.pow(2),
       AmountType.ASSET_AMOUNT,
-      inputAmount.decimal,
+      MULTICHAIN_DECIMAL,
     )
 
     return new AssetAmount(outputAsset, numerator.div(denominator))
@@ -223,18 +220,18 @@ export class Swap implements ISwap {
     invariant(inputAmount.asset === this.inputAsset, 'Invalid Asset')
 
     if (this.swapType === SwapType.SINGLE_SWAP) {
-      return this.getSingleSwapOutput(inputAmount, this.swapPools[0])
+      return Swap.getSingleSwapOutput(inputAmount, this.swapPools[0])
     }
 
     invariant(!inputAmount.asset.isRUNE(), 'Invalid Asset')
 
     // double swap formula: getSwapOutput(getSwapOutput(x, X), Y)
-    const firstSwapOutput = this.getSingleSwapOutput(
+    const firstSwapOutput = Swap.getSingleSwapOutput(
       inputAmount,
       this.swapPools[0],
     )
 
-    return this.getSingleSwapOutput(firstSwapOutput, this.swapPools[1])
+    return Swap.getSingleSwapOutput(firstSwapOutput, this.swapPools[1])
   }
 
   private getSingleSwapOutputAfterNetworkFee(
@@ -243,7 +240,7 @@ export class Swap implements ISwap {
   ): AssetAmount {
     // formula: getSwapOutput() - network fee (1 RUNE)
     const toRUNE = !inputAmount.asset.isRUNE()
-    const swapOutputAmount = this.getSingleSwapOutput(inputAmount, pool)
+    const swapOutputAmount = Swap.getSingleSwapOutput(inputAmount, pool)
     const runeDepthAfterSwap = toRUNE
       ? pool.runeDepth.sub(swapOutputAmount)
       : pool.runeDepth.add(inputAmount)
@@ -268,12 +265,9 @@ export class Swap implements ISwap {
 
   private getNetworkFee(pool: Pool, toRUNE: boolean): AssetAmount {
     // network fee is 1 RUNE
-    const networkFeeInRune = new AssetAmount(
-      Asset.RUNE(),
-      Amount.fromAssetAmount(1, pool.decimal),
-    )
+    const networkFeeInRune = Amount.fromAssetAmount(1, MULTICHAIN_DECIMAL)
 
-    const feeAmount = toRUNE
+    const feeAmount: Amount = toRUNE
       ? networkFeeInRune
       : networkFeeInRune.mul(pool.priceOf(Asset.RUNE()))
 
@@ -334,12 +328,11 @@ export class Swap implements ISwap {
 
   // 1 - output / input
   getFeePercent(inputAmount: AssetAmount): Percent {
-    return Amount.fromAssetAmount(1, inputAmount.decimal).sub(
-      this.getOutputPercent(inputAmount),
-    )
+    const outputPercent = this.getOutputPercent(inputAmount)
+    return Amount.fromAssetAmount(1, outputPercent.decimal).sub(outputPercent)
   }
 
-  private getSingleSwapInput(
+  public static getSingleSwapInput(
     outputAmount: AssetAmount,
     pool: Pool,
   ): AssetAmount {
@@ -353,7 +346,7 @@ export class Swap implements ISwap {
     const part2: Amount = new Amount(
       X.assetAmount.pow(2).multipliedBy(4),
       AmountType.ASSET_AMOUNT,
-      outputAmount.decimal,
+      MULTICHAIN_DECIMAL,
     )
 
     const inputAmount = new Amount(
@@ -361,7 +354,7 @@ export class Swap implements ISwap {
         .minus(part1.assetAmount.pow(2).minus(part2.assetAmount).sqrt())
         .div(2),
       AmountType.ASSET_AMOUNT,
-      outputAmount.decimal,
+      MULTICHAIN_DECIMAL,
     )
     const inputAsset = !toRUNE ? Asset.RUNE() : pool.asset
 
@@ -372,21 +365,24 @@ export class Swap implements ISwap {
     invariant(outputAmount.asset === this.outputAsset, 'Invalid Asset')
 
     if (this.swapType === SwapType.SINGLE_SWAP) {
-      return this.getSingleSwapInput(outputAmount, this.swapPools[0])
+      return Swap.getSingleSwapInput(outputAmount, this.swapPools[0])
     }
 
     invariant(!outputAmount.asset.isRUNE(), 'Invalid Asset')
 
     // double swap formula: getSwapInput(getSwapInput(y, Y), X)
-    const secondSwapInput = this.getSingleSwapInput(
+    const secondSwapInput = Swap.getSingleSwapInput(
       outputAmount,
       this.swapPools[1],
     )
 
-    return this.getSingleSwapInput(secondSwapInput, this.swapPools[0])
+    return Swap.getSingleSwapInput(secondSwapInput, this.swapPools[0])
   }
 
-  private getSingleSwapSlip(inputAmount: AssetAmount, pool: Pool): Percent {
+  public static getSingleSwapSlip(
+    inputAmount: AssetAmount,
+    pool: Pool,
+  ): Percent {
     // formula: (x) / (x + X)
     const x = inputAmount.amount
     const X = pool.depthOf(inputAmount.asset)
@@ -398,18 +394,18 @@ export class Swap implements ISwap {
     invariant(inputAmount.asset === this.inputAsset, 'Invalid Asset')
 
     if (this.swapType === SwapType.SINGLE_SWAP) {
-      return this.getSingleSwapSlip(inputAmount, this.swapPools[0])
+      return Swap.getSingleSwapSlip(inputAmount, this.swapPools[0])
     }
 
     invariant(!inputAmount.asset.isRUNE(), 'Invalid Asset')
 
     // double swap slip formula: getSingleSwapSlip(input1) + getSingleSwapSlip(getSwapOutput1 => input2)
-    const firstSlip = this.getSingleSwapSlip(inputAmount, this.swapPools[0])
-    const firstSwapOutput = this.getSingleSwapOutput(
+    const firstSlip = Swap.getSingleSwapSlip(inputAmount, this.swapPools[0])
+    const firstSwapOutput = Swap.getSingleSwapOutput(
       inputAmount,
       this.swapPools[0],
     )
-    const secondSlip = this.getSingleSwapSlip(
+    const secondSlip = Swap.getSingleSwapSlip(
       firstSwapOutput,
       this.swapPools[1],
     )
@@ -418,7 +414,10 @@ export class Swap implements ISwap {
   }
 
   // fee amount is based in output asset
-  private getSingleSwapFee(inputAmount: AssetAmount, pool: Pool): AssetAmount {
+  public static getSingleSwapFee(
+    inputAmount: AssetAmount,
+    pool: Pool,
+  ): AssetAmount {
     // formula: (x * x * Y) / (x + X) ^ 2
     const toRUNE = !inputAmount.asset.isRUNE()
     const outputAsset = toRUNE ? Asset.RUNE() : pool.asset
@@ -430,7 +429,7 @@ export class Swap implements ISwap {
     const denominator = new Amount(
       x.add(X).assetAmount.pow(2),
       AmountType.ASSET_AMOUNT,
-      inputAmount.decimal,
+      MULTICHAIN_DECIMAL,
     )
 
     return new AssetAmount(outputAsset, numerator.div(denominator))
@@ -441,24 +440,24 @@ export class Swap implements ISwap {
     invariant(inputAmount.asset === this.inputAsset, 'Invalid Asset')
 
     if (this.swapType === SwapType.SINGLE_SWAP) {
-      return this.getSingleSwapFee(inputAmount, this.swapPools[0])
+      return Swap.getSingleSwapFee(inputAmount, this.swapPools[0])
     }
 
     invariant(!inputAmount.asset.isRUNE(), 'Invalid Asset')
 
     // double swap fee: getSwapFee1 + getSwapFee2
-    const firstSwapOutput = this.getSingleSwapOutput(
+    const firstSwapOutput = Swap.getSingleSwapOutput(
       inputAmount,
       this.swapPools[0],
     )
     // first swap fee is always based in rune
-    const firstSwapFeeInRune = this.getSingleSwapFee(
+    const firstSwapFeeInRune = Swap.getSingleSwapFee(
       inputAmount,
       this.swapPools[0],
     )
 
     // second swap fee based in output asset
-    const secondSwapFeeInAsset = this.getSingleSwapFee(
+    const secondSwapFeeInAsset = Swap.getSingleSwapFee(
       firstSwapOutput,
       this.swapPools[1],
     )

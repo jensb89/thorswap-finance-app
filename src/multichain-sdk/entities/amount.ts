@@ -19,39 +19,39 @@ const roundingMode = {
 }
 
 export interface IAmount {
-  readonly baseAmount: BigNumber;
-  readonly assetAmount: BigNumber;
-  readonly decimal: number;
+  readonly baseAmount: BigNumber
+  readonly assetAmount: BigNumber
+  readonly decimal: number
 
-  _0_AMOUNT: Amount;
+  _0_AMOUNT: Amount
 
-  add(amount: Amount): Amount;
-  sub(amount: Amount): Amount;
-  mul(value: BigNumber.Value | Amount): Amount;
-  div(value: BigNumber.Value | Amount): Amount;
-  gte(amount: Amount): boolean;
-  gt(amount: Amount): boolean;
-  lte(amount: Amount): boolean;
-  lt(amount: Amount): boolean;
-  eq(amount: Amount): boolean;
+  add(amount: Amount): Amount
+  sub(amount: Amount): Amount
+  mul(value: BigNumber.Value | Amount): Amount
+  div(value: BigNumber.Value | Amount): Amount
+  gte(amount: Amount): boolean
+  gt(amount: Amount): boolean
+  lte(amount: Amount): boolean
+  lt(amount: Amount): boolean
+  eq(amount: Amount): boolean
   toSignificant(
     significantDigits?: number,
     format?: BigNumber.Format,
     rounding?: Rounding,
-  ): string;
+  ): string
   toFixed(
     decimalPlaces?: number,
     format?: BigNumber.Format,
     rounding?: Rounding,
-  ): string;
+  ): string
 }
 
 export class Amount implements IAmount {
-  public readonly assetAmount: BigNumber;
+  public readonly assetAmount: BigNumber
 
-  public readonly baseAmount: BigNumber;
+  public readonly baseAmount: BigNumber
 
-  public readonly decimal: number;
+  public readonly decimal: number
 
   public static fromBaseAmount(
     amount: BigNumber.Value,
@@ -87,7 +87,7 @@ export class Amount implements IAmount {
   }
 
   add(amount: Amount): Amount {
-    invariant(this.decimal === amount.decimal, 'Decimal must be same')
+    invariant(this.decimal === amount.decimal, 'Decimals must be same')
     return new Amount(
       this.baseAmount.plus(amount.baseAmount),
       AmountType.BASE_AMOUNT,
@@ -96,7 +96,7 @@ export class Amount implements IAmount {
   }
 
   sub(amount: Amount): Amount {
-    invariant(this.decimal === amount.decimal, 'Decimal must be same')
+    invariant(this.decimal === amount.decimal, 'Decimals must be same')
     return new Amount(
       this.baseAmount.minus(amount.baseAmount),
       AmountType.BASE_AMOUNT,

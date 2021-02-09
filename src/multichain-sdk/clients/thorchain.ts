@@ -7,28 +7,28 @@ import { IClient } from './client'
 import { TxParams } from './types'
 
 export type DepositParam = {
-  assetAmount: AssetAmount;
-  memo?: string;
-};
+  assetAmount: AssetAmount
+  memo?: string
+}
 
 export interface IThorChain extends IClient {
-  getClient(): ThorClient;
-  deposit(tx: DepositParam): Promise<TxHash>;
+  getClient(): ThorClient
+  deposit(tx: DepositParam): Promise<TxHash>
 }
 
 export class ThorChain implements IThorChain {
-  private balances: AssetAmount[] = [];
+  private balances: AssetAmount[] = []
 
-  private client: ThorClient;
+  private client: ThorClient
 
-  public readonly chain: Chain;
+  public readonly chain: Chain
 
   constructor({
     network = 'testnet',
     phrase,
   }: {
-    network?: Network;
-    phrase: string;
+    network?: Network
+    phrase: string
   }) {
     this.chain = THORChain
     this.client = new ThorClient({
@@ -69,7 +69,7 @@ export class ThorChain implements IThorChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   hasAmountInBalance = async (assetAmount: AssetAmount): Promise<boolean> => {
     try {
@@ -85,7 +85,7 @@ export class ThorChain implements IThorChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   getAssetBalance = async (asset: Asset): Promise<AssetAmount> => {
     try {
@@ -95,13 +95,14 @@ export class ThorChain implements IThorChain {
         data.asset.eq(asset),
       )
 
-      if (!assetBalance) return new AssetAmount(asset, Amount.fromAssetAmount(0, asset.decimal))
+      if (!assetBalance)
+        return new AssetAmount(asset, Amount.fromAssetAmount(0, asset.decimal))
 
       return assetBalance
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   /**
    * transfer on binance chain
@@ -111,10 +112,10 @@ export class ThorChain implements IThorChain {
     // use xchainjs-client standard internally
     try {
       const { assetAmount, recipient, memo } = tx
-      const asset = assetAmount.asset
+      const { asset } = assetAmount
       const amount = baseAmount(assetAmount.amount.baseAmount)
 
-      return this.client.transfer({
+      return await this.client.transfer({
         asset: {
           chain: asset.chain,
           symbol: asset.symbol,
@@ -127,16 +128,16 @@ export class ThorChain implements IThorChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   async deposit(tx: DepositParam): Promise<TxHash> {
     try {
       const { assetAmount, memo } = tx
-      const asset = assetAmount.asset
+      const { asset } = assetAmount
       const amount = baseAmount(assetAmount.amount.baseAmount)
 
       if (memo) {
-        return this.client.deposit({
+        return await this.client.deposit({
           asset: {
             chain: asset.chain,
             symbol: asset.symbol,
@@ -145,9 +146,8 @@ export class ThorChain implements IThorChain {
           amount,
           memo,
         })
-      } else {
-        throw new Error('Invalid Memo')
       }
+      throw new Error('Invalid Memo')
     } catch (error) {
       return Promise.reject(error)
     }

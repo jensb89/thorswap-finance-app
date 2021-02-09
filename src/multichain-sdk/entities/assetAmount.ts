@@ -1,3 +1,11 @@
+import {
+  BNBChain,
+  BTCChain,
+  THORChain,
+  ETHChain,
+  LTCChain,
+  Chain,
+} from '@xchainjs/xchain-util'
 import BigNumber from 'bignumber.js'
 import invariant from 'tiny-invariant'
 
@@ -9,13 +17,13 @@ import { Price } from './price'
 // TODO: compare method between asset amount
 
 export interface IAssetAmount extends IAmount {
-  readonly asset: Asset;
-  readonly amount: Amount;
+  readonly asset: Asset
+  readonly amount: Amount
 
-  add(amount: AssetAmount): AssetAmount;
-  sub(amount: AssetAmount): AssetAmount;
-  mul(value: BigNumber.Value | Amount): AssetAmount;
-  div(value: BigNumber.Value | Amount): AssetAmount;
+  add(amount: AssetAmount): AssetAmount
+  sub(amount: AssetAmount): AssetAmount
+  mul(value: BigNumber.Value | Amount): AssetAmount
+  div(value: BigNumber.Value | Amount): AssetAmount
 
   toCurrencyFormat(
     {
@@ -23,25 +31,72 @@ export interface IAssetAmount extends IAmount {
       format,
       rounding,
     }: {
-      significantDigits?: number;
-      format?: BigNumber.Format;
-      rounding?: Rounding;
+      significantDigits?: number
+      format?: BigNumber.Format
+      rounding?: Rounding
     },
     isPrefix?: boolean,
-  ): string;
-  unitPriceIn(asset: Asset, pools: Pool[]): Price;
-  totalPriceIn(asset: Asset, pools: Pool[]): Price;
+  ): string
+  unitPriceIn(asset: Asset, pools: Pool[]): Price
+  totalPriceIn(asset: Asset, pools: Pool[]): Price
 }
 
 export class AssetAmount extends Amount implements IAssetAmount {
-  public readonly asset: Asset;
+  public readonly asset: Asset
 
-  public readonly amount: Amount;
+  public readonly amount: Amount
+
+  public static getMinAmountByChain(chain: Chain): AssetAmount {
+    if (chain === BNBChain) {
+      return new AssetAmount(
+        Asset.BNB(),
+        Amount.fromBaseAmount(1, Asset.BNB().decimal),
+      )
+    }
+    // 1000 satoshi
+    if (chain === BTCChain) {
+      return new AssetAmount(
+        Asset.BTC(),
+        Amount.fromBaseAmount(1000, Asset.BTC().decimal),
+      )
+    }
+    // 1 Thor
+    if (chain === THORChain) {
+      return new AssetAmount(
+        Asset.RUNE(),
+        Amount.fromBaseAmount(1, Asset.RUNE().decimal),
+      )
+    }
+    // 0 ETH
+    if (chain === ETHChain) {
+      return new AssetAmount(
+        Asset.ETH(),
+        Amount.fromBaseAmount(0, Asset.ETH().decimal),
+      )
+    }
+    if (chain === LTCChain) {
+      return new AssetAmount(
+        Asset.LTC(),
+        Amount.fromBaseAmount(1, Asset.LTC().decimal),
+      )
+    }
+
+    return new AssetAmount(
+      Asset.RUNE(),
+      Amount.fromBaseAmount(1, Asset.RUNE().decimal),
+    )
+  }
 
   constructor(asset: Asset, amount: Amount) {
-    super(amount.baseAmount, AmountType.BASE_AMOUNT, asset.decimal)
+    super(amount.assetAmount, AmountType.ASSET_AMOUNT, asset.decimal)
     this.asset = asset
-    this.amount = amount
+
+    // make sure amount has same decimal as asset
+    this.amount = new Amount(
+      amount.assetAmount,
+      AmountType.ASSET_AMOUNT,
+      asset.decimal,
+    )
   }
 
   add(amount: AssetAmount): AssetAmount {
@@ -100,9 +155,9 @@ export class AssetAmount extends Amount implements IAssetAmount {
       format,
       rounding,
     }: {
-      significantDigits?: number;
-      format?: BigNumber.Format;
-      rounding?: Rounding;
+      significantDigits?: number
+      format?: BigNumber.Format
+      rounding?: Rounding
     },
     isPrefix = true,
   ): string {

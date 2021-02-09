@@ -4,11 +4,11 @@ export * from '../api'
 
 export type { ActionsList }
 
-export type NetworkType = 'testnet' | 'chaosnet' | 'mainnet';
+export type NetworkType = 'testnet' | 'chaosnet' | 'mainnet'
 
-export type PoolStatus = 'available' | 'staged' | 'suspended';
+export type PoolStatus = 'available' | 'staged' | 'suspended'
 
-export type StatsPeriod = '1h' | '24h' | '7d' | '30d' | '90d' | '365d' | 'all';
+export type StatsPeriod = '1h' | '24h' | '7d' | '30d' | '90d' | '365d' | 'all'
 
 export type HistoryInterval =
   | '5min'
@@ -17,29 +17,29 @@ export type HistoryInterval =
   | 'week'
   | 'month'
   | 'quarter'
-  | 'year';
+  | 'year'
 
 export type HistoryQuery = {
-  interval?: HistoryInterval;
-  count?: number;
-  to?: number;
-  from?: number;
-};
+  interval?: HistoryInterval
+  count?: number
+  to?: number
+  from?: number
+}
 
 export type ActionType =
   | 'swap'
   | 'addLiquidity'
   | 'withdraw'
   | 'donate'
-  | 'refund';
+  | 'refund'
 
 export type ActionListParams = {
-  address?: string;
-  txId?: string;
-  asset?: string;
-  type?: ActionType;
-  limit: number;
-  offset: number;
-};
+  address?: string
+  txId?: string
+  asset?: string
+  type?: ActionType
+  limit: number
+  offset: number
+}
 
-export type PoolAddress = string;
+export type PoolAddress = string

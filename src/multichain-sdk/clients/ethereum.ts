@@ -1,9 +1,4 @@
-import {
-  TxHash,
-  Balance,
-  FeeOptionKey,
-  Network,
-} from '@xchainjs/xchain-client'
+import { TxHash, Balance, Network } from '@xchainjs/xchain-client'
 import { Client as EthClient } from '@xchainjs/xchain-ethereum'
 import { baseAmount, Chain, ETHChain } from '@xchainjs/xchain-util'
 
@@ -13,22 +8,22 @@ import { IClient } from './client'
 import { TxParams } from './types'
 
 export interface IEthChain extends IClient {
-  getClient(): EthClient;
+  getClient(): EthClient
 }
 
 export class EthChain implements IEthChain {
-  private balances: AssetAmount[] = [];
+  private balances: AssetAmount[] = []
 
-  private client: EthClient;
+  private client: EthClient
 
-  public readonly chain: Chain;
+  public readonly chain: Chain
 
   constructor({
     network = 'testnet',
     phrase,
   }: {
-    network?: Network;
-    phrase: string;
+    network?: Network
+    phrase: string
   }) {
     this.chain = ETHChain
     this.client = new EthClient({
@@ -70,7 +65,7 @@ export class EthChain implements IEthChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   hasAmountInBalance = async (assetAmount: AssetAmount): Promise<boolean> => {
     try {
@@ -86,7 +81,7 @@ export class EthChain implements IEthChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   getAssetBalance = async (asset: Asset): Promise<AssetAmount> => {
     try {
@@ -96,13 +91,14 @@ export class EthChain implements IEthChain {
         data.asset.eq(asset),
       )
 
-      if (!assetBalance) return new AssetAmount(asset, Amount.fromAssetAmount(0, asset.decimal))
+      if (!assetBalance)
+        return new AssetAmount(asset, Amount.fromAssetAmount(0, asset.decimal))
 
       return assetBalance
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 
   /**
    * transfer on binance chain
@@ -112,10 +108,10 @@ export class EthChain implements IEthChain {
     // use xchainjs-client standard internally
     try {
       const { assetAmount, recipient, memo, feeOptionKey = 'fastest' } = tx
-      const asset = assetAmount.asset
+      const { asset } = assetAmount
       const amount = baseAmount(assetAmount.amount.baseAmount)
 
-      return this.client.transfer({
+      return await this.client.transfer({
         asset: {
           chain: asset.chain,
           symbol: asset.symbol,
@@ -129,5 +125,5 @@ export class EthChain implements IEthChain {
     } catch (error) {
       return Promise.reject(error)
     }
-  };
+  }
 }

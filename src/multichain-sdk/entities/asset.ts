@@ -16,7 +16,7 @@ import {
 } from '@xchainjs/xchain-util'
 
 import {
-  DEFAULT_DECIMAL,
+  DEFAULT_CHAIN_DECIMAL,
   THORCHAIN_DECIMAL,
   BNB_DECIMAL,
   BTC_DECIMAL,
@@ -88,7 +88,7 @@ export class Asset implements IAsset {
     if (chain === ETHChain) return ETH_DECIMAL
     if (chain === LTCChain) return LTC_DECIMAL
 
-    return DEFAULT_DECIMAL
+    return DEFAULT_CHAIN_DECIMAL
   }
 
   constructor(chain: Chain, symbol: string) {

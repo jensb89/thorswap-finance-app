@@ -39,7 +39,7 @@ export interface IAsset {
   eq(asset: Asset): boolean
   isRUNE(): boolean
   isBNB(): boolean
-  sortsBefore(asset: Asset): boolean
+  sortsBefore(asset: Asset): number
 }
 
 export class Asset implements IAsset {
@@ -131,11 +131,17 @@ export class Asset implements IAsset {
     return this.eq(Asset.BNB())
   }
 
-  sortsBefore(asset: Asset): boolean {
+  sortsBefore(asset: Asset): number {
+    if (this.eq(asset)) return 0
+
     if (this.chain !== asset.chain) {
-      return this.chain < asset.chain
+      if (this.chain < asset.chain) return 1
+      if (this.chain < asset.chain) return -1
     }
 
-    return this.symbol < asset.symbol
+    if (this.symbol < asset.symbol) return 1
+    if (this.symbol > asset.symbol) return -1
+
+    return 1
   }
 }

@@ -1,43 +1,38 @@
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { RefObject, useCallback, useMemo, useRef, useState } from 'react'
 
 import { SearchOutlined } from '@ant-design/icons'
+import { MenuProps } from 'antd/lib/menu'
 
+import { useClickOutside } from '../../../hooks/useOutsideClick'
 import Input from '../Input'
 import { Menu, MenuItem } from './FilterMenu.style'
 
-const style: React.CSSProperties = {
-  maxHeight: '400px',
-  overflowY: 'auto',
-  fontWeight: 'bold',
-  textTransform: 'uppercase',
-  letterSpacing: '1px',
-}
-
-type Props = {
-  onSelect?: (value: string) => void
-  filterFunction: (item: string, searchTerm: string) => boolean
-  searchEnabled?: boolean
-  cellRenderer: (data: string) => { key: string; node: JSX.Element }
-  data: string[]
-  disableItemFilter?: (item: string) => boolean
+type Props<T> = {
+  data: T[]
   placeholder?: string
-  selectedKeys?: string[]
+  searchEnabled?: boolean
+  cellRenderer: (data: T) => { key: string; node: JSX.Element }
+  disableItemFilter?: (item: T) => boolean
+  filterFunction: (item: T, searchTerm: string) => boolean
+  onSelect?: (value: string) => void
+  closeMenu?: () => void
 }
 
-const FilterMenu: React.FC<Props> = ({
-  onSelect = () => {},
-  searchEnabled = false,
-  data,
-  filterFunction,
-  cellRenderer,
-  disableItemFilter = () => false,
-  placeholder = 'Search ...',
-  selectedKeys = [],
-  ...otherProps
-}): JSX.Element => {
+const FilterMenu = <T extends unknown>(props: Props<T>): JSX.Element => {
+  const {
+    onSelect = () => {},
+    searchEnabled = false,
+    data,
+    filterFunction,
+    cellRenderer,
+    disableItemFilter = () => false,
+    placeholder = 'Search',
+    closeMenu,
+  } = props
+
   const [searchTerm, setSearchTerm] = useState('')
 
-  const handleClick = useCallback(
+  const handleClick: MenuProps['onClick'] = useCallback(
     (event) => {
       if (!event || !event.key || event.key === '_search') return
 
@@ -55,7 +50,11 @@ const FilterMenu: React.FC<Props> = ({
     [],
   )
 
-  const filteredData: string[] = useMemo(
+  const ref: RefObject<HTMLDivElement> = useRef(null)
+
+  useClickOutside<HTMLDivElement>(ref, () => closeMenu && closeMenu())
+
+  const filteredData: T[] = useMemo(
     () =>
       searchTerm === ''
         ? data
@@ -64,35 +63,32 @@ const FilterMenu: React.FC<Props> = ({
   )
 
   return (
-    <Menu
-      {...otherProps}
-      style={style}
-      selectedKeys={selectedKeys}
-      onClick={handleClick}
-    >
-      {searchEnabled && (
-        <Menu.Item disabled key="_search">
-          <Input
-            value={searchTerm}
-            onChange={handleSearchChanged}
-            placeholder={placeholder}
-            sizevalue="big"
-            typevalue="ghost"
-            suffix={<SearchOutlined />}
-          />
-        </Menu.Item>
-      )}
-      {filteredData.map((item: string) => {
-        const { key, node } = cellRenderer(item)
-        const disableItem = disableItemFilter(item)
+    <div ref={ref}>
+      <Menu onClick={handleClick}>
+        {searchEnabled && (
+          <Menu.Item disabled key="_search">
+            <Input
+              value={searchTerm}
+              onChange={handleSearchChanged}
+              placeholder={placeholder}
+              sizevalue="big"
+              typevalue="ghost"
+              suffix={<SearchOutlined />}
+            />
+          </Menu.Item>
+        )}
+        {filteredData.map((item: T) => {
+          const { key, node } = cellRenderer(item)
+          const disableItem = disableItemFilter(item)
 
-        return (
-          <MenuItem disabled={disableItem} key={key}>
-            {node}
-          </MenuItem>
-        )
-      })}
-    </Menu>
+          return (
+            <MenuItem disabled={disableItem} key={key}>
+              {node}
+            </MenuItem>
+          )
+        })}
+      </Menu>
+    </div>
   )
 }
 

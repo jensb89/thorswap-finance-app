@@ -18,6 +18,18 @@ const roundingMode = {
   [Rounding.ROUND_UP]: BigNumber.ROUND_UP,
 }
 
+export const EMPTY_FORMAT: BigNumber.Format = { groupSeparator: '' }
+export const NUMBER_FORMAT: BigNumber.Format = {
+  prefix: '',
+  decimalSeparator: '.',
+  groupSeparator: ',',
+  groupSize: 3,
+  secondaryGroupSize: 0,
+  fractionGroupSeparator: ' ',
+  fractionGroupSize: 0,
+  suffix: '',
+}
+
 export interface IAmount {
   readonly baseAmount: BigNumber
   readonly assetAmount: BigNumber
@@ -40,6 +52,11 @@ export interface IAmount {
     rounding?: Rounding,
   ): string
   toFixed(
+    decimalPlaces?: number,
+    format?: BigNumber.Format,
+    rounding?: Rounding,
+  ): string
+  toFixedDecimal(
     decimalPlaces?: number,
     format?: BigNumber.Format,
     rounding?: Rounding,
@@ -73,12 +90,13 @@ export class Amount implements IAmount {
     decimal: number,
   ) {
     this.decimal = decimal
+    const decimalAmount = 10 ** decimal
     if (type === AmountType.BASE_AMOUNT) {
       this.baseAmount = new BigNumber(amount)
-      this.assetAmount = this.baseAmount.dividedBy(decimal)
+      this.assetAmount = this.baseAmount.dividedBy(decimalAmount)
     } else {
       this.assetAmount = new BigNumber(amount)
-      this.baseAmount = this.assetAmount.multipliedBy(decimal)
+      this.baseAmount = this.assetAmount.multipliedBy(decimalAmount)
     }
   }
 
@@ -161,7 +179,7 @@ export class Amount implements IAmount {
 
   toSignificant(
     significantDigits = 8,
-    format: BigNumber.Format = { groupSeparator: '' },
+    format: BigNumber.Format = NUMBER_FORMAT,
     rounding: Rounding = Rounding.ROUND_DOWN,
   ): string {
     invariant(
@@ -179,9 +197,9 @@ export class Amount implements IAmount {
     return significant.toFormat()
   }
 
-  toFixed(
+  toFixedDecimal(
     decimalPlaces = 8,
-    format: BigNumber.Format = { groupSeparator: '' },
+    format: BigNumber.Format = EMPTY_FORMAT,
     rounding: Rounding = Rounding.ROUND_DOWN,
   ): string {
     invariant(
@@ -191,11 +209,18 @@ export class Amount implements IAmount {
     invariant(decimalPlaces > 0, `${decimalPlaces} is not positive.`)
 
     BigNumber.config({ FORMAT: format })
-
     const fixed = new BigNumber(
       this.assetAmount.toFixed(decimalPlaces, roundingMode[rounding]),
     )
 
-    return fixed.toFormat(decimalPlaces)
+    return fixed.toFormat()
+  }
+
+  toFixed(
+    decimalPlaces = 8,
+    format: BigNumber.Format = NUMBER_FORMAT,
+    rounding: Rounding = Rounding.ROUND_DOWN,
+  ): string {
+    return this.toFixedDecimal(decimalPlaces, format, rounding)
   }
 }

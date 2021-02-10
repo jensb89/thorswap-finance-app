@@ -18,10 +18,12 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix"
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@binance-chain/javascript-sdk": "^4.1.1",
+    "@devexperts/remote-data-ts": "^2.0.5",
     "@polkadot/api": "^3.8.1",
     "@react-theming/storybook-addon": "^1.0.3",
     "@reduxjs/toolkit": "^1.5.0",
@@ -45,10 +47,14 @@
     "bignumber.js": "^9.0.1",
     "chart.js": "^2.9.4",
     "copy-to-clipboard": "^3.3.1",
+    "cosmos-client": "^0.39.2",
+    "ethers": "^5.0.30",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "nprogress": "^0.2.0",
+    "patch-package": "^6.2.2",
     "polished": "^4.1.0",
+    "postinstall-postinstall": "^2.1.0",
     "react": "^17.0.1",
     "react-chartjs-2": "^2.11.1",
     "react-circular-progressbar": "^2.0.3",

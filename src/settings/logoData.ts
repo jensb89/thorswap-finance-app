@@ -1,4 +1,4 @@
-export const coinIconsFromTrustWallet: Record<string, string> = {
+export const assetIconMap: Record<string, string> = {
   ABCD: 'ABCD-5D8',
   AERGO: 'AERGO-46B',
   ALA: 'ALA-DCD',
@@ -25,6 +25,7 @@ export const coinIconsFromTrustWallet: Record<string, string> = {
   BLINK: 'BLINK-9C6',
   BOLT: 'BOLT-4C6',
   BST2: 'BST2-2F2',
+  BTC: 'BTCB-1DE',
   BTCB: 'BTCB-1DE',
   BTTB: 'BTTB-D31',
   BULL: 'BULL-BE4',

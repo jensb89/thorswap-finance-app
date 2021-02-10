@@ -1,0 +1,73 @@
+import React, { useRef, useCallback } from 'react'
+
+import InputAmount, {
+  Props as InputProps,
+} from 'components/UIElements/InputAmount'
+import { Amount } from 'multichain-sdk'
+
+import { AssetInputWrapper } from './AssetInput.style'
+
+export type Props = {
+  title: string
+  info?: string
+  amount: Amount
+  label?: string
+  inputProps?: InputProps
+  decimal?: number
+  onChange: (value: Amount) => void
+}
+
+const AssetInput: React.FC<Props> = (props): JSX.Element => {
+  const {
+    title,
+    amount,
+    info,
+    label,
+    inputProps = {},
+    onChange,
+    decimal = 8,
+    ...otherProps
+  } = props
+
+  const inputRef = useRef<HTMLDivElement>(null)
+  const { disabled = false } = inputProps
+
+  const onChangeHandler = useCallback(
+    (value: Amount) => {
+      onChange(value)
+    },
+    [onChange],
+  )
+
+  const handleClickWrapper = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    inputRef.current?.firstChild?.focus()
+  }, [])
+
+  return (
+    <AssetInputWrapper
+      disabled={disabled}
+      onClick={handleClickWrapper}
+      {...otherProps}
+    >
+      <div className="asset-input-header">
+        <span className="asset-input-title">{title}</span>
+        {info && <span className="asset-input-header-label">{info}</span>}
+      </div>
+      <div className="asset-input-content" ref={inputRef}>
+        <InputAmount
+          value={amount}
+          onChange={onChangeHandler}
+          sizevalue="big"
+          decimal={decimal}
+          outlined={false}
+          {...inputProps}
+        />
+        {label && <span className="asset-amount-label">{label}</span>}
+      </div>
+    </AssetInputWrapper>
+  )
+}
+
+export default AssetInput

@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect, useMemo } from 'react'
 
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 
-import { ConfirmIcon, RefundIcon } from 'components/icons'
+import { ConfirmIcon, RefundIcon } from 'components/Icons'
 import useInterval, { INACTIVE_INTERVAL } from 'hooks/useInterval'
 import usePrevious from 'hooks/usePrevious'
 

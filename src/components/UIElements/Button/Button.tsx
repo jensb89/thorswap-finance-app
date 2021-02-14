@@ -26,6 +26,7 @@ const Button: React.FC<Props> = (props: Props): JSX.Element => {
     weight = '500',
     round = false,
     focused = false,
+    className = '',
     ...otherProps
   } = props
 
@@ -37,7 +38,7 @@ const Button: React.FC<Props> = (props: Props): JSX.Element => {
       sizevalue={sizevalue}
       typevalue={typevalue}
       round={round}
-      focused={focused}
+      className={`${className} ${focused ? 'focused' : ''}`}
       {...otherProps}
     >
       {children}

@@ -111,7 +111,7 @@ export class EthChain implements IEthChain {
       const { asset } = assetAmount
       const amount = baseAmount(assetAmount.amount.baseAmount)
 
-      return await this.client.transfer({
+      const txHash = await this.client.transfer({
         asset: {
           chain: asset.chain,
           symbol: asset.symbol,
@@ -122,6 +122,8 @@ export class EthChain implements IEthChain {
         memo,
         feeOptionKey,
       })
+
+      return txHash
     } catch (error) {
       return Promise.reject(error)
     }

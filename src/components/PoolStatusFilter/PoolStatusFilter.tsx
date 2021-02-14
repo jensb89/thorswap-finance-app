@@ -4,7 +4,7 @@ import React, { useCallback } from 'react'
 import { CheckCircleOutlined, FieldTimeOutlined } from '@ant-design/icons'
 import { Popover } from 'antd'
 import Button from 'components/UIElements/Button'
-import { getAppContainer } from 'helpers/elementHelper'
+import { getAppContainer } from 'helpers/element'
 import { PoolStatus } from 'midgard-sdk'
 
 import {

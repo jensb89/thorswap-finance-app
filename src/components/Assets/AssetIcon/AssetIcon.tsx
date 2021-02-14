@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react'
 
 import { LoadingOutlined } from '@ant-design/icons'
 import * as RD from '@devexperts/remote-data-ts'
-import { getIntFromName, rainbowStop } from 'helpers/colorHelpers'
+import { getIntFromName, rainbowStop } from 'helpers/color'
 import { useRemoteImage } from 'hooks/useRemoteImage'
 import { Asset } from 'multichain-sdk'
 
@@ -30,11 +30,11 @@ const AssetIcon: React.FC<Props> = ({
 
   const renderIcon = useCallback(
     (src: string) => (
-      <Styled.IconWrapper size={size}>
+      <Styled.IconWrapper size={size} {...rest}>
         <Styled.Icon src={src} size={size} />{' '}
       </Styled.IconWrapper>
     ),
-    [size],
+    [size, rest],
   )
 
   const renderPendingIcon = useCallback(() => {

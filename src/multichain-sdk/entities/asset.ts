@@ -85,8 +85,10 @@ export class Asset implements IAsset {
     if (chain === BNBChain) return BNB_DECIMAL
     if (chain === BTCChain) return BTC_DECIMAL
     if (chain === THORChain) return THORCHAIN_DECIMAL
-    if (chain === ETHChain) return ETH_DECIMAL
     if (chain === LTCChain) return LTC_DECIMAL
+
+    // TODO: decimals are vary in the ETH chain
+    if (chain === ETHChain) return ETH_DECIMAL
 
     return DEFAULT_CHAIN_DECIMAL
   }

@@ -1,4 +1,4 @@
-import { getIntFromName, rgb2hex, rainbowStop } from './colorHelpers'
+import { getIntFromName, rgb2hex, rainbowStop } from './color'
 
 describe('colorHelper', () => {
   describe('rgb2hex', () => {

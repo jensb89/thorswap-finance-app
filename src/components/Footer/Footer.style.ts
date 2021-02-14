@@ -1,5 +1,5 @@
 import { Layout } from 'antd'
-import { media } from 'helpers/styleHelper'
+import { media } from 'helpers/style'
 import styled from 'styled-components'
 import { size, key, palette } from 'styled-theme'
 

@@ -7,6 +7,7 @@ export type Props = {
   size?: Size
   color?: Color
   weight?: string
+  align?: string
   loading?: boolean
   children: React.ReactNode
 }
@@ -17,12 +18,19 @@ const Label = (props: Props) => {
     size = 'normal',
     color = 'normal',
     weight = 'normal',
+    align = 'left',
     children,
     ...others
   } = props
 
   return (
-    <LabelWrapper sizeValue={size} color={color} weight={weight} {...others}>
+    <LabelWrapper
+      sizeValue={size}
+      color={color}
+      weight={weight}
+      align={align}
+      {...others}
+    >
       {loading && '...'}
       {!loading && children}
     </LabelWrapper>

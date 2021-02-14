@@ -1,26 +1,37 @@
 import React from 'react'
 
-import logo from './logo.svg'
-import './App.css'
+import { Provider as ReduxProvider, useSelector } from 'react-redux'
+
+import themes, { ThemeType } from '@thorchain/asgardex-theme'
+import WebFontLoader from 'components/WebFontLoader'
+import { store as reduxStore, RootState } from 'redux/store'
+import { AppHolder, fontConfig } from 'settings/appStyle'
+import { ThemeProvider } from 'styled-components'
+
+import Router from './router'
+
+const Main = () => {
+  const themeType = useSelector((state: RootState) => state.app.themeType)
+  const isLight = themeType === ThemeType.LIGHT
+  const { light, dark } = themes
+  const defaultTheme = isLight ? light : dark
+
+  return (
+    <ThemeProvider theme={defaultTheme}>
+      <AppHolder id="app-global">
+        <Router />
+      </AppHolder>
+    </ThemeProvider>
+  )
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <WebFontLoader config={fontConfig}>
+      <ReduxProvider store={reduxStore}>
+        <Main />
+      </ReduxProvider>
+    </WebFontLoader>
   )
 }
 

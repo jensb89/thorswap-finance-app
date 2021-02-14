@@ -44,12 +44,14 @@ type Props = {
   sizeValue: Size
   color: Color
   weight: string
+  align: string
   onClick?: () => void
 }
 
 export const LabelWrapper = styled.div`
   font-size: ${(props: Props) => fontSettings[props.sizeValue].size};
   font-weight: ${(props: Props) => props.weight};
+  text-align: ${(props: Props) => props.align};
   letter-spacing: ${(props: Props) => fontSettings[props.sizeValue].spacing};
   color: ${(props: Props) => colors[props.color]};
   cursor: ${(props: Props) => props.onClick && 'pointer'};

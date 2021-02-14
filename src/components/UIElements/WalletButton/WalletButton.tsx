@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { FolderAddFilled } from '@ant-design/icons'
+import { PlusOutlined } from '@ant-design/icons'
 
 import Button, { Props as ButtonProps } from '../Button'
 
@@ -18,7 +18,7 @@ const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
     if (!connected) {
       return (
         <span style={{ display: 'flex', alignItems: 'center' }}>
-          <FolderAddFilled
+          <PlusOutlined
             style={{
               marginRight: '6px',
               top: '1px',

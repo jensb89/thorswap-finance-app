@@ -2,9 +2,13 @@ import React from 'react'
 
 import ReactDOM from 'react-dom'
 
-import './index.css'
+import { appInit } from 'settings/init'
+
 import App from './App'
 import reportWebVitals from './reportWebVitals'
+
+// initialize app
+appInit()
 
 ReactDOM.render(
   <React.StrictMode>

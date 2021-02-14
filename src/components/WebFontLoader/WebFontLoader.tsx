@@ -5,7 +5,7 @@ import WebFont from 'webfontloader'
 
 type Props = {
   config: WebFont.Config
-  onStatus(status: string): void
+  onStatus?: (status: string) => void
   children: JSX.Element
 }
 

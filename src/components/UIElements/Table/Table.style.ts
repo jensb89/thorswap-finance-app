@@ -1,6 +1,6 @@
 import { Table } from 'antd'
 import { TableProps } from 'antd/lib/table'
-import { media } from 'helpers/styleHelper'
+import { media } from 'helpers/style'
 import { darken } from 'polished'
 import styled from 'styled-components'
 import { key, palette } from 'styled-theme'

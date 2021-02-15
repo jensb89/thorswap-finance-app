@@ -12,12 +12,10 @@ const LoaderWrapper = styled.div`
   height: 80vh;
 `
 
-const PageLoader: React.FC = (): JSX.Element => {
+export const PageLoader: React.FC = (): JSX.Element => {
   return (
     <LoaderWrapper>
       <Spin />
     </LoaderWrapper>
   )
 }
-
-export default PageLoader

@@ -22,7 +22,7 @@ interface Props {
   className?: string
 }
 
-const TxTimer: React.FC<Props> = (props): JSX.Element => {
+export const TxTimer: React.FC<Props> = (props): JSX.Element => {
   const {
     status = false,
     value,
@@ -101,5 +101,3 @@ const TxTimer: React.FC<Props> = (props): JSX.Element => {
     </TxTimerWrapper>
   )
 }
-
-export default TxTimer

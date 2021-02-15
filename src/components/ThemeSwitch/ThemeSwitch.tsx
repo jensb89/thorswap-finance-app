@@ -7,7 +7,7 @@ import { useApp } from 'redux/app/hooks'
 
 import * as Styled from './ThemeSwitch.style'
 
-const ThemeSwitch = () => {
+export const ThemeSwitch = () => {
   const { themeType, setTheme } = useApp()
 
   const toggleTheme = React.useCallback(() => {
@@ -24,5 +24,3 @@ const ThemeSwitch = () => {
     </Styled.IconButton>
   )
 }
-
-export default ThemeSwitch

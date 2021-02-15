@@ -4,7 +4,7 @@ import React from 'react'
 import { Story, Meta } from '@storybook/react/types-6-0'
 import { Amount, Asset } from 'multichain-sdk'
 
-import AssetData, { Props } from './AssetData'
+import { AssetData, Props } from './AssetData'
 
 export default {
   title: 'Components/AssetData',

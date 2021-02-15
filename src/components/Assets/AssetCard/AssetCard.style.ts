@@ -1,9 +1,9 @@
-import UnstyledInputAmount from 'components/UIElements/InputAmount'
-import Label from 'components/UIElements/Label'
+import { InputAmount as UnstyledInputAmount } from 'components/UIElements/InputAmount'
+import { Label } from 'components/UIElements/Label'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
 
-import BaseAssetSelect from '../AssetSelect'
+import { AssetSelect as BaseAssetSelect } from '../AssetSelect'
 
 const CONTAINER_SIDE_PADDING = 16
 

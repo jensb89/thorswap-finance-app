@@ -1,3 +1,1 @@
-import AssetInputCard from './AssetInputCard'
-
-export default AssetInputCard
+export { AssetInputCard } from './AssetInputCard'

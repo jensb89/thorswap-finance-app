@@ -1,3 +1,1 @@
-import ToolCard from './ToolCard'
-
-export default ToolCard
+export { ToolCard } from './ToolCard'

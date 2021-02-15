@@ -1,3 +1,1 @@
-import TxProgress from './TxProgress'
-
-export default TxProgress
+export { TxProgress } from './TxProgress'

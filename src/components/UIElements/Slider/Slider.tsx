@@ -8,7 +8,7 @@ export type Props = SliderSingleProps & {
   withLabel?: boolean
 }
 
-const Slider = (props: Props) => {
+export const Slider = (props: Props) => {
   const { withLabel = false, ...otherProps } = props
 
   const sliderRef = useRef<HTMLElement>(null)
@@ -35,5 +35,3 @@ const Slider = (props: Props) => {
     </>
   )
 }
-
-export default Slider

@@ -183,11 +183,12 @@ const getThemeValue = (color: ButtonColor, typeValue: ButtonType) => {
 }
 
 export type ButtonWrapperProps = {
-  round: boolean
+  round: string
   color: ButtonColor
   sizevalue: ButtonSize
   weight: ButtonWeight
   typevalue: ButtonType
+  fixedWidth: string
 }
 
 type Props = ButtonWrapperProps & ButtonProps
@@ -199,8 +200,9 @@ export const ButtonWrapper = styled(Button)<Props>`
     align-items: center;
 
     border-radius: ${(props) =>
-      props.round ? sizes[props.sizevalue].height : '3px'};
-    min-width: ${(props) => sizes[props.sizevalue].width};
+      props.round === 'true' ? sizes[props.sizevalue].height : '3px'};
+    width: ${(props) =>
+      props.fixedWidth === 'true' ? sizes[props.sizevalue].width : 'auto'};
     height: ${(props) => sizes[props.sizevalue].height};
     font-size: ${(props) => fontSettings[props.sizevalue].size};
     font-weight: ${(props) => props.weight};

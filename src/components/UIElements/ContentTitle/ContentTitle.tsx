@@ -6,8 +6,6 @@ export type Props = {
   children: React.ReactNode
 }
 
-const ContentTitle = (props: Props) => {
+export const ContentTitle = (props: Props) => {
   return <ContentTitleWrapper {...props} />
 }
-
-export default ContentTitle

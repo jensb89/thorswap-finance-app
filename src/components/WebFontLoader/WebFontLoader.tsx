@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react'
 
 import WebFont from 'webfontloader'
 
-type Props = {
+export type Props = {
   config: WebFont.Config
   onStatus?: (status: string) => void
   children: JSX.Element
 }
 
-const WebFontLoader: React.FC<Props> = (props): JSX.Element => {
+export const WebFontLoader: React.FC<Props> = (props): JSX.Element => {
   const { config, onStatus = () => {}, children } = props
   const [status, setStatus] = useState<string>('')
 

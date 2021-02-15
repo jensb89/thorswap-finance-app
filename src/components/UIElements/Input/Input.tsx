@@ -1,17 +1,17 @@
 import React from 'react'
 
-import { InputProps } from 'antd/lib/input'
+import { InputProps as AntInputProps } from 'antd/lib/input'
 
 import { InputWrapper } from './Input.style'
 import { TypeValue, SizeValue, Color } from './types'
 
-export type Props = {
+export type InputProps = {
   typevalue?: TypeValue
   sizevalue?: SizeValue
   color?: Color
-} & InputProps
+} & AntInputProps
 
-const Input = (props: Props) => {
+export const Input = (props: InputProps) => {
   const {
     typevalue = 'normal',
     sizevalue = 'normal',
@@ -28,5 +28,3 @@ const Input = (props: Props) => {
     />
   )
 }
-
-export default Input

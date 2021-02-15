@@ -8,7 +8,7 @@ export interface Props extends ModalProps {
   children?: ReactNode
 }
 
-const Modal: React.FC<Props> = (props): JSX.Element => {
+export const Modal: React.FC<Props> = (props): JSX.Element => {
   const { children, ...others } = props
 
   return (
@@ -21,5 +21,3 @@ const Modal: React.FC<Props> = (props): JSX.Element => {
     </ModalWrapper>
   )
 }
-
-export default Modal

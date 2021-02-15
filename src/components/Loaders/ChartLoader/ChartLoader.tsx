@@ -11,10 +11,8 @@ const LoaderWrapper = styled.div`
   height: 100%;
 `
 
-const ChartLoader: React.FC = (): JSX.Element => (
+export const ChartLoader: React.FC = (): JSX.Element => (
   <LoaderWrapper>
     <Spin />
   </LoaderWrapper>
 )
-
-export default ChartLoader

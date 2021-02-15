@@ -2,18 +2,18 @@ import React, { useCallback, useState } from 'react'
 
 import { Amount } from 'multichain-sdk'
 
-import { Props as InputProps } from '../Input'
+import { InputProps } from '../Input'
 import { StyledInput } from './InputAmount.style'
 import { getAmountFromString } from './utils'
 
-export type Props = Omit<InputProps, 'value' | 'onChange'> & {
+export type InputAmountProps = Omit<InputProps, 'value' | 'onChange'> & {
   value?: Amount
   onChange?: (value: Amount) => void
   decimal?: number
   outlined?: boolean
 }
 
-const InputAmount = (props: Props) => {
+export const InputAmount = (props: InputAmountProps) => {
   const {
     value = Amount.fromAssetAmount(0, 8),
     onChange = () => {},
@@ -47,5 +47,3 @@ const InputAmount = (props: Props) => {
     />
   )
 }
-
-export default InputAmount

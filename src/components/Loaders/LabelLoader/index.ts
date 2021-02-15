@@ -1,3 +1,1 @@
-import LabelLoader from './LabelLoader'
-
-export default LabelLoader
+export { LabelLoader } from './LabelLoader'

@@ -13,10 +13,8 @@ type ComponentProps = {
 
 export type Props = ComponentProps & TabsProps
 
-const Tabs = (props: Props) => {
+export const Tabs = (props: Props) => {
   return <StyledTab {...props} />
 }
 
 export const { TabPane } = AntTabs
-
-export default Tabs

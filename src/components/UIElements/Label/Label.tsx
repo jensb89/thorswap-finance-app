@@ -12,7 +12,7 @@ export type Props = {
   children: React.ReactNode
 }
 
-const Label = (props: Props) => {
+export const Label = (props: Props) => {
   const {
     loading = false,
     size = 'normal',
@@ -36,5 +36,3 @@ const Label = (props: Props) => {
     </LabelWrapper>
   )
 }
-
-export default Label

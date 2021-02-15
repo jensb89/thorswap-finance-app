@@ -4,7 +4,7 @@ import React from 'react'
 import { Story, Meta } from '@storybook/react/types-6-0'
 import { Asset } from 'multichain-sdk'
 
-import Drag, { Props } from './Drag'
+import { Drag, Props } from './Drag'
 
 export default {
   title: 'Components/Drag',

@@ -1,3 +1,1 @@
-import WebFontLoader from './WebFontLoader'
-
-export default WebFontLoader
+export { WebFontLoader } from './WebFontLoader'

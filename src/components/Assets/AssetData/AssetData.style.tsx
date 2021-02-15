@@ -1,8 +1,8 @@
 import { Row } from 'antd'
-import Label from 'components/UIElements/Label'
+import { Label } from 'components/UIElements/Label'
 import styled from 'styled-components'
 
-import UIAssetIcon from '../AssetIcon'
+import { AssetIcon as UIAssetIcon } from '../AssetIcon'
 
 export type AssetDataSize = 'small' | 'normal' | 'big'
 

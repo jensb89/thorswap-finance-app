@@ -4,7 +4,7 @@ import React from 'react'
 import { Story, Meta } from '@storybook/react/types-6-0'
 
 import { dataSource, columns } from './data'
-import Table, { Props } from './Table'
+import { Table, Props } from './Table'
 
 export default {
   title: 'Components/Table',

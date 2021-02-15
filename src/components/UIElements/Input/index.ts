@@ -1,5 +1,3 @@
-import Input from './Input'
+export { Input } from './Input'
 
-export default Input
-
-export type { Props } from './Input'
+export type { InputProps } from './Input'

@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Story, Meta } from '@storybook/react/types-6-0'
 import { Amount } from 'multichain-sdk'
 
-import AssetInput, { Props } from './AssetInput'
+import { AssetInput, Props } from './AssetInput'
 
 export default {
   title: 'Components/AssetInput',

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ButtonProps } from 'antd/lib/button'
+import { ButtonProps as AntBtnProps } from 'antd/lib/button'
 
 import { ButtonWrapper } from './Button.style'
 import { ButtonColor, ButtonSize, ButtonWeight, ButtonType } from './types'
@@ -12,12 +12,15 @@ type ComponentProps = {
   typevalue?: ButtonType
   focused?: boolean
   round?: boolean
+  fixedWidth?: boolean
   className?: string
 }
 
-export type Props = ComponentProps & ButtonProps
+export type ButtonProps = ComponentProps & AntBtnProps
 
-const Button: React.FC<Props> = (props: Props): JSX.Element => {
+export const Button: React.FC<ButtonProps> = (
+  props: ButtonProps,
+): JSX.Element => {
   const {
     children,
     sizevalue = 'normal',
@@ -26,6 +29,7 @@ const Button: React.FC<Props> = (props: Props): JSX.Element => {
     weight = '500',
     round = false,
     focused = false,
+    fixedWidth = true,
     className = '',
     ...otherProps
   } = props
@@ -37,7 +41,8 @@ const Button: React.FC<Props> = (props: Props): JSX.Element => {
       color={color}
       sizevalue={sizevalue}
       typevalue={typevalue}
-      round={round}
+      round={round.toString()}
+      fixedWidth={fixedWidth.toString()}
       className={`${className} ${focused ? 'focused' : ''}`}
       {...otherProps}
     >
@@ -45,4 +50,3 @@ const Button: React.FC<Props> = (props: Props): JSX.Element => {
     </ButtonWrapper>
   )
 }
-export default Button

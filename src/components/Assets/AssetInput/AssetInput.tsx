@@ -1,7 +1,8 @@
 import React, { useRef, useCallback } from 'react'
 
-import InputAmount, {
-  Props as InputProps,
+import {
+  InputAmount,
+  InputAmountProps,
 } from 'components/UIElements/InputAmount'
 import { Amount } from 'multichain-sdk'
 
@@ -12,12 +13,12 @@ export type Props = {
   info?: string
   amount: Amount
   label?: string
-  inputProps?: InputProps
+  inputProps?: InputAmountProps
   decimal?: number
   onChange: (value: Amount) => void
 }
 
-const AssetInput: React.FC<Props> = (props): JSX.Element => {
+export const AssetInput: React.FC<Props> = (props): JSX.Element => {
   const {
     title,
     amount,
@@ -69,5 +70,3 @@ const AssetInput: React.FC<Props> = (props): JSX.Element => {
     </AssetInputWrapper>
   )
 }
-
-export default AssetInput

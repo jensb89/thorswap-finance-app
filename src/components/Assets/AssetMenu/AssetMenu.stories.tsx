@@ -4,7 +4,7 @@ import React from 'react'
 import { Story, Meta } from '@storybook/react/types-6-0'
 import { Asset } from 'multichain-sdk'
 
-import AssetMenu, { Props } from './AssetMenu'
+import { AssetMenu, Props } from './AssetMenu'
 
 export default {
   title: 'Components/AssetMenu',

@@ -13,7 +13,7 @@ export const ContentWrapper = styled(Content)`
 
   background: ${palette('background', 3)};
   min-height: calc(100vh - 120px);
-  margin-top: 90px;
+  margin-top: 70px;
   padding: 10px;
 
   ${media.sm`

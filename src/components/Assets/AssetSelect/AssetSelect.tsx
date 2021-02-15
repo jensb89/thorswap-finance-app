@@ -4,7 +4,7 @@ import { delay } from '@xchainjs/xchain-util'
 import { Dropdown } from 'antd'
 import { Asset } from 'multichain-sdk'
 
-import AssetMenu from '../AssetMenu'
+import { AssetMenu } from '../AssetMenu'
 import {
   AssetSelectWrapper,
   AssetDropdownButton,
@@ -42,7 +42,7 @@ export type Props = {
   searchPlaceholder?: string
 }
 
-const AssetSelect: React.FC<Props> = (props): JSX.Element => {
+export const AssetSelect: React.FC<Props> = (props): JSX.Element => {
   const {
     asset,
     assets = [],
@@ -138,5 +138,3 @@ const AssetSelect: React.FC<Props> = (props): JSX.Element => {
     </AssetSelectWrapper>
   )
 }
-
-export default AssetSelect

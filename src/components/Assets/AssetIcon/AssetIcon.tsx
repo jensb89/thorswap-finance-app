@@ -17,7 +17,7 @@ type ComponentProps = {
 
 export type Props = ComponentProps & React.HTMLAttributes<HTMLDivElement>
 
-const AssetIcon: React.FC<Props> = ({
+export const AssetIcon: React.FC<Props> = ({
   asset,
   size = 'normal',
   ...rest
@@ -68,5 +68,3 @@ const AssetIcon: React.FC<Props> = ({
     renderIcon,
   )(remoteIconImage)
 }
-
-export default AssetIcon

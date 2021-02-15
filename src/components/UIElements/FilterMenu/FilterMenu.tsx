@@ -4,7 +4,7 @@ import { SearchOutlined } from '@ant-design/icons'
 import { MenuProps } from 'antd/lib/menu'
 
 import { useClickOutside } from '../../../hooks/useOutsideClick'
-import Input from '../Input'
+import { Input } from '../Input'
 import { Menu, MenuItem } from './FilterMenu.style'
 
 type Props<T> = {
@@ -18,7 +18,7 @@ type Props<T> = {
   closeMenu?: () => void
 }
 
-const FilterMenu = <T extends unknown>(props: Props<T>): JSX.Element => {
+export const FilterMenu = <T extends unknown>(props: Props<T>): JSX.Element => {
   const {
     onSelect = () => {},
     searchEnabled = false,

@@ -22,7 +22,7 @@ export type Props = {
   showLabel?: boolean
 }
 
-const AssetData: React.FC<Props> = (props): JSX.Element => {
+export const AssetData: React.FC<Props> = (props): JSX.Element => {
   const {
     asset,
     amount,
@@ -57,5 +57,3 @@ const AssetData: React.FC<Props> = (props): JSX.Element => {
     </Styled.Wrapper>
   )
 }
-
-export default AssetData

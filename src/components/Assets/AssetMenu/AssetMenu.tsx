@@ -1,9 +1,9 @@
 import React, { useMemo, useCallback } from 'react'
 
-import FilterMenu from 'components/UIElements/FilterMenu'
+import { FilterMenu } from 'components/UIElements/FilterMenu'
 import { Asset } from 'multichain-sdk'
 
-import AssetData from '../AssetData'
+import { AssetData } from '../AssetData'
 
 const filterFunction = (asset: Asset, searchTerm: string) => {
   const { ticker } = asset
@@ -20,7 +20,7 @@ export type Props = {
   closeMenu?: () => void
 }
 
-const AssetMenu: React.FC<Props> = (props): JSX.Element => {
+export const AssetMenu: React.FC<Props> = (props): JSX.Element => {
   const {
     searchPlaceholder,
     assets,
@@ -60,5 +60,3 @@ const AssetMenu: React.FC<Props> = (props): JSX.Element => {
     />
   )
 }
-
-export default AssetMenu

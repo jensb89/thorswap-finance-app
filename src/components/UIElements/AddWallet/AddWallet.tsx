@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom'
 
 import { SwitcherOutlined } from '@ant-design/icons'
 
-import WalletButton from '../WalletButton'
+import { WalletButton } from '../WalletButton'
 import { AddWalletWrapper, ConnectLabel } from './AddWallet.style'
 
-const AddWallet: React.FC = (): JSX.Element => (
+export const AddWallet: React.FC = (): JSX.Element => (
   <AddWalletWrapper>
     <div className="add-wallet-icon">
       <SwitcherOutlined />
@@ -18,5 +18,3 @@ const AddWallet: React.FC = (): JSX.Element => (
     </Link>
   </AddWalletWrapper>
 )
-
-export default AddWallet

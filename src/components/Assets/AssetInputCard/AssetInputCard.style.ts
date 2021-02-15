@@ -1,8 +1,8 @@
 import { media } from 'helpers/style'
 import styled from 'styled-components'
 
-import UnstyledAssetInput from '../AssetInput'
-import UnstyledAssetSelect from '../AssetSelect'
+import { AssetInput as UnstyledAssetInput } from '../AssetInput'
+import { AssetSelect as UnstyledAssetSelect } from '../AssetSelect'
 
 export const CardWrapper = styled.div`
   display: flex;

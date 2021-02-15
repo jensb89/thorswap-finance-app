@@ -26,7 +26,7 @@ interface Props {
   className?: string
 }
 
-const TxProgress: React.FC<Props> = (props): JSX.Element => {
+export const TxProgress: React.FC<Props> = (props): JSX.Element => {
   const {
     status = false,
     value,
@@ -136,5 +136,3 @@ const TxProgress: React.FC<Props> = (props): JSX.Element => {
     </TxProgressWrapper>
   )
 }
-
-export default TxProgress

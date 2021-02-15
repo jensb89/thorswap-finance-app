@@ -1,3 +1,1 @@
-import ContentView from './ContentView'
-
-export default ContentView
+export { ContentView } from './ContentView'

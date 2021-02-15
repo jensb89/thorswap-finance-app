@@ -1,3 +1,1 @@
-import StatusBadge from './StatusBadge'
-
-export default StatusBadge
+export { StatusBadge } from './StatusBadge'

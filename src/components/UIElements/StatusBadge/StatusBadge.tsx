@@ -6,10 +6,8 @@ export type Props = {
   color?: 'red' | 'yellow' | 'green'
 }
 
-const StatusBadge = (props: Props) => {
+export const StatusBadge = (props: Props) => {
   const { color = 'red', ...others } = props
 
   return <StatusBadgeWrapper color={color} {...others} />
 }
-
-export default StatusBadge

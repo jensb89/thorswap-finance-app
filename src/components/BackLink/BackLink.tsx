@@ -6,7 +6,7 @@ import { LeftOutlined } from '@ant-design/icons'
 
 import { BackLinkWrapper } from './BackLink.style'
 
-const BackLink = () => {
+export const BackLink = () => {
   const history = useHistory()
 
   const handleGoBack = useCallback(() => {
@@ -20,5 +20,3 @@ const BackLink = () => {
     </BackLinkWrapper>
   )
 }
-
-export default BackLink

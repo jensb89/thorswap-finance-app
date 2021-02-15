@@ -2,7 +2,7 @@ import { Menu as AntdMenu } from 'antd'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
 
-const Menu = styled(AntdMenu)`
+export const Menu = styled(AntdMenu)`
   background: ${palette('background', 1)};
   li.ant-dropdown-menu-item {
     color: ${palette('text', 0)};
@@ -13,5 +13,3 @@ const Menu = styled(AntdMenu)`
     }
   }
 `
-
-export default Menu

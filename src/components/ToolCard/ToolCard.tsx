@@ -9,7 +9,7 @@ export type Props = {
   link: string
 }
 
-const ToolCard: React.FC<Props> = (props: Props): JSX.Element => {
+export const ToolCard: React.FC<Props> = (props: Props): JSX.Element => {
   const { title, description, info, link } = props
 
   return (
@@ -26,5 +26,3 @@ const ToolCard: React.FC<Props> = (props: Props): JSX.Element => {
     </a>
   )
 }
-
-export default ToolCard

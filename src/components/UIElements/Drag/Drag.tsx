@@ -21,7 +21,7 @@ export type Props = {
   disabled?: boolean
 }
 
-const Drag: React.FC<Props> = ({
+export const Drag: React.FC<Props> = ({
   reset = true,
   source,
   target,
@@ -170,5 +170,3 @@ const Drag: React.FC<Props> = ({
     </div>
   )
 }
-
-export default Drag

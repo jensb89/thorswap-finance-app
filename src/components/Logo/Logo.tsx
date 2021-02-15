@@ -8,7 +8,7 @@ export type Props = {
   type: 'thorchain' | 'asgardex'
 }
 
-const Logo = (props: Props) => {
+export const Logo = (props: Props) => {
   const { type } = props
 
   return (
@@ -17,5 +17,3 @@ const Logo = (props: Props) => {
     </LogoWrapper>
   )
 }
-
-export default Logo

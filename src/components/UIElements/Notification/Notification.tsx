@@ -9,7 +9,7 @@ type NotificationType = {
   btn?: React.ReactNode
 }
 
-const Notification = ({
+export const Notification = ({
   type,
   message,
   description = '',
@@ -24,5 +24,3 @@ const Notification = ({
     getContainer: getAppContainer,
   })
 }
-
-export default Notification

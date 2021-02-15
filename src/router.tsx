@@ -2,8 +2,7 @@ import React, { Suspense, lazy } from 'react'
 
 import { Router, Route, Switch } from 'react-router'
 
-import Layout from 'components/Layout'
-import PageLoader from 'components/Loaders/PageLoader'
+import { Layout, PageLoader, BackLink } from 'components'
 import { history } from 'helpers/history'
 import { HOME_ROUTE, CONNECT_ROUTE } from 'settings/constants'
 
@@ -41,6 +40,7 @@ const PublicRoutes = () => (
               exact={route.exact}
               render={(props) => (
                 <Layout>
+                  {route.path !== HOME_ROUTE && <BackLink />}
                   <Component {...props} />
                 </Layout>
               )}

@@ -2,20 +2,19 @@ import React from 'react'
 
 import { PlusOutlined } from '@ant-design/icons'
 
-import Button, { Props as ButtonProps } from '../Button'
+import { Button, ButtonProps } from '../Button'
 
 type ComponentProps = {
-  connected?: boolean
   address?: string
 }
 
 export type Props = ComponentProps & ButtonProps
 
-const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
-  const { connected = false, address = '', ...otherProps } = props
+export const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
+  const { address = '', ...otherProps } = props
 
   const getBtnValue = () => {
-    if (!connected) {
+    if (!address) {
       return (
         <span style={{ display: 'flex', alignItems: 'center' }}>
           <PlusOutlined
@@ -30,7 +29,7 @@ const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
       )
     }
 
-    if (connected) {
+    if (address) {
       if (address && address.length > 9) {
         const first = address.substr(0, 6)
         const last = address.substr(address.length - 3, 3)
@@ -41,10 +40,8 @@ const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
   }
 
   return (
-    <Button sizevalue="normal" round {...otherProps}>
+    <Button sizevalue="normal" round fixedWidth={false} {...otherProps}>
       {getBtnValue()}
     </Button>
   )
 }
-
-export default WalletButton

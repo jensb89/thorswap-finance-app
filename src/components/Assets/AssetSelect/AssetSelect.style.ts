@@ -3,7 +3,7 @@ import { transition } from 'settings/style-util'
 import styled, { css } from 'styled-components'
 import { palette } from 'styled-theme'
 
-import UnstyledAssetData from '../AssetData'
+import { AssetData as UnstyledAssetData } from '../AssetData'
 
 export const AssetSelectWrapper = styled.div<{ minWidth?: number }>`
   display: flex;

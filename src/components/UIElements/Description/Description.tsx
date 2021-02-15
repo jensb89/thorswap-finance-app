@@ -8,7 +8,7 @@ export type Props = {
   loading?: boolean
 }
 
-const Status: React.FC<Props> = (props: Props): JSX.Element => {
+export const Description: React.FC<Props> = (props: Props): JSX.Element => {
   const { title = '', value = '', loading = false, ...otherProps } = props
 
   return (
@@ -27,5 +27,3 @@ const Status: React.FC<Props> = (props: Props): JSX.Element => {
     </StatusWrapper>
   )
 }
-
-export default Status

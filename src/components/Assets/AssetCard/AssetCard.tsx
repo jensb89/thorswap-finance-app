@@ -7,7 +7,7 @@ import React, {
   useEffect,
 } from 'react'
 
-import Slider from 'components/UIElements/Slider'
+import { Slider } from 'components/UIElements/Slider'
 import { Amount, Asset, Percent } from 'multichain-sdk'
 
 import * as Styled from './AssetCard.style'
@@ -29,7 +29,7 @@ export type Props = {
   disabled?: boolean
 }
 
-const AssetCard: React.FC<Props> = (props): JSX.Element => {
+export const AssetCard: React.FC<Props> = (props): JSX.Element => {
   const {
     asset,
     assets = [],
@@ -127,5 +127,3 @@ const AssetCard: React.FC<Props> = (props): JSX.Element => {
     </Styled.AssetCardWrapper>
   )
 }
-
-export default AssetCard

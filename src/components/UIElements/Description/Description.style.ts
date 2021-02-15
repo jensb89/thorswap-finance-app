@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import Label from '../Label'
+import { Label } from '../Label'
 
 const NoWrapLabel = styled(Label)`
   white-space: nowrap;

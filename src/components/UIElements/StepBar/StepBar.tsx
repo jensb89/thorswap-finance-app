@@ -6,7 +6,7 @@ export type Props = {
   size?: number
 }
 
-const StepBar = (props: Props) => {
+export const StepBar = (props: Props) => {
   const { size = 150 } = props
 
   return (
@@ -17,5 +17,3 @@ const StepBar = (props: Props) => {
     </StepBarWrapper>
   )
 }
-
-export default StepBar

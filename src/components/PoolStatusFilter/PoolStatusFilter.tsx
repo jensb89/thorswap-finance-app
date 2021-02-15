@@ -3,7 +3,7 @@ import React, { useCallback } from 'react'
 
 import { CheckCircleOutlined, FieldTimeOutlined } from '@ant-design/icons'
 import { Popover } from 'antd'
-import Button from 'components/UIElements/Button'
+import { Button } from 'components/UIElements/Button'
 import { getAppContainer } from 'helpers/element'
 import { PoolStatus } from 'midgard-sdk'
 
@@ -18,7 +18,9 @@ export type Props = {
   onClick: (key: PoolStatus) => void
 }
 
-const PoolFilter: React.FC<Props> = (props: Props): JSX.Element => {
+export const PoolStatusFilter: React.FC<Props> = (
+  props: Props,
+): JSX.Element => {
   const { selected, onClick } = props
 
   const handleClick = useCallback(
@@ -73,5 +75,3 @@ const PoolFilter: React.FC<Props> = (props: Props): JSX.Element => {
     </PoolFilterWrapper>
   )
 }
-
-export default PoolFilter

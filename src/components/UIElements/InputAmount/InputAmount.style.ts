@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
 
-import Input from '../Input'
+import { Input } from '../Input'
 
 type Props = {
   outlined: boolean

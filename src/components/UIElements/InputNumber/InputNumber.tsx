@@ -12,9 +12,7 @@ type CustomProps = {
 
 export type Props = CustomProps & InputNumberProps
 
-const InputNumber: React.FC<Props> = (props: Props): JSX.Element => {
+export const InputNumber: React.FC<Props> = (props: Props): JSX.Element => {
   const { size = 'small', color = 'primary', ...otherProps } = props
   return <InputNumberWrapper size={size} color={color} {...otherProps} />
 }
-
-export default InputNumber

@@ -10,7 +10,7 @@ import Icon, {
   BranchesOutlined,
 } from '@ant-design/icons'
 import { TelegramIcon } from 'components/Icons'
-import Logo from 'components/Logo'
+import { Logo } from 'components/Logo'
 
 import { StyledFooter, FooterContainer, FooterItem } from './Footer.style'
 
@@ -18,7 +18,7 @@ export type Props = {
   commitHash?: string
 }
 
-const Footer: React.FC<Props> = ({ commitHash }): JSX.Element => {
+export const Footer: React.FC<Props> = ({ commitHash }): JSX.Element => {
   return (
     <FooterContainer>
       <StyledFooter>
@@ -92,5 +92,3 @@ const Footer: React.FC<Props> = ({ commitHash }): JSX.Element => {
     </FooterContainer>
   )
 }
-
-export default Footer

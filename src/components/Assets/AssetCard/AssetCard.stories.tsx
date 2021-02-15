@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Story, Meta } from '@storybook/react/types-6-0'
 import { Amount, Asset } from 'multichain-sdk'
 
-import AssetCard, { Props } from './AssetCard'
+import { AssetCard, Props } from './AssetCard'
 
 export default {
   title: 'Components/AssetCard',

@@ -1,3 +1,1 @@
-import ChartLoader from './ChartLoader'
-
-export default ChartLoader
+export { ChartLoader } from './ChartLoader'

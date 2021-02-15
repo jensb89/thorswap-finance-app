@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
 
-import Label from '../Label'
+import { Label } from '../Label'
 
 export const AddWalletWrapper = styled.div`
   display: flex;

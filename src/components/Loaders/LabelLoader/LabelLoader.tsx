@@ -4,7 +4,7 @@ import ContentLoader from 'react-content-loader'
 
 import themes from '@thorchain/asgardex-theme'
 
-const LabelLoader = () => {
+export const LabelLoader = () => {
   const theme = themes.dark
 
   return (
@@ -20,5 +20,3 @@ const LabelLoader = () => {
     </ContentLoader>
   )
 }
-
-export default LabelLoader

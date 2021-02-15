@@ -1,3 +1,1 @@
-import AddWallet from './AddWallet'
-
-export default AddWallet
+export { AddWallet } from './AddWallet'

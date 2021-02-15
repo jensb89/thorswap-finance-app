@@ -11,8 +11,7 @@ export interface IPool {
   readonly runeDepth: Amount
   readonly assetDepth: Amount
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly detail: any
+  readonly detail: PoolDetail
 
   assetPriceInRune: Amount
   runePriceInAsset: Amount
@@ -28,8 +27,7 @@ export class Pool implements IPool {
 
   public readonly assetDepth: Amount
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public readonly detail: any
+  public readonly detail: PoolDetail
 
   // get Pool by non-rune asset
   public static byAsset(asset: Asset, pools: Pool[]): Pool | undefined {
@@ -38,26 +36,15 @@ export class Pool implements IPool {
     }
   }
 
-  public static fromPoolData(
-    {
-      asset,
-      runeDepth,
-      assetDepth,
-    }: {
-      asset: string
-      runeDepth: string
-      assetDepth: string
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    detail: PoolDetail,
-  ): Pool | null {
+  public static fromPoolData(poolDetail: PoolDetail): Pool | null {
+    const { asset, runeDepth, assetDepth } = poolDetail
     const assetObj = Asset.fromAssetString(asset)
 
     if (assetObj && runeDepth && assetDepth) {
       const runeAmount = Amount.fromBaseAmount(runeDepth, MULTICHAIN_DECIMAL)
       const assetAmount = Amount.fromBaseAmount(assetDepth, MULTICHAIN_DECIMAL)
 
-      return new Pool(assetObj, runeAmount, assetAmount, detail)
+      return new Pool(assetObj, runeAmount, assetAmount, poolDetail)
     }
 
     return null

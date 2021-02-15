@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import invariant from 'tiny-invariant'
 
+import { MULTICHAIN_DECIMAL } from '../constants'
+
 export enum Rounding {
   ROUND_DOWN,
   ROUND_HALF_UP,
@@ -70,6 +72,10 @@ export class Amount implements IAmount {
 
   public readonly decimal: number
 
+  public static fromMidgard(amount: BigNumber.Value): Amount {
+    return new Amount(amount, AmountType.BASE_AMOUNT, MULTICHAIN_DECIMAL)
+  }
+
   public static fromBaseAmount(
     amount: BigNumber.Value,
     decimal: number,
@@ -82,6 +88,12 @@ export class Amount implements IAmount {
     decimal: number,
   ): Amount {
     return new Amount(amount, AmountType.ASSET_AMOUNT, decimal)
+  }
+
+  public static sorter(a: Amount, b: Amount): number {
+    invariant(a.decimal === b.decimal, 'Decimal must be same')
+
+    return a.assetAmount.minus(b.assetAmount).toNumber()
   }
 
   constructor(
@@ -206,7 +218,7 @@ export class Amount implements IAmount {
       Number.isInteger(decimalPlaces),
       `${decimalPlaces} is not an integer.`,
     )
-    invariant(decimalPlaces > 0, `${decimalPlaces} is not positive.`)
+    invariant(decimalPlaces >= 0, `${decimalPlaces} is not positive.`)
 
     BigNumber.config({ FORMAT: format })
     const fixed = new BigNumber(

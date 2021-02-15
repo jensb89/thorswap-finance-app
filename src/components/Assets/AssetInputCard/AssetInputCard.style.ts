@@ -1,5 +1,6 @@
-import { media } from 'helpers/style'
 import styled from 'styled-components'
+
+import { media } from 'helpers/style'
 
 import { AssetInput as UnstyledAssetInput } from '../AssetInput'
 import { AssetSelect as UnstyledAssetSelect } from '../AssetSelect'

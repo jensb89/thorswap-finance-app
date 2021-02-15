@@ -1,7 +1,8 @@
 import { CaretDownOutlined } from '@ant-design/icons'
-import { transition } from 'settings/style-util'
 import styled, { css } from 'styled-components'
 import { palette } from 'styled-theme'
+
+import { transition } from 'settings/style-util'
 
 import { AssetData as UnstyledAssetData } from '../AssetData'
 

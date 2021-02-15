@@ -99,6 +99,56 @@ module.exports = {
             pattern: 'react',
             position: 'before',
           },
+          {
+            group: 'internal',
+            pattern: 'multichain-sdk/**',
+            position: 'after',
+          },
+          {
+            group: 'internal',
+            pattern: 'midgard-sdk/**',
+            position: 'after',
+          },
+          {
+            group: 'internal',
+            pattern: 'views/**',
+            position: 'after',
+          },
+          {
+            group: 'internal',
+            pattern: 'components/**',
+            position: 'after',
+          },
+          {
+            group: 'internal',
+            pattern: 'redux/**',
+            position: 'after',
+          },
+          {
+            group: 'internal',
+            pattern: 'hooks/**',
+            position: 'after',
+          },
+          {
+            group: 'internal',
+            pattern: 'helpers/**',
+            position: 'after',
+          },
+          {
+            group: 'internal',
+            pattern: 'settings/**',
+            position: 'after',
+          },
+          {
+            group: 'internal',
+            pattern: 'types/**',
+            position: 'after',
+          },
+          {
+            group: 'internal',
+            pattern: 'assets/**',
+            position: 'after',
+          },
         ],
         pathGroupsExcludedImportTypes: ['builtin'],
         'newlines-between': 'always',

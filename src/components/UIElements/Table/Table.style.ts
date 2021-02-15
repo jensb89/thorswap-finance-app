@@ -1,9 +1,10 @@
 import { Table } from 'antd'
 import { TableProps } from 'antd/lib/table'
-import { media } from 'helpers/style'
 import { darken } from 'polished'
 import styled from 'styled-components'
 import { key, palette } from 'styled-theme'
+
+import { media } from 'helpers/style'
 
 export declare type SizeType = 'small' | 'middle' | 'large' | undefined
 

@@ -1,10 +1,11 @@
 import React, { useRef, useCallback } from 'react'
 
+import { Amount } from 'multichain-sdk'
+
 import {
   InputAmount,
   InputAmountProps,
 } from 'components/UIElements/InputAmount'
-import { Amount } from 'multichain-sdk'
 
 import { AssetInputWrapper } from './AssetInput.style'
 

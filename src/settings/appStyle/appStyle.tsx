@@ -1,6 +1,7 @@
-import normalFont from 'assets/font/Exo2-Regular.otf'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
+
+import normalFont from 'assets/font/Exo2-Regular.otf'
 
 import 'antd/dist/antd.dark.css'
 import 'antd/dist/antd.css'

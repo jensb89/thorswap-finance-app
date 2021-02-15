@@ -1,7 +1,8 @@
 import { Layout as AntLayout } from 'antd'
-import { media } from 'helpers/style'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
+
+import { media } from 'helpers/style'
 
 const { Content } = AntLayout
 

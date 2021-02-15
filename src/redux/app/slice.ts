@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { ThemeType } from '@thorchain/asgardex-theme'
+
 import { getTheme, saveTheme } from 'helpers/storage'
 
 import { State } from './types'

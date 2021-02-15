@@ -1,10 +1,11 @@
 import React from 'react'
 
 import { CheckOutlined } from '@ant-design/icons'
-import { AssetIcon as BaseAssetIcon } from 'components/Assets/AssetIcon'
-import { Label } from 'components/UIElements/Label'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
+
+import { AssetIcon as BaseAssetIcon } from 'components/Assets/AssetIcon'
+import { Label } from 'components/UIElements/Label'
 
 type DragWrapperProps = {
   dragging: boolean

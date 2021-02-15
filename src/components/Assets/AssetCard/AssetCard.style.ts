@@ -1,7 +1,8 @@
-import { InputAmount as UnstyledInputAmount } from 'components/UIElements/InputAmount'
-import { Label } from 'components/UIElements/Label'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
+
+import { InputAmount as UnstyledInputAmount } from 'components/UIElements/InputAmount'
+import { Label } from 'components/UIElements/Label'
 
 import { AssetSelect as BaseAssetSelect } from '../AssetSelect'
 

@@ -3,6 +3,7 @@ import React from 'react'
 import { Moon, Sun } from 'react-feather'
 
 import { ThemeType } from '@thorchain/asgardex-theme'
+
 import { useApp } from 'redux/app/hooks'
 
 import * as Styled from './ThemeSwitch.style'

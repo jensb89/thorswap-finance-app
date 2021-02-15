@@ -1,5 +1,6 @@
 export * from './Assets'
 export * from './BackLink'
+export * from './ContentView'
 export * from './Footer'
 export * from './Header'
 export * from './Helmet'

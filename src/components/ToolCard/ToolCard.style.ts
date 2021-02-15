@@ -1,7 +1,9 @@
-import { Label } from 'components/UIElements/Label'
-import { boxShadow, transition } from 'settings/style-util'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
+
+import { Label } from 'components/UIElements/Label'
+
+import { boxShadow, transition } from 'settings/style-util'
 
 export const Card = styled.div`
   display: flex;

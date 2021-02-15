@@ -4,9 +4,11 @@ import { Provider as ReduxProvider, useSelector } from 'react-redux'
 
 import themes, { ThemeType } from '@thorchain/asgardex-theme'
 import { WebFontLoader } from 'components'
-import { store as reduxStore, RootState } from 'redux/store'
-import { AppHolder, fontConfig } from 'settings/appStyle'
 import { ThemeProvider } from 'styled-components'
+
+import { store as reduxStore, RootState } from 'redux/store'
+
+import { AppHolder, fontConfig } from 'settings/appStyle'
 
 import Router from './router'
 

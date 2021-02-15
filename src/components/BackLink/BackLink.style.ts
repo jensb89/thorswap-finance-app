@@ -1,6 +1,7 @@
-import { media } from 'helpers/style'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
+
+import { media } from 'helpers/style'
 
 export const BackLinkWrapper = styled.div`
   display: flex;

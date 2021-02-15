@@ -1,5 +1,7 @@
-import { MULTICHAIN_DECIMAL } from 'multichain-sdk/constants'
+import { PoolDetail } from 'midgard-sdk'
 import invariant from 'tiny-invariant'
+
+import { MULTICHAIN_DECIMAL } from 'multichain-sdk/constants'
 
 import { Amount } from './amount'
 import { Asset } from './asset'
@@ -47,7 +49,7 @@ export class Pool implements IPool {
       assetDepth: string
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    detail: any,
+    detail: PoolDetail,
   ): Pool | null {
     const assetObj = Asset.fromAssetString(asset)
 

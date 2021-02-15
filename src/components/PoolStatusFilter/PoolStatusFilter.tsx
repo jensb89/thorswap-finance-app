@@ -3,9 +3,11 @@ import React, { useCallback } from 'react'
 
 import { CheckCircleOutlined, FieldTimeOutlined } from '@ant-design/icons'
 import { Popover } from 'antd'
-import { Button } from 'components/UIElements/Button'
-import { getAppContainer } from 'helpers/element'
 import { PoolStatus } from 'midgard-sdk'
+
+import { Button } from 'components/UIElements/Button'
+
+import { getAppContainer } from 'helpers/element'
 
 import {
   PoolFilterWrapper,
@@ -46,6 +48,7 @@ export const PoolStatusFilter: React.FC<Props> = (
         round
         onClick={() => handleClick('available')}
         focused={selected === 'available'}
+        fixedWidth={false}
       >
         <CheckCircleOutlined />
         Active
@@ -55,6 +58,7 @@ export const PoolStatusFilter: React.FC<Props> = (
         round
         onClick={() => handleClick('staged')}
         focused={selected === 'staged'}
+        fixedWidth={false}
       >
         <FieldTimeOutlined />
         Pending

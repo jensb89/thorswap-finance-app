@@ -1,6 +1,7 @@
 import { Row } from 'antd'
-import { Label } from 'components/UIElements/Label'
 import styled from 'styled-components'
+
+import { Label } from 'components/UIElements/Label'
 
 import { AssetIcon as UIAssetIcon } from '../AssetIcon'
 

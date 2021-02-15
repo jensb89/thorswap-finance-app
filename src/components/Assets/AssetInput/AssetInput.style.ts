@@ -1,6 +1,7 @@
-import { transition } from 'settings/style-util'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
+
+import { transition } from 'settings/style-util'
 
 export const AssetInputWrapper = styled.div`
   display: flex;

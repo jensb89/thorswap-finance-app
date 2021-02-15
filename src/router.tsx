@@ -3,7 +3,9 @@ import React, { Suspense, lazy } from 'react'
 import { Router, Route, Switch } from 'react-router'
 
 import { Layout, PageLoader, BackLink } from 'components'
+
 import { history } from 'helpers/history'
+
 import { HOME_ROUTE, CONNECT_ROUTE } from 'settings/constants'
 
 export type Routes = {

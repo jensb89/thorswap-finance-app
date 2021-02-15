@@ -19,7 +19,10 @@
     "build-storybook": "build-storybook -s public",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "generate:api": "yarn clean:api:midgard && yarn generate:api:midgard",
+    "generate:api:midgard": "openapi-generator-cli generate -i https://testnet.midgard.thorchain.info/v2/swagger.json -g typescript-axios -o ./src/midgard-sdk/api --reserved-words-mappings in=in",
+    "clean:api:midgard": "rm -rf ./src/midgard-sdk/api"
   },
   "dependencies": {
     "@binance-chain/javascript-sdk": "^4.1.1",
@@ -85,6 +88,7 @@
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@openapitools/openapi-generator-cli": "^2.1.23",
     "@storybook/addon-actions": "^6.1.17",
     "@storybook/addon-essentials": "^6.1.17",
     "@storybook/addon-links": "^6.1.17",

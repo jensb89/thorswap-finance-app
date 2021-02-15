@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { ThemeType } from '@thorchain/asgardex-theme'
+
 import { actions } from 'redux/app/slice'
 import { RootState } from 'redux/store'
 

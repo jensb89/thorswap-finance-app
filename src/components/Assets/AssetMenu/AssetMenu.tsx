@@ -1,7 +1,8 @@
 import React, { useMemo, useCallback } from 'react'
 
-import { FilterMenu } from 'components/UIElements/FilterMenu'
 import { Asset } from 'multichain-sdk'
+
+import { FilterMenu } from 'components/UIElements/FilterMenu'
 
 import { AssetData } from '../AssetData'
 

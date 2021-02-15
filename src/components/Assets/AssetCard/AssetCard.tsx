@@ -7,8 +7,9 @@ import React, {
   useEffect,
 } from 'react'
 
-import { Slider } from 'components/UIElements/Slider'
 import { Amount, Asset, Percent } from 'multichain-sdk'
+
+import { Slider } from 'components/UIElements/Slider'
 
 import * as Styled from './AssetCard.style'
 

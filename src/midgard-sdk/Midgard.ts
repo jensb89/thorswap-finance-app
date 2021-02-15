@@ -1,7 +1,6 @@
 import getMidgardBaseUrl from '@thorchain/asgardex-midgard'
 
 import { DefaultApi } from './api'
-import { InboundAddressesItem } from './api/api'
 import { Configuration } from './api/configuration'
 import { MIDGARD_TESTNET_URL } from './config'
 import {
@@ -24,7 +23,7 @@ import {
   MemberDetails,
   StatsData,
   Constants,
-  InboundAddresses,
+  InboundAddressesItem,
   Lastblock,
   Queue,
   PoolAddress,
@@ -61,7 +60,7 @@ export interface MidgardSDKV2 {
   getMemberDetail: (address: string) => Promise<MemberDetails>
   getStats: () => Promise<StatsData>
   getConstants: () => Promise<Constants>
-  getInboundAddresses: () => Promise<InboundAddresses>
+  getInboundAddresses: () => Promise<InboundAddressesItem[]>
   getInboundAddressByChain: (chain: string) => Promise<PoolAddress>
   getLastblock: () => Promise<Lastblock>
   getQueue: () => Promise<Queue>
@@ -95,8 +94,8 @@ class MidgardV2 implements MidgardSDKV2 {
    */
   getMidgard = async (noCache = false): Promise<DefaultApi> => {
     await this.setBaseUrl(noCache)
-    const apiConfig = new Configuration({ basePath: this.baseUrl })
 
+    const apiConfig = new Configuration({ basePath: this.baseUrl })
     return new DefaultApi(apiConfig)
   }
 
@@ -108,7 +107,7 @@ class MidgardV2 implements MidgardSDKV2 {
     return this.baseUrl
   }
 
-  async getHealth(): Promise<Health> {
+  getHealth = async (): Promise<Health> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getHealth()
@@ -119,9 +118,10 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getPools(status?: PoolStatus): Promise<PoolDetail[]> {
+  getPools = async (status?: PoolStatus): Promise<PoolDetail[]> => {
     try {
       const midgard = await this.getMidgard()
+
       const { data } = await midgard.getPools(status)
 
       return data
@@ -130,7 +130,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getPoolDetail(asset: string): Promise<PoolDetail> {
+  getPoolDetail = async (asset: string): Promise<PoolDetail> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getPool(asset)
@@ -141,13 +141,13 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getPoolStats({
+  getPoolStats = async ({
     asset,
     period,
   }: {
     asset: string
     period: StatsPeriod
-  }): Promise<PoolStatsDetail> {
+  }): Promise<PoolStatsDetail> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getPoolStats(asset, period)
@@ -158,7 +158,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getPoolStatsV1(asset: string): Promise<PoolLegacyDetail> {
+  getPoolStatsV1 = async (asset: string): Promise<PoolLegacyDetail> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getPoolStatsLegacy(asset)
@@ -169,13 +169,13 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getDepthHistory({
+  getDepthHistory = async ({
     pool,
     query = {},
   }: {
     pool: string
     query?: HistoryQuery
-  }): Promise<DepthHistory> {
+  }): Promise<DepthHistory> => {
     try {
       const { interval, count, from, to } = query
       const midgard = await this.getMidgard()
@@ -193,7 +193,9 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getEarningsHistory(query: HistoryQuery): Promise<EarningsHistory> {
+  getEarningsHistory = async (
+    query: HistoryQuery,
+  ): Promise<EarningsHistory> => {
     try {
       const { interval, count, from, to } = query
 
@@ -211,13 +213,13 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getSwapHistory({
+  getSwapHistory = async ({
     pool,
     query = {},
   }: {
     pool?: string
     query?: HistoryQuery
-  }): Promise<SwapHistory> {
+  }): Promise<SwapHistory> => {
     try {
       const { interval, count, from, to } = query
       const midgard = await this.getMidgard()
@@ -235,13 +237,13 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getLiquidityHistory({
+  getLiquidityHistory = async ({
     pool,
     query = {},
   }: {
     pool?: string
     query?: HistoryQuery
-  }): Promise<LiquidityHistory> {
+  }): Promise<LiquidityHistory> => {
     try {
       const { interval, count, from, to } = query
       const midgard = await this.getMidgard()
@@ -259,7 +261,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getNodes(): Promise<Node[]> {
+  getNodes = async (): Promise<Node[]> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getNodes()
@@ -270,7 +272,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getNetworkData(): Promise<Network> {
+  getNetworkData = async (): Promise<Network> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getNetworkData()
@@ -281,7 +283,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getActions(params: ActionListParams): Promise<ActionsList> {
+  getActions = async (params: ActionListParams): Promise<ActionsList> => {
     try {
       const { limit, offset, address, txId, asset, type } = params
 
@@ -301,7 +303,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getMembersAddresses(): Promise<string[]> {
+  getMembersAddresses = async (): Promise<string[]> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getMembersAdresses()
@@ -312,7 +314,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getMemberDetail(address: string): Promise<MemberDetails> {
+  getMemberDetail = async (address: string): Promise<MemberDetails> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getMemberDetail(address)
@@ -323,7 +325,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getStats(): Promise<StatsData> {
+  getStats = async (): Promise<StatsData> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getStats()
@@ -334,7 +336,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getConstants(): Promise<Constants> {
+  getConstants = async (): Promise<Constants> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getProxiedConstants()
@@ -345,7 +347,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getInboundAddresses(): Promise<InboundAddresses> {
+  getInboundAddresses = async (): Promise<InboundAddressesItem[]> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getProxiedInboundAddresses()
@@ -363,7 +365,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getInboundAddressByChain(chain: string): Promise<PoolAddress> {
+  getInboundAddressByChain = async (chain: string): Promise<PoolAddress> => {
     try {
       const inboundData = await this.getInboundAddresses()
       const addresses = inboundData || []
@@ -381,7 +383,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getLastblock(): Promise<Lastblock> {
+  getLastblock = async (): Promise<Lastblock> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getProxiedLastblock()
@@ -392,7 +394,7 @@ class MidgardV2 implements MidgardSDKV2 {
     }
   }
 
-  async getQueue(): Promise<Queue> {
+  getQueue = async (): Promise<Queue> => {
     try {
       const midgard = await this.getMidgard()
       const { data } = await midgard.getProxiedQueue()
@@ -405,3 +407,4 @@ class MidgardV2 implements MidgardSDKV2 {
 }
 
 export { MidgardV2 }
+export const Midgard = MidgardV2

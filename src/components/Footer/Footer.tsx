@@ -9,6 +9,7 @@ import Icon, {
   GithubOutlined,
   BranchesOutlined,
 } from '@ant-design/icons'
+
 import { TelegramIcon } from 'components/Icons'
 import { Logo } from 'components/Logo'
 

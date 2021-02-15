@@ -1,7 +1,8 @@
 import { Layout } from 'antd'
-import { media } from 'helpers/style'
 import styled from 'styled-components'
 import { size, key, palette } from 'styled-theme'
+
+import { media } from 'helpers/style'
 
 export const FooterItem = styled.div`
   display: flex;

@@ -1,5 +1,7 @@
-import { bnbIcon } from 'components/Icons'
 import { Asset } from 'multichain-sdk'
+
+import { bnbIcon } from 'components/Icons'
+
 import { assetIconMap } from 'settings/logoData'
 
 export const getAssetIconUrl = (asset: Asset): string => {

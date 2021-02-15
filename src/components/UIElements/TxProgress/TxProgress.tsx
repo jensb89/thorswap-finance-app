@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 
 import { RefundIcon, ConfirmIcon, TimerFullIcon } from 'components/Icons'
+
 import useInterval, { INACTIVE_INTERVAL } from 'hooks/useInterval'
 
 import { TxProgressWrapper } from './TxProgress.style'

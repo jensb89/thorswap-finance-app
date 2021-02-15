@@ -1,4 +1,5 @@
 import { notification } from 'antd'
+
 import { getAppContainer } from 'helpers/element'
 
 type NotificationType = {

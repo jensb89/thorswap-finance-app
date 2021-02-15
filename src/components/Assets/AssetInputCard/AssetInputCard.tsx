@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { InputAmountProps } from 'components/UIElements/InputAmount'
 import { Amount, Asset } from 'multichain-sdk'
+
+import { InputAmountProps } from 'components/UIElements/InputAmount'
 
 import {
   CardWrapper,

@@ -6,7 +6,11 @@ import { Layout, PageLoader, BackLink } from 'components'
 
 import { history } from 'helpers/history'
 
-import { HOME_ROUTE, CONNECT_ROUTE } from 'settings/constants'
+import {
+  HOME_ROUTE,
+  CONNECT_WALLET_ROUTE,
+  CREATE_WALLET_ROUTE,
+} from 'settings/constants'
 
 export type Routes = {
   exact?: boolean
@@ -23,8 +27,13 @@ const routes: Routes = [
   },
   {
     exact: true,
-    path: CONNECT_ROUTE,
+    path: CONNECT_WALLET_ROUTE,
     component: lazy(() => import('views/Connect')),
+  },
+  {
+    exact: true,
+    path: CREATE_WALLET_ROUTE,
+    component: lazy(() => import('views/CreateWallet')),
   },
 ]
 

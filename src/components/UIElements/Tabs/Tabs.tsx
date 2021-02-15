@@ -7,14 +7,15 @@ import { StyledTab } from './Tabs.style'
 
 type ComponentProps = {
   action: boolean
-  withBorder: boolean
+  withBorder?: boolean
   children: React.ReactNode
 }
 
 export type Props = ComponentProps & TabsProps
 
 export const Tabs = (props: Props) => {
-  return <StyledTab {...props} />
+  const { withBorder = true } = props
+  return <StyledTab withBorder={withBorder} {...props} />
 }
 
 export const { TabPane } = AntTabs

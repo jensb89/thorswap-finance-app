@@ -1,7 +1,8 @@
 import { Asset } from 'multichain-sdk'
 
 export const HOME_ROUTE = '/'
-export const CONNECT_ROUTE = '/connect'
+export const CONNECT_WALLET_ROUTE = '/wallet/connect'
+export const CREATE_WALLET_ROUTE = '/wallet/create'
 export const SWAP_ROUTE = '/swap'
 
 export const getSwapRoute = (asset1: Asset, asset2: Asset) => {

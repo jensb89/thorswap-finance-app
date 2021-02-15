@@ -8,12 +8,13 @@ type Props = {
 }
 
 export const StyledTab = styled(Tabs)`
-  .ant-tabs-bar {
-    width: ${(props: Props) => (props.action ? 'auto' : '100%')};
-    border-bottom-width: ${(props: Props) =>
-      props.withBorder ? '1px' : '0px'};
-    border-color: ${palette('gray', 0)};
+  width: 100%;
 
+  .ant-tabs-nav-wrap {
+    justify-content: center;
+  }
+
+  .ant-tabs {
     .ant-tabs-nav-container,
     .ant-tabs-nav-wrap,
     .ant-tabs-nav-scroll,
@@ -28,6 +29,12 @@ export const StyledTab = styled(Tabs)`
     font-size: 12px;
     text-transform: uppercase;
 
+    &::before {
+      border-bottom-width: ${(props: Props) =>
+        props.withBorder ? '1px' : '0px'} !important;
+      border-color: ${palette('gray', 0)};
+    }
+
     .ant-tabs-tab,
     .ant-tabs-tab a {
       padding-top: 18px;
@@ -41,8 +48,8 @@ export const StyledTab = styled(Tabs)`
     }
 
     .ant-tabs-tab-active,
-    .ant-tabs-tab-active a {
-      color: ${palette('text', 0)};
+    .ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: ${palette('primary', 0)};
     }
 
     .ant-tabs-ink-bar {

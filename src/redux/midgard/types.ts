@@ -1,6 +1,6 @@
-import { PoolDetail } from 'midgard-sdk'
+import { Pool } from 'multichain-sdk'
 
 export interface State {
-  pools: PoolDetail[]
+  pools: Pool[]
   poolLoading: boolean
 }

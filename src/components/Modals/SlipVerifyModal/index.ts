@@ -1,0 +1,1 @@
+export { SlipVerifyModal } from './SlipVerifyModal'

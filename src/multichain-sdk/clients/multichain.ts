@@ -53,7 +53,7 @@ export interface IMultiChain {
   getWalletByChain(chain: Chain): Promise<ChainWallet>
   loadAllWallets(): Promise<Wallet | null>
 
-  transfer(tx: TxParams): Promise<TxHash>
+  transfer(tx: TxParams, native?: boolean): Promise<TxHash>
   swap(swap: Swap): Promise<TxHash>
   addLiquidity(params: AddLiquidityParams): Promise<TxHash>
   withdraw(params: WithdrawParams): Promise<TxHash>
@@ -115,6 +115,7 @@ export class MultiChain implements IMultiChain {
     return this.phrase
   }
 
+  // used to validate keystore and password with phrase
   validateKeystore = async (keystore: Keystore, password: string) => {
     const phrase = await decryptFromKeystore(keystore, password)
 
@@ -238,11 +239,15 @@ export class MultiChain implements IMultiChain {
    * transfer on binance chain
    * @param {TxParams} tx transfer parameter
    */
-  transfer = async (tx: TxParams): Promise<TxHash> => {
+  transfer = async (tx: TxParams, native = true): Promise<TxHash> => {
     const { chain } = tx.assetAmount.asset
 
     // for swap, add, withdraw tx in thorchain, send deposit tx
-    if (chain === THORChain && tx.recipient === THORCHAIN_POOL_ADDRESS) {
+    if (
+      chain === THORChain &&
+      tx.recipient === THORCHAIN_POOL_ADDRESS &&
+      native
+    ) {
       return this.thor.deposit(tx)
     }
 

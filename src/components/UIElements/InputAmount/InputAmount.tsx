@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 
 import { Amount } from 'multichain-sdk'
 
@@ -23,6 +23,10 @@ export const InputAmount = (props: InputAmountProps) => {
   } = props
 
   const [rawValue, setRawValue] = useState(value.toFixed(decimal))
+
+  useEffect(() => {
+    setRawValue(value.toFixed(decimal))
+  }, [value, decimal])
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

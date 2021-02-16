@@ -3,14 +3,14 @@ import React, { useCallback, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
-import { ThemeSwitch, WalletButton, WalletDrawer } from 'components'
-
-import { Logo } from 'components/Logo'
-
 import { useWallet } from 'redux/wallet/hooks'
 
 import { CONNECT_WALLET_ROUTE, HOME_ROUTE } from 'settings/constants'
 
+import { Logo } from '../Logo'
+import { ThemeSwitch } from '../ThemeSwitch'
+import { WalletButton } from '../UIElements'
+import { WalletDrawer } from '../WalletDrawer'
 import * as Styled from './Header.style'
 
 export const Header = () => {

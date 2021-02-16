@@ -9,11 +9,12 @@ import * as Styled from './ChainHeader.style'
 export type ChainHeaderProps = {
   chain: Chain
   address: string
+  totalPrice?: string
   onReload?: () => void
 }
 
 export const ChainHeader = (props: ChainHeaderProps) => {
-  const { chain, address, onReload = () => {} } = props
+  const { chain, address, totalPrice = '0', onReload = () => {} } = props
 
   const miniAddress = `${address.slice(0, 3)}...${address.slice(-3)}`
 
@@ -25,7 +26,9 @@ export const ChainHeader = (props: ChainHeaderProps) => {
     <Styled.Container>
       <Styled.ChainInfo>
         <Styled.InfoLabel weight="bold">{chain} Chain</Styled.InfoLabel>
-        <Styled.InfoLabel weight="bold">Total: 0</Styled.InfoLabel>
+        <Styled.InfoLabel weight="bold">
+          Total: {totalPrice} USD
+        </Styled.InfoLabel>
       </Styled.ChainInfo>
       <Styled.Address onClick={handleCopyAddress}>
         <Styled.AddressLabel weight="bold">{miniAddress}</Styled.AddressLabel>

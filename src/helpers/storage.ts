@@ -13,11 +13,11 @@ export const getTheme = (): ThemeType => {
 }
 
 export const saveKeystore = (keystore: Keystore) => {
-  sessionStorage.setItem(ASGARDEX_KEYSTORE, JSON.stringify(keystore))
+  localStorage.setItem(ASGARDEX_KEYSTORE, JSON.stringify(keystore))
 }
 
 export const getKeystore = (): Keystore | null => {
-  const item = sessionStorage.getItem(ASGARDEX_KEYSTORE)
+  const item = localStorage.getItem(ASGARDEX_KEYSTORE)
 
   if (item) {
     return JSON.parse(item) as Keystore

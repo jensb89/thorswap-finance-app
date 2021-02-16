@@ -19,18 +19,6 @@ const Home = () => {
     'available',
   )
 
-  const poolObjs: Pool[] = useMemo(
-    () =>
-      pools.reduce((res: Pool[], poolDetail) => {
-        const poolObj = Pool.fromPoolData(poolDetail)
-        if (poolObj) {
-          res.push(poolObj)
-        }
-        return res
-      }, []),
-    [pools],
-  )
-
   useEffect(() => {
     dispatch(actions.getPools(selectedPoolStatus))
   }, [dispatch, actions, selectedPoolStatus])
@@ -110,7 +98,7 @@ const Home = () => {
   const renderPoolview = () => (
     <Table
       columns={poolColumns}
-      dataSource={poolObjs}
+      dataSource={pools}
       loading={poolLoading}
       rowKey="key"
     />

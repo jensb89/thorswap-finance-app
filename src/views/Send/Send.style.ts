@@ -22,6 +22,14 @@ export const CardContainer = styled.div`
   margin: 24px 0;
 `
 
+export const PoolSelect = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 24px 0;
+`
+
 export const FormItem = styled.div`
   display: flex;
   flex-direction: column;
@@ -40,4 +48,18 @@ export const DragContainer = styled.div`
   align-items: center;
 
   margin-top: 14px;
+`
+
+export const ConfirmModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+`
+
+export const MemoTypes = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 130px;
 `

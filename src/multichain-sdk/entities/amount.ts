@@ -236,3 +236,14 @@ export class Amount implements IAmount {
     return this.toFixedDecimal(decimalPlaces, format, rounding)
   }
 }
+
+export const formatBigNumber = (
+  bn: BigNumber,
+  decimalPlaces = 8,
+  rounding: Rounding = Rounding.ROUND_DOWN,
+): string => {
+  BigNumber.config({ FORMAT: NUMBER_FORMAT })
+  const fixed = new BigNumber(bn.toFixed(decimalPlaces, roundingMode[rounding]))
+
+  return fixed.toFormat()
+}

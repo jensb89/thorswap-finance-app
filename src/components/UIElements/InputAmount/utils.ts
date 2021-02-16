@@ -7,7 +7,17 @@ export const getAmountFromString = (
 ): Amount | null => {
   const trim = value.replace(/[, ]+/g, '').trim()
 
-  if (trim !== '' && trim[trim.length - 1] === '.') return null
+  if (
+    trim !== '' &&
+    trim[trim.length - 1] === '.' &&
+    trim.split('.').length <= 2
+  ) {
+    return null
+  }
+
+  if (trim !== '' && trim[trim.length - 1] === '0' && trim.includes('.')) {
+    return null
+  }
 
   const bn = new BigNumber(trim)
 

@@ -1,6 +1,7 @@
 import { TxHash, Balance, Network } from '@xchainjs/xchain-client'
-import { Client as ThorClient } from '@xchainjs/xchain-thorchain'
 import { baseAmount, Chain, THORChain } from '@xchainjs/xchain-util'
+
+import { Client as ThorClient } from 'helpers/xchain-thorchain'
 
 import { AmountType, Amount, Asset, AssetAmount } from '../entities'
 import { IClient } from './client'

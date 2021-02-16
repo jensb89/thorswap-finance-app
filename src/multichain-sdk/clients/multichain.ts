@@ -1,4 +1,5 @@
 import { TxHash, Network } from '@xchainjs/xchain-client'
+import { decryptFromKeystore, Keystore } from '@xchainjs/xchain-crypto'
 import {
   Chain,
   BTCChain,
@@ -33,21 +34,24 @@ const THORCHAIN_POOL_ADDRESS = ''
 export interface IMultiChain {
   chains: typeof supportedChains
   midgard: MidgardV2
-  phrase: string
   network: string
 
-  allWallet: Wallet
+  wallets: Wallet | null
 
   thor: ThorChain
   btc: BtcChain
   bnb: BnbChain
   eth: EthChain
 
+  getPhrase(): string
+  setPhrase(phrase: string): void
+  validateKeystore(keystore: Keystore, password: string): Promise<boolean>
+
   getMidgard(): MidgardV2
   getChainClient(chain: Chain): void
   getPoolAddressByChain(chain: Chain): Promise<PoolAddress>
   getWalletByChain(chain: Chain): Promise<ChainWallet>
-  loadAllBalances(): Promise<Wallet>
+  loadAllWallets(): Promise<Wallet | null>
 
   transfer(tx: TxParams): Promise<TxHash>
   swap(swap: Swap): Promise<TxHash>
@@ -56,30 +60,30 @@ export interface IMultiChain {
 }
 
 export class MultiChain implements IMultiChain {
+  private phrase: string
+
+  private wallet: Wallet | null = null
+
   public readonly chains = supportedChains
 
   public readonly midgard: MidgardV2
 
-  public readonly phrase: string
-
   public readonly network: Network
 
-  private wallet: Wallet
+  public thor: ThorChain
 
-  public readonly thor: ThorChain
+  public btc: BtcChain
 
-  public readonly btc: BtcChain
+  public bnb: BnbChain
 
-  public readonly bnb: BnbChain
-
-  public readonly eth: EthChain
+  public eth: EthChain
 
   constructor({
     network = 'testnet',
-    phrase,
+    phrase = '',
   }: {
     network?: Network
-    phrase: string
+    phrase?: string
   }) {
     this.network = network
     this.phrase = phrase
@@ -92,7 +96,32 @@ export class MultiChain implements IMultiChain {
     this.bnb = new BnbChain({ network, phrase })
     this.btc = new BtcChain({ network, phrase })
     this.eth = new EthChain({ network, phrase })
+  }
 
+  setPhrase = (phrase: string) => {
+    this.phrase = phrase
+
+    this.thor.getClient().setPhrase(phrase)
+    this.bnb.getClient().setPhrase(phrase)
+    this.btc.getClient().setPhrase(phrase)
+    this.eth.getClient().setPhrase(phrase)
+
+    this.initWallet()
+
+    console.log('wallet:', this.wallet)
+  }
+
+  getPhrase = () => {
+    return this.phrase
+  }
+
+  validateKeystore = async (keystore: Keystore, password: string) => {
+    const phrase = await decryptFromKeystore(keystore, password)
+
+    return phrase === this.phrase
+  }
+
+  initWallet = () => {
     this.wallet = {
       THOR: {
         address: this.thor.getClient().getAddress(),
@@ -123,7 +152,7 @@ export class MultiChain implements IMultiChain {
     return 'chaosnet'
   }
 
-  get allWallet(): Wallet {
+  get wallets(): Wallet | null {
     return this.wallet
   }
 
@@ -156,7 +185,7 @@ export class MultiChain implements IMultiChain {
     return null
   }
 
-  async getWalletByChain(chain: Chain): Promise<ChainWallet> {
+  getWalletByChain = async (chain: Chain): Promise<ChainWallet> => {
     const chainClient = this.getChainClient(chain)
 
     if (!chainClient) throw new Error('invalid chain')
@@ -165,7 +194,7 @@ export class MultiChain implements IMultiChain {
       const balance = (await chainClient?.loadBalance()) ?? []
       const address = chainClient.getClient().getAddress()
 
-      if (chain in this.wallet) {
+      if (this.wallet && chain in this.wallet) {
         this.wallet = {
           ...this.wallet,
           [chain]: {
@@ -184,14 +213,17 @@ export class MultiChain implements IMultiChain {
     }
   }
 
-  async loadAllBalances(): Promise<Wallet> {
+  loadAllWallets = async (): Promise<Wallet | null> => {
     try {
       await Promise.all(
         this.chains.map((chain: SupportedChain) => {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve) => {
             this.getWalletByChain(chain)
               .then((data) => resolve(data))
-              .catch((err) => reject(err))
+              .catch((err) => {
+                console.log(err)
+                resolve([])
+              })
           })
         }),
       )

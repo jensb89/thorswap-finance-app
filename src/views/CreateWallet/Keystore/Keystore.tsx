@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react'
 
-import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
 import { QuestionCircleOutlined } from '@ant-design/icons'
@@ -8,19 +7,22 @@ import {
   validatePhrase,
   generatePhrase,
   encryptToKeyStore,
+  Keystore,
 } from '@xchainjs/xchain-crypto'
 import { Form, Tooltip } from 'antd'
 import { Button, Input, Label } from 'components'
 
 import { downloadAsFile } from 'helpers/download'
 
-import { CONNECT_WALLET_ROUTE, HOME_ROUTE } from 'settings/constants'
+import { CONNECT_WALLET_ROUTE } from 'settings/constants'
 
 import * as Styled from './Keystore.style'
 
-const KeystoreView = () => {
-  const history = useHistory()
+type Props = {
+  onConnect: (keystore: Keystore, phrase: string) => void
+}
 
+const KeystoreView = ({ onConnect }: Props) => {
   const [password, setPassword] = useState<string>('')
   const [confirmPassword, setConfirmPassword] = useState<string>('')
   const [invalideStatus, setInvalideStatus] = useState(false)
@@ -70,15 +72,15 @@ const KeystoreView = () => {
         // clean up
         setPassword('')
         setConfirmPassword('')
-        // redirect to homepage
-        history.push(HOME_ROUTE)
+
+        onConnect(keystore, phrase)
       } catch (error) {
         setInvalideStatus(true)
         console.error(error)
       }
       setProcessing(false)
     }
-  }, [history, ready, password])
+  }, [ready, password, onConnect])
 
   return (
     <Styled.Container>

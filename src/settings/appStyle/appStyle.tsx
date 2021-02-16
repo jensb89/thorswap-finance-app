@@ -51,6 +51,8 @@ export const AppHolder = styled.div`
   a,
   button,
   input,
+  span,
+  .ant-tabs-tab-btn,
   .ant-slider > div,
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td,

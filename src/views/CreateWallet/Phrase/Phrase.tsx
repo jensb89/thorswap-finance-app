@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
 
-import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
 import { QuestionCircleOutlined, SyncOutlined } from '@ant-design/icons'
@@ -8,19 +7,22 @@ import {
   validatePhrase,
   generatePhrase,
   encryptToKeyStore,
+  Keystore,
 } from '@xchainjs/xchain-crypto'
 import { Form, Tooltip } from 'antd'
 import { Button, Input, Label } from 'components'
 
 import { downloadAsFile } from 'helpers/download'
 
-import { CONNECT_WALLET_ROUTE, HOME_ROUTE } from 'settings/constants'
+import { CONNECT_WALLET_ROUTE } from 'settings/constants'
 
 import * as Styled from './Phrase.style'
 
-const PhraseView = () => {
-  const history = useHistory()
+type Props = {
+  onConnect: (keystore: Keystore, phrase: string) => void
+}
 
+const PhraseView = ({ onConnect }: Props) => {
   const [phrase, setPhrase] = useState<string>()
   const [password, setPassword] = useState<string>('')
   const [confirmPassword, setConfirmPassword] = useState<string>('')
@@ -77,15 +79,15 @@ const PhraseView = () => {
         // clean up
         setPassword('')
         setConfirmPassword('')
-        // redirect to homepage
-        history.push(HOME_ROUTE)
+
+        onConnect(keystore, phrase)
       } catch (error) {
         setInvalideStatus(true)
         console.error(error)
       }
       setProcessing(false)
     }
-  }, [history, ready, phrase, password])
+  }, [ready, phrase, password, onConnect])
 
   const renderPhrase = () => {
     return (

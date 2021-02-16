@@ -1,22 +1,27 @@
 import React, { useState, useCallback } from 'react'
 
-import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import { encryptToKeyStore, validatePhrase } from '@xchainjs/xchain-crypto'
+import {
+  encryptToKeyStore,
+  validatePhrase,
+  Keystore,
+} from '@xchainjs/xchain-crypto'
 import { Form, Tooltip } from 'antd'
 import { Button, Input, Label } from 'components'
 
 import { downloadAsFile } from 'helpers/download'
 
-import { CREATE_WALLET_ROUTE, HOME_ROUTE } from 'settings/constants'
+import { CREATE_WALLET_ROUTE } from 'settings/constants'
 
 import * as Styled from './Phrase.style'
 
-const PhraseView = () => {
-  const history = useHistory()
+type Props = {
+  onConnect: (keystore: Keystore, phrase: string) => void
+}
 
+const PhraseView = ({ onConnect }: Props) => {
   const [phrase, setPhrase] = useState('')
   const [invalidPhrase, setInvalidPhrase] = useState(false)
 
@@ -55,18 +60,18 @@ const PhraseView = () => {
 
         await downloadAsFile('asgardex-keystore.txt', JSON.stringify(keystore))
 
+        onConnect(keystore, phrase)
+
         // clean up
         setPassword('')
         setPhrase('')
-        // redirect to homepage
-        history.push(HOME_ROUTE)
       } catch (error) {
         setInvalideStatus(true)
         console.error(error)
       }
       setProcessing(false)
     }
-  }, [history, phrase, password])
+  }, [phrase, password, onConnect])
 
   const handleUnlock = useCallback(async () => {
     if (phrase && password) {
@@ -80,21 +85,21 @@ const PhraseView = () => {
           return
         }
 
-        const keystore = encryptToKeyStore(phrase, password)
+        const keystore = await encryptToKeyStore(phrase, password)
         console.log('keystore', keystore)
+
+        onConnect(keystore, phrase)
 
         // clean up
         setPassword('')
         setPhrase('')
-        // redirect to homepage
-        history.push(HOME_ROUTE)
       } catch (error) {
         setInvalideStatus(true)
         console.error(error)
       }
       setProcessing(false)
     }
-  }, [history, phrase, password])
+  }, [phrase, password, onConnect])
 
   const ready = password.length > 0 && !invalidPhrase && !processing
 

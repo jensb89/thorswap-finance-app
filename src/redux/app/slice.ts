@@ -16,7 +16,7 @@ const slice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    setThemeType(state: State, action: PayloadAction<ThemeType>) {
+    setThemeType(state, action: PayloadAction<ThemeType>) {
       const themeType = action.payload
 
       state.themeType = themeType

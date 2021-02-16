@@ -34,9 +34,6 @@ export const Footer: React.FC<Props> = ({ commitHash }): JSX.Element => {
         </FooterItem>
         <FooterItem>
           <div className="footer-links-bar">
-            <Link to="/tools">TOOLS</Link>
-            <Link to="/explorer">EXPLORERS</Link>
-            <Link to="/education">EDUCATION</Link>
             <Link to="/stats">STATS</Link>
             <Link to="/faqs">FAQS</Link>
           </div>

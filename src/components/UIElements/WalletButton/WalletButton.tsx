@@ -5,16 +5,16 @@ import { PlusOutlined } from '@ant-design/icons'
 import { Button, ButtonProps } from '../Button'
 
 type ComponentProps = {
-  address?: string
+  connected?: boolean
 }
 
 export type Props = ComponentProps & ButtonProps
 
 export const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
-  const { address = '', ...otherProps } = props
+  const { connected = '', ...otherProps } = props
 
   const getBtnValue = () => {
-    if (!address) {
+    if (!connected) {
       return (
         <span style={{ display: 'flex', alignItems: 'center' }}>
           <PlusOutlined
@@ -29,13 +29,8 @@ export const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
       )
     }
 
-    if (address) {
-      if (address && address.length > 9) {
-        const first = address.substr(0, 6)
-        const last = address.substr(address.length - 3, 3)
-        return `${first}...${last}`
-      }
-      return address
+    if (connected) {
+      return 'View Wallet'
     }
   }
 

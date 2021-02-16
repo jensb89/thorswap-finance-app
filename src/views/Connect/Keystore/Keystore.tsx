@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react'
 
 import { FilePicker } from 'react-file-picker'
-import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
 import {
@@ -13,13 +12,15 @@ import { decryptFromKeystore, Keystore } from '@xchainjs/xchain-crypto'
 import { Form, Tooltip } from 'antd'
 import { Button, Input, Label } from 'components'
 
-import { CREATE_WALLET_ROUTE, HOME_ROUTE } from 'settings/constants'
+import { CREATE_WALLET_ROUTE } from 'settings/constants'
 
 import * as Styled from './Keystore.style'
 
-const KeystoreView = () => {
-  const history = useHistory()
+type Props = {
+  onConnect: (keystore: Keystore, phrase: string) => void
+}
 
+const KeystoreView = ({ onConnect }: Props) => {
   const [keystore, setKeystore] = useState<Keystore>()
   const [password, setPassword] = useState<string>('')
   const [invalideStatus, setInvalideStatus] = useState(false)
@@ -65,23 +66,20 @@ const KeystoreView = () => {
       setProcessing(true)
 
       try {
-        const phrase = decryptFromKeystore(keystore, password)
-
-        console.log('keystore', keystore)
-        console.log('phrase', phrase)
+        const phrase = await decryptFromKeystore(keystore, password)
 
         // clean up
         setPassword('')
         setKeystore(undefined)
-        // redirect to homepage
-        history.push(HOME_ROUTE)
+
+        onConnect(keystore, phrase)
       } catch (error) {
         setInvalideStatus(true)
         console.error(error)
       }
       setProcessing(false)
     }
-  }, [history, keystore, password])
+  }, [keystore, password, onConnect])
 
   const ready = password.length > 0 && !keystoreError && !processing
 

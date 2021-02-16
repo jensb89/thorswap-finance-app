@@ -1,10 +1,17 @@
 import React, { useState, useCallback } from 'react'
 
+import { useHistory } from 'react-router'
+
+import { Keystore as KeystoreType } from '@xchainjs/xchain-crypto'
 import { ContentView, Helmet, Tabs, TabPane } from 'components'
 
+import { useWallet } from 'redux/wallet/hooks'
+
+import { HOME_ROUTE } from 'settings/constants'
+
 import * as Styled from './CreateWallet.style'
-import Keystore from './Keystore'
-import Phrase from './Phrase'
+import KeystoreView from './Keystore'
+import PhraseView from './Phrase'
 
 enum TabType {
   KEYSTORE = 'KEYSTORE',
@@ -12,11 +19,24 @@ enum TabType {
 }
 
 const CreateWallet = () => {
+  const history = useHistory()
+
+  const { unlockWallet } = useWallet()
+
   const [activeTab, setActiveTab] = useState<TabType>(TabType.KEYSTORE)
 
   const handleChangeTab = useCallback((tab) => {
     setActiveTab(tab)
   }, [])
+
+  const handleConnect = useCallback(
+    (keystore: KeystoreType, phrase: string) => {
+      unlockWallet(keystore, phrase)
+
+      history.push(HOME_ROUTE)
+    },
+    [unlockWallet, history],
+  )
 
   return (
     <ContentView>
@@ -28,8 +48,12 @@ const CreateWallet = () => {
         </Tabs>
       </Styled.TabHeader>
       <Styled.TabContent>
-        {activeTab === TabType.KEYSTORE && <Keystore />}
-        {activeTab === TabType.PHRASE && <Phrase />}
+        {activeTab === TabType.KEYSTORE && (
+          <KeystoreView onConnect={handleConnect} />
+        )}
+        {activeTab === TabType.PHRASE && (
+          <PhraseView onConnect={handleConnect} />
+        )}
       </Styled.TabContent>
     </ContentView>
   )

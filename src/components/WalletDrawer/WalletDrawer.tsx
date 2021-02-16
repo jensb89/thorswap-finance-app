@@ -1,11 +1,14 @@
 import React, { useCallback } from 'react'
 
 import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router'
 
 import { SyncOutlined } from '@ant-design/icons'
-import { SupportedChain } from 'multichain-sdk'
+import { SupportedChain, Asset } from 'multichain-sdk'
 
 import { useWallet } from 'redux/wallet/hooks'
+
+import { getSendRoute } from 'settings/constants'
 
 import { BalanceView } from '../BalanceView'
 import { Label } from '../UIElements/Label'
@@ -20,6 +23,7 @@ export type WalletDrawerProps = {
 export const WalletDrawer = (props: WalletDrawerProps) => {
   const { visible, onClose = () => {} } = props
 
+  const history = useHistory()
   const dispatch = useDispatch()
 
   const {
@@ -40,6 +44,13 @@ export const WalletDrawer = (props: WalletDrawerProps) => {
     [dispatch, getWalletByChain],
   )
 
+  const handleSendAsset = useCallback(
+    (asset: Asset) => {
+      history.push(getSendRoute(asset))
+    },
+    [history],
+  )
+
   return (
     <Drawer
       visible={visible}
@@ -56,7 +67,11 @@ export const WalletDrawer = (props: WalletDrawerProps) => {
       </Styled.Refresh>
       {!wallet && <Label>Please connect wallet.</Label>}
       {wallet && (
-        <BalanceView wallet={wallet} onReloadChain={handleReloadChain} />
+        <BalanceView
+          wallet={wallet}
+          onReloadChain={handleReloadChain}
+          onSendAsset={handleSendAsset}
+        />
       )}
     </Drawer>
   )

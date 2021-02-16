@@ -5,6 +5,7 @@ import {
   SupportedChain,
   ChainWallet,
   AssetAmount,
+  Asset,
 } from 'multichain-sdk'
 
 import { AssetData } from 'components/Assets'
@@ -15,16 +16,22 @@ import * as Styled from './BalanceView.style'
 export type BalanceViewProps = {
   wallet: Wallet
   onReloadChain?: (chain: SupportedChain) => void
+  onSendAsset?: (asset: Asset) => void
 }
 
 export const BalanceView = (props: BalanceViewProps) => {
-  const { wallet, onReloadChain = () => {} } = props
+  const { wallet, onReloadChain = () => {}, onSendAsset = () => {} } = props
 
   const renderBalance = (balance: AssetAmount[]) => {
     return balance.map((data: AssetAmount, index) => (
       <Styled.BalanceRow key={index}>
         <AssetData asset={data.asset} amount={data.amount} />
-        <Styled.SendBtn fixedWidth={false}>Send</Styled.SendBtn>
+        <Styled.SendBtn
+          onClick={() => onSendAsset(data.asset)}
+          fixedWidth={false}
+        >
+          Send
+        </Styled.SendBtn>
       </Styled.BalanceRow>
     ))
   }

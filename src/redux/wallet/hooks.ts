@@ -3,7 +3,6 @@ import { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { Keystore } from '@xchainjs/xchain-crypto'
-import { delay } from '@xchainjs/xchain-util'
 
 import { RootState } from 'redux/store'
 import * as walletActions from 'redux/wallet/actions'
@@ -20,8 +19,6 @@ export const useWallet = () => {
     async (keystore: Keystore, phrase: string) => {
       // set multichain phrase
       multichain.setPhrase(phrase)
-
-      await delay(5000)
 
       dispatch(actions.connectWallet(keystore))
       dispatch(walletActions.loadAllWallets())

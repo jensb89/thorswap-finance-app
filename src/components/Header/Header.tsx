@@ -19,6 +19,8 @@ export const Header = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false)
 
+  console.log('wallet', wallet)
+
   const isConnected = !!wallet
 
   const handleClickWalletBtn = useCallback(() => {

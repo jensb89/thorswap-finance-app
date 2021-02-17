@@ -4,8 +4,8 @@ import {
   BNBChain,
   THORChain,
   ETHChain,
-  BCHChain,
   LTCChain,
+  // BCHChain,
 } from '@xchainjs/xchain-util'
 
 import { AssetAmount, Pool, Percent } from '../entities'
@@ -43,8 +43,8 @@ export const supportedChains = [
   BNBChain,
   THORChain,
   ETHChain,
-  BCHChain,
   LTCChain,
+  // BCHChain,
 ] as const
 export type SupportedChain = typeof supportedChains[number]
 

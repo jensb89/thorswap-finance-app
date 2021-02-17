@@ -32,13 +32,13 @@ Default.args = {
       address: 'ethaddress123',
       balance: [],
     },
-    BCH: {
-      address: 'bchaddress123',
-      balance: [],
-    },
     LTC: {
       address: 'ltcaddress123',
       balance: [],
     },
+    // BCH: {
+    //   address: 'bchaddress123',
+    //   balance: [],
+    // },
   },
 }

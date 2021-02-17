@@ -8,3 +8,9 @@ export const HomeContainer = styled(ContentView)`
 export const PoolTableView = styled.div`
   padding: 10px 0;
 `
+
+export const ActionContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`

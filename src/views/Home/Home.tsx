@@ -1,13 +1,18 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 
 import { useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
 
+import { SyncOutlined, SwapOutlined } from '@ant-design/icons'
 import { ColumnType } from 'antd/lib/table'
-import { AssetIcon, Helmet, PoolStatusFilter, Table } from 'components'
+import { AssetIcon, Helmet, PoolStatusFilter, Table, Button } from 'components'
 import { PoolStatus } from 'midgard-sdk'
-import { Amount, Percent, Pool } from 'multichain-sdk'
+import { Amount, Asset, Percent, Pool } from 'multichain-sdk'
+import { AlignType } from 'rc-table/lib/interface'
 
 import { useMidgard } from 'redux/midgard/hooks'
+
+import { getSwapRoute } from 'settings/constants'
 
 import * as Styled from './Home.style'
 
@@ -19,13 +24,55 @@ const Home = () => {
     'available',
   )
 
-  useEffect(() => {
+  const handleLoadPoolData = useCallback(() => {
     dispatch(actions.getPools(selectedPoolStatus))
   }, [dispatch, actions, selectedPoolStatus])
+
+  useEffect(() => {
+    handleLoadPoolData()
+  }, [handleLoadPoolData])
 
   const handleSelectPoolStatus = useCallback((status: PoolStatus) => {
     setSelectedPoolStatus(status)
   }, [])
+
+  const centerAlign = 'center' as AlignType
+  const rightAlign = 'right' as AlignType
+
+  const poolActions = useMemo(
+    () => ({
+      key: 'action',
+      align: centerAlign,
+      title: (
+        <Styled.ActionContainer>
+          <Button
+            onClick={handleLoadPoolData}
+            typevalue="outline"
+            round
+            fixedWidth={false}
+          >
+            <SyncOutlined />
+            refresh
+          </Button>
+        </Styled.ActionContainer>
+      ),
+      render: (_: string, pool: Pool) => {
+        const swapRouter = getSwapRoute(Asset.RUNE(), pool.asset)
+
+        return (
+          <Styled.ActionContainer>
+            <Link to={swapRouter}>
+              <Button round>
+                <SwapOutlined />
+                SWAP
+              </Button>
+            </Link>
+          </Styled.ActionContainer>
+        )
+      },
+    }),
+    [handleLoadPoolData],
+  )
 
   const poolColumns: ColumnType<Pool>[] = useMemo(
     () => [
@@ -33,11 +80,12 @@ const Home = () => {
         key: 'Pool',
         title: 'Pool',
         render: (pool: Pool) => <AssetIcon asset={pool.asset} />,
-        alignItem: 'center',
+        align: centerAlign,
       },
       {
         key: 'Symbol',
         title: 'Symbol',
+        align: centerAlign,
         render: (pool: Pool) => pool.asset.ticker,
         sortDirections: ['descend', 'ascend'],
         sorter: (a: Pool, b: Pool) => a.asset.sortsBefore(b.asset),
@@ -46,7 +94,8 @@ const Home = () => {
         key: 'Price',
         title: 'USD Price',
         render: (pool: Pool) =>
-          Amount.fromAssetAmount(pool.detail.assetPriceUSD, 8).toFixed(3),
+          `$${Amount.fromAssetAmount(pool.detail.assetPriceUSD, 8).toFixed(3)}`,
+        align: rightAlign,
         sortDirections: ['descend', 'ascend'],
         sorter: (a: Pool, b: Pool) =>
           Amount.sorter(
@@ -59,6 +108,7 @@ const Home = () => {
         title: 'Depth',
         render: (pool: Pool) =>
           Amount.fromMidgard(pool.detail.runeDepth).mul(2).toFixed(0),
+        align: rightAlign,
         sortDirections: ['descend', 'ascend'],
         defaultSortOrder: 'descend',
         sorter: (a: Pool, b: Pool) =>
@@ -72,6 +122,7 @@ const Home = () => {
         title: 'Volume 24h',
         render: (pool: Pool) =>
           Amount.fromMidgard(pool.detail.volume24h).toFixed(0),
+        align: rightAlign,
         sortDirections: ['descend', 'ascend'],
         sorter: (a: Pool, b: Pool) =>
           Amount.sorter(
@@ -84,6 +135,7 @@ const Home = () => {
         title: 'APY',
         render: (pool: Pool) =>
           `${new Percent(pool.detail.poolAPY).toFixed(0)}%`,
+        align: rightAlign,
         sortDirections: ['descend', 'ascend'],
         sorter: (a: Pool, b: Pool) =>
           Amount.sorter(
@@ -91,8 +143,9 @@ const Home = () => {
             Percent.fromMidgard(b.detail.poolAPY),
           ),
       },
+      poolActions,
     ],
-    [],
+    [poolActions],
   )
 
   const renderPoolview = () => (

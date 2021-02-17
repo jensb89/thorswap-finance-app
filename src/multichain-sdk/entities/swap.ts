@@ -40,7 +40,7 @@ export interface ISwap {
   readonly hasInSufficientFee: boolean
   readonly estimatedNetworkFee: AssetAmount
 
-  slipLimit: Amount
+  minOutputAmount: Amount
 
   setSlipLimitPercent(limit: number): void
   getSlipLimitPercent(): number
@@ -191,8 +191,8 @@ export class Swap implements ISwap {
     return this.slipLimitPercent
   }
 
-  public get slipLimit(): Amount {
-    return this.outputAmount.mul(this.slipLimitPercent).div(100).amount
+  public get minOutputAmount(): Amount {
+    return this.outputAmount.mul(100 - this.slipLimitPercent).div(100).amount
   }
 
   public static getSingleSwapOutput(
@@ -323,13 +323,17 @@ export class Swap implements ISwap {
       this.swapPools,
     ).amount
 
-    return outputAmount.div(inputAmountInOutputAsset)
+    return new Percent(outputAmount.div(inputAmountInOutputAsset).assetAmount)
   }
 
   // 1 - output / input
   getFeePercent(inputAmount: AssetAmount): Percent {
     const outputPercent = this.getOutputPercent(inputAmount)
-    return Amount.fromAssetAmount(1, outputPercent.decimal).sub(outputPercent)
+    return new Percent(
+      Amount.fromAssetAmount(1, outputPercent.decimal).sub(
+        outputPercent,
+      ).assetAmount,
+    )
   }
 
   public static getSingleSwapInput(
@@ -387,7 +391,7 @@ export class Swap implements ISwap {
     const x = inputAmount.amount
     const X = pool.depthOf(inputAmount.asset)
 
-    return x.div(x.add(X))
+    return new Percent(x.div(x.add(X)).assetAmount)
   }
 
   getSlip(inputAmount: AssetAmount): Percent {
@@ -410,7 +414,7 @@ export class Swap implements ISwap {
       this.swapPools[1],
     )
 
-    return firstSlip.add(secondSlip)
+    return new Percent(firstSlip.add(secondSlip).assetAmount)
   }
 
   // fee amount is based in output asset

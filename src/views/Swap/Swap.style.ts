@@ -1,5 +1,6 @@
 import { Label, ContentView } from 'components'
 import styled from 'styled-components/macro'
+import { palette } from 'styled-theme'
 
 export const Container = styled(ContentView)`
   display: flex;
@@ -56,10 +57,13 @@ export const ConfirmModalContent = styled.div`
   padding: 10px;
 `
 
-export const MemoTypes = styled.div`
+export const SwapInfo = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
 
-  width: 130px;
+  width: 100%;
+  padding: 8px;
+  margin-top: 14px;
+
+  border: 1px solid ${palette('gray', 0)};
 `

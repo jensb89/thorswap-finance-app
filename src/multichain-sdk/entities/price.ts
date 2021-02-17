@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import invariant from 'tiny-invariant'
 
-import { AmountType, Amount, IAmount } from './amount'
+import { AmountType, Amount, IAmount, Rounding, NUMBER_FORMAT } from './amount'
 import { Asset } from './asset'
 import { Pool } from './pool'
 
@@ -50,16 +50,16 @@ export class Price extends Amount {
     if (baseAsset.isRUNE() && !quoteAsset.isRUNE()) {
       const pool = Pool.byAsset(quoteAsset, pools)
 
-      invariant(pool, 'Pool does not exist')
+      invariant(pool, `${quoteAsset.toString()} Pool does not exist`)
 
       if (pool) {
         unitPrice = pool.runePriceInAsset.assetAmount
         price = unitPrice.multipliedBy(amount.assetAmount)
       }
     } else if (!baseAsset.isRUNE() && quoteAsset.isRUNE()) {
-      const pool = Pool.byAsset(quoteAsset, pools)
+      const pool = Pool.byAsset(baseAsset, pools)
 
-      invariant(pool, 'Pool does not exist')
+      invariant(pool, `${baseAsset.toString()} Pool does not exist`)
 
       if (pool) {
         unitPrice = pool.assetPriceInRune.assetAmount
@@ -93,5 +93,29 @@ export class Price extends Amount {
 
   invert(): BigNumber {
     return new BigNumber(1).dividedBy(this.raw())
+  }
+
+  toFixedRaw(
+    decimalPlaces = 8,
+    format: BigNumber.Format = NUMBER_FORMAT,
+    rounding: Rounding = Rounding.ROUND_DOWN,
+  ): string {
+    return Amount.fromAssetAmount(this.price, 8).toFixed(
+      decimalPlaces,
+      format,
+      rounding,
+    )
+  }
+
+  toFixedInverted(
+    decimalPlaces = 8,
+    format: BigNumber.Format = NUMBER_FORMAT,
+    rounding: Rounding = Rounding.ROUND_DOWN,
+  ): string {
+    return Amount.fromAssetAmount(this.invert(), 8).toFixed(
+      decimalPlaces,
+      format,
+      rounding,
+    )
   }
 }

@@ -64,11 +64,11 @@ export class Pool implements IPool {
   }
 
   get assetPriceInRune(): Amount {
-    return this.assetDepth.div(this.runeDepth)
+    return this.runeDepth.div(this.assetDepth)
   }
 
   get runePriceInAsset(): Amount {
-    return this.runeDepth.div(this.assetDepth)
+    return this.assetDepth.div(this.runeDepth)
   }
 
   involvesAsset(asset: Asset): boolean {

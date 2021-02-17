@@ -6,7 +6,7 @@ export const HomeContainer = styled(ContentView)`
   background: ${palette('background', 3)};
 `
 export const PoolTableView = styled.div`
-  padding: 10px 0;
+  margin-top: 18px;
 `
 
 export const ActionContainer = styled.div`

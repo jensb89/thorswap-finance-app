@@ -66,11 +66,15 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = (
     if (!keystore) return
     setValidating(true)
 
-    const isValid = await multichain.validateKeystore(keystore, password)
+    try {
+      const isValid = await multichain.validateKeystore(keystore, password)
 
-    if (isValid) {
-      handleConfirm()
-    } else {
+      if (isValid) {
+        handleConfirm()
+      } else {
+        setInvalidPassword(true)
+      }
+    } catch (error) {
       setInvalidPassword(true)
     }
 

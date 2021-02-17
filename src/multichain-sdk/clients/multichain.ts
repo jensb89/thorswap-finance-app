@@ -58,9 +58,10 @@ export interface IMultiChain {
   getPoolAddressByChain(chain: Chain): Promise<PoolAddress>
   getWalletByChain(chain: Chain): Promise<ChainWallet>
   loadAllWallets(): Promise<Wallet | null>
+  getWalletAddressByChain(chain: Chain): string | null
 
   transfer(tx: TxParams, native?: boolean): Promise<TxHash>
-  swap(swap: Swap): Promise<TxHash>
+  swap(swap: Swap, recipient?: string): Promise<TxHash>
   addLiquidity(params: AddLiquidityParams): Promise<TxHash>
   withdraw(params: WithdrawParams): Promise<TxHash>
 }
@@ -258,6 +259,14 @@ export class MultiChain implements IMultiChain {
     }
   }
 
+  getWalletAddressByChain = (chain: Chain): string | null => {
+    if (this.wallet && chain in this.wallet) {
+      return this.wallet?.[chain as SupportedChain]?.address ?? null
+    }
+
+    return null
+  }
+
   /**
    * transfer on binance chain
    * @param {TxParams} tx transfer parameter
@@ -290,7 +299,7 @@ export class MultiChain implements IMultiChain {
    * swap assets
    * @param {Swap} swap Swap Object
    */
-  swap = async (swap: Swap): Promise<TxHash> => {
+  swap = async (swap: Swap, recipient?: string): Promise<TxHash> => {
     /**
      * 1. check if swap has sufficient fee
      * 2. get pool address
@@ -299,14 +308,30 @@ export class MultiChain implements IMultiChain {
      */
 
     try {
+      if (!this.wallet) {
+        return await Promise.reject(new Error('Wallet not detected'))
+      }
+
+      const walletAddress = this.getWalletAddressByChain(swap.outputAsset.chain)
+
+      if (!walletAddress) {
+        return await Promise.reject(new Error('Wallet Address not detected'))
+      }
+
       if (swap.hasInSufficientFee) {
         return await Promise.reject(new Error('Insufficient Fee'))
       }
 
+      const recipientAddress = recipient || walletAddress
+
       const poolAddress = await this.getPoolAddressByChain(
         swap.inputAsset.chain,
       )
-      const memo = Memo.swapMemo(swap.outputAsset, poolAddress, swap.slipLimit)
+      const memo = Memo.swapMemo(
+        swap.outputAsset,
+        recipientAddress,
+        swap.minOutputAmount, // slip limit
+      )
 
       return await this.transfer({
         assetAmount: swap.inputAmount,

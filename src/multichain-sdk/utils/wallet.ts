@@ -1,7 +1,7 @@
 import { Chain } from '@xchainjs/xchain-util'
 import { BigNumber } from 'bignumber.js'
 
-import { Wallet, SupportedChain } from '../clients'
+import { Wallet, SupportedChain } from '../clients/types'
 import { Asset, AssetAmount, Pool, Amount } from '../entities'
 
 export const getWalletAssets = (wallet: Wallet | null) => {

@@ -3,6 +3,8 @@ import React from 'react'
 import { Footer } from 'components/Footer'
 import { Header } from 'components/Header'
 
+import { useGlobalState } from 'redux/hooks'
+
 import * as Styled from './Layout.style'
 
 export type Props = {
@@ -11,6 +13,8 @@ export type Props = {
 
 export const Layout = (props: Props) => {
   const { children } = props
+
+  useGlobalState()
 
   return (
     <Styled.LayoutWrapper>

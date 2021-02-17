@@ -11,7 +11,7 @@ import {
 export class Percent extends Amount {
   constructor(
     amount: BigNumber.Value,
-    type: AmountType = AmountType.BASE_AMOUNT,
+    type: AmountType = AmountType.ASSET_AMOUNT,
   ) {
     // Decimal point for percent is 2
     super(amount, type, 2)
@@ -22,7 +22,9 @@ export class Percent extends Amount {
     format: BigNumber.Format = EMPTY_FORMAT,
     rounding: Rounding = Rounding.ROUND_DOWN,
   ): string {
-    return this.mul(100).toSignificant(significantDigits, format, rounding)
+    return `${super
+      .mul(100)
+      .toSignificant(significantDigits, format, rounding)} %`
   }
 
   toFixed(
@@ -30,6 +32,6 @@ export class Percent extends Amount {
     format: BigNumber.Format = NUMBER_FORMAT,
     rounding: Rounding = Rounding.ROUND_DOWN,
   ): string {
-    return this.mul(100).toFixed(decimalPlaces, format, rounding)
+    return `${super.mul(100).toFixed(decimalPlaces, format, rounding)} %`
   }
 }

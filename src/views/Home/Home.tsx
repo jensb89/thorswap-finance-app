@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -27,10 +27,6 @@ const Home = () => {
   const handleLoadPoolData = useCallback(() => {
     dispatch(actions.getPools(selectedPoolStatus))
   }, [dispatch, actions, selectedPoolStatus])
-
-  useEffect(() => {
-    handleLoadPoolData()
-  }, [handleLoadPoolData])
 
   const handleSelectPoolStatus = useCallback((status: PoolStatus) => {
     setSelectedPoolStatus(status)

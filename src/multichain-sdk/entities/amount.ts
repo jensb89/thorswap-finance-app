@@ -41,6 +41,7 @@ export interface IAmount {
 
   add(amount: Amount): Amount
   sub(amount: Amount): Amount
+  times(value: Amount): Amount
   mul(value: BigNumber.Value | Amount): Amount
   div(value: BigNumber.Value | Amount): Amount
   gte(amount: Amount): boolean
@@ -129,6 +130,14 @@ export class Amount implements IAmount {
     invariant(this.decimal === amount.decimal, 'Decimals must be same')
     return new Amount(
       this.baseAmount.minus(amount.baseAmount),
+      AmountType.BASE_AMOUNT,
+      this.decimal,
+    )
+  }
+
+  times(value: Amount): Amount {
+    return new Amount(
+      this.baseAmount.multipliedBy(value.baseAmount),
       AmountType.BASE_AMOUNT,
       this.decimal,
     )

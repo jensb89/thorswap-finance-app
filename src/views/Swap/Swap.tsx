@@ -17,10 +17,11 @@ import {
   getWalletAssets,
   Amount,
   Asset,
-  getAssetBalance,
   AssetAmount,
-  Memo,
+  getAssetBalance,
   getWalletAddressByChain,
+  Swap,
+  Percent,
 } from 'multichain-sdk'
 
 import { useMidgard } from 'redux/midgard/hooks'
@@ -41,16 +42,16 @@ const SwapView = () => {
 
   if (swapPair) {
     const { inputAsset, outputAsset } = swapPair
-    return <Swap inputAsset={inputAsset} outputAsset={outputAsset} />
+    return <SwapPage inputAsset={inputAsset} outputAsset={outputAsset} />
   }
 
   return null
 }
 
-const Swap = ({ inputAsset, outputAsset }: Pair) => {
+const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
   const history = useHistory()
   const { wallet } = useWallet()
-  const { pools } = useMidgard()
+  const { pools, poolLoading } = useMidgard()
 
   const poolAssets = useMemo(() => {
     const assets = pools.map((pool) => pool.asset)
@@ -67,6 +68,42 @@ const Swap = ({ inputAsset, outputAsset }: Pair) => {
   const [recipient, setRecipient] = useState('')
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false)
 
+  const swap: Swap | null = useMemo(() => {
+    if (poolLoading) return null
+
+    try {
+      const inputAssetAmount = new AssetAmount(inputAsset, inputAmount)
+      return new Swap(inputAsset, outputAsset, pools, inputAssetAmount)
+    } catch (error) {
+      console.log(error)
+    }
+
+    return null
+  }, [inputAsset, outputAsset, pools, inputAmount, poolLoading])
+  const outputAmount: Amount = useMemo(() => {
+    if (swap) {
+      return swap.outputAmount.amount
+    }
+
+    return Amount.fromAssetAmount(0, 8)
+  }, [swap])
+  const slipPercent: Percent = useMemo(() => {
+    if (swap) {
+      return swap.slip
+    }
+
+    return new Percent(0)
+  }, [swap])
+  const rate: string = useMemo(() => {
+    if (swap) {
+      return `1 ${swap.inputAsset.ticker} = ${swap.price.toFixedInverted(3)} ${
+        swap.outputAsset.ticker
+      }`
+    }
+
+    return ''
+  }, [swap])
+
   useEffect(() => {
     if (wallet) {
       const address = getWalletAddressByChain(wallet, outputAsset.chain)
@@ -78,7 +115,9 @@ const Swap = ({ inputAsset, outputAsset }: Pair) => {
     if (wallet) {
       return getAssetBalance(inputAsset, wallet).amount
     }
-    return Amount.fromAssetAmount(0, 8)
+
+    // allow max amount if wallet is not connected
+    return Amount.fromAssetAmount(10 ** 3, 8)
   }, [inputAsset, wallet])
 
   const handleChangeRecipient = useCallback(
@@ -128,28 +167,28 @@ const Swap = ({ inputAsset, outputAsset }: Pair) => {
   const handleConfirm = useCallback(async () => {
     setVisibleConfirmModal(false)
 
-    if (wallet) {
-      const assetAmount = new AssetAmount(inputAsset, inputAmount)
-      const memo = Memo.swapMemo(outputAsset, recipient)
-
-      console.log('recipient', recipient)
-      console.log('memo', memo)
-      const txHash = await multichain.transfer({
-        assetAmount,
-        recipient,
-        memo,
-      })
+    if (wallet && swap) {
+      const txHash = await multichain.swap(swap, recipient)
 
       console.log('txhash', txHash)
     }
-  }, [wallet, inputAsset, outputAsset, inputAmount, recipient])
+  }, [wallet, swap, recipient])
 
   const handleCancel = useCallback(() => {
     setVisibleConfirmModal(false)
   }, [])
 
   const handleDrag = useCallback(() => {
-    if (wallet) {
+    if (wallet && swap) {
+      if (swap.hasInSufficientFee) {
+        Notification({
+          type: 'error',
+          message: 'Swap Insufficient Fee',
+          description: 'Input amount is not enough to cover the fee',
+        })
+        return
+      }
+
       setVisibleConfirmModal(true)
     } else {
       Notification({
@@ -158,29 +197,36 @@ const Swap = ({ inputAsset, outputAsset }: Pair) => {
         description: 'Please connect wallet',
       })
     }
-  }, [wallet])
+  }, [wallet, swap])
 
   const renderConfirmModalContent = useMemo(() => {
-    const memo = Memo.swapMemo(outputAsset, recipient)
-
     return (
       <Styled.ConfirmModalContent>
         <Information
           title="Send"
-          description={inputAsset.ticker.toUpperCase()}
+          description={`${inputAmount.toFixed()} ${inputAsset.ticker.toUpperCase()}`}
         />
         <Information
           title="Receive"
-          description={outputAsset.ticker.toUpperCase()}
+          description={`${outputAmount.toFixed()} ${outputAsset.ticker.toUpperCase()}`}
         />
-        <Information title="Recipient" description={recipient} />
-        <Information title="Memo" description={memo} />
+        <Information title="Slip" description={slipPercent.toFixed(2)} />
+        {!!recipient && (
+          <Information title="Recipient" description={recipient} />
+        )}
       </Styled.ConfirmModalContent>
     )
-  }, [inputAsset, outputAsset, recipient])
+  }, [
+    inputAmount,
+    outputAmount,
+    inputAsset,
+    outputAsset,
+    recipient,
+    slipPercent,
+  ])
 
   const title = useMemo(
-    () => `Swap ${inputAsset.toString()} >> ${outputAsset.toString()}`,
+    () => `Swap ${inputAsset.ticker} >> ${outputAsset.ticker}`,
     [inputAsset, outputAsset],
   )
 
@@ -205,11 +251,12 @@ const Swap = ({ inputAsset, outputAsset }: Pair) => {
           title="receive"
           asset={outputAsset}
           assets={poolAssets}
+          amount={outputAmount}
           onSelect={handleSelectOutputAsset}
           inputProps={{ disabled: true }}
         />
         <Styled.FormItem>
-          <Styled.FormLabel>Recipient</Styled.FormLabel>
+          <Styled.FormLabel>Recipient (Optional)</Styled.FormLabel>
           <Input
             typevalue="ghost"
             sizevalue="big"
@@ -218,6 +265,11 @@ const Swap = ({ inputAsset, outputAsset }: Pair) => {
             placeholder="Recipient"
           />
         </Styled.FormItem>
+
+        <Styled.SwapInfo>
+          <Information title="Rate" description={rate} />
+          <Information title="Slip" description={slipPercent.toFixed(2)} />
+        </Styled.SwapInfo>
 
         <Styled.DragContainer>
           <Drag
@@ -228,6 +280,7 @@ const Swap = ({ inputAsset, outputAsset }: Pair) => {
           />
         </Styled.DragContainer>
       </Styled.ContentPanel>
+
       <ConfirmModal
         visible={visibleConfirmModal}
         onOk={handleConfirm}

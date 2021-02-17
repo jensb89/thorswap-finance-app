@@ -1,12 +1,15 @@
 import { Asset } from 'multichain-sdk'
 
-import { bnbIcon } from 'components/Icons'
+import { bnbIcon, nativeRuneIcon } from 'components/Icons'
 
 import { assetIconMap } from 'settings/logoData'
 
 export const getAssetIconUrl = (asset: Asset): string => {
   if (asset.isBNB()) {
     return bnbIcon
+  }
+  if (asset.isRUNE()) {
+    return nativeRuneIcon
   }
 
   const logoSymbol = assetIconMap[asset.ticker]

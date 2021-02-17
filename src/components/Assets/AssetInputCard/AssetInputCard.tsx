@@ -15,11 +15,11 @@ export type Props = {
   // AssetInput Props
   title: string
   info?: string
-  amount: Amount
+  amount?: Amount
   label?: string
   inputProps?: InputAmountProps
   decimal?: number
-  onChange: (value: Amount) => void
+  onChange?: (value: Amount) => void
   // AssetSelect Props
   asset: Asset
   assets: Asset[]
@@ -34,12 +34,12 @@ export const AssetInputCard: React.FC<Props> = (props: Props): JSX.Element => {
   const {
     // AssetInput Props
     title,
-    amount,
+    amount = Amount.fromAssetAmount(0, 8),
     info = '',
     label = '',
-    inputProps = {},
+    inputProps = { disabled: false },
     decimal = 8,
-    onChange,
+    onChange = () => {},
     // AssetSelect Props
     asset,
     assets = [],

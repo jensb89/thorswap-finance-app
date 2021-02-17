@@ -7,7 +7,7 @@ import { useWallet } from 'redux/wallet/hooks'
 
 import useTimeout from 'hooks/useTimeout'
 
-import { multichain } from 'helpers/multichain'
+import { multichain } from 'services/multichain'
 
 import { Input } from '../../UIElements'
 import { StyledModal, ModalIcon, ModalData } from './ConfirmModal.style'

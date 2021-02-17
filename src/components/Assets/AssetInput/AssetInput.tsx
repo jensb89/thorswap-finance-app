@@ -16,6 +16,7 @@ export type Props = {
   label?: string
   inputProps?: InputAmountProps
   decimal?: number
+  disabled?: boolean
   onChange: (value: Amount) => void
 }
 

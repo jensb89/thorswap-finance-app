@@ -11,7 +11,7 @@ export const ContentTitleWrapper = styled.div`
   background: ${palette('gradient', 0)};
   color: ${palette('text', 3)};
   font-size: ${key('sizes.font.big', '15px')};
-  font-weight: 500;
+  font-weight: bold;
   letter-spacing: 2px;
   text-transform: uppercase;
 

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { Chain } from '@xchainjs/xchain-util'
 
-import { multichain } from 'helpers/multichain'
+import { multichain } from 'services/multichain'
 
 export const loadAllWallets = createAsyncThunk(
   'midgard/loadAllWallets',

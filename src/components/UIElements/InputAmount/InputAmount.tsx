@@ -11,6 +11,7 @@ export type InputAmountProps = Omit<InputProps, 'value' | 'onChange'> & {
   onChange?: (value: Amount) => void
   decimal?: number
   outlined?: boolean
+  disabled?: boolean
 }
 
 export const InputAmount = (props: InputAmountProps) => {
@@ -19,6 +20,7 @@ export const InputAmount = (props: InputAmountProps) => {
     onChange = () => {},
     decimal = 8,
     outlined = true,
+    disabled = false,
     ...others
   } = props
 
@@ -47,6 +49,7 @@ export const InputAmount = (props: InputAmountProps) => {
       value={rawValue}
       onChange={handleChange}
       outlined={outlined}
+      disabled={disabled}
       {...others}
     />
   )

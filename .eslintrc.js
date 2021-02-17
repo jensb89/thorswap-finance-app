@@ -131,6 +131,11 @@ module.exports = {
           },
           {
             group: 'internal',
+            pattern: 'services/**',
+            position: 'after',
+          },
+          {
+            group: 'internal',
             pattern: 'helpers/**',
             position: 'after',
           },

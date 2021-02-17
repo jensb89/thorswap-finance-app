@@ -148,13 +148,16 @@ const Home = () => {
     [poolActions],
   )
 
-  const renderPoolview = () => (
-    <Table
-      columns={poolColumns}
-      dataSource={pools}
-      loading={poolLoading}
-      rowKey="key"
-    />
+  const renderPoolview = useMemo(
+    () => (
+      <Table
+        columns={poolColumns}
+        dataSource={pools}
+        loading={poolLoading}
+        rowKey="key"
+      />
+    ),
+    [poolColumns, pools, poolLoading],
   )
 
   return (
@@ -164,7 +167,7 @@ const Home = () => {
         selected={selectedPoolStatus}
         onClick={handleSelectPoolStatus}
       />
-      <Styled.PoolTableView>{renderPoolview()}</Styled.PoolTableView>
+      <Styled.PoolTableView>{renderPoolview}</Styled.PoolTableView>
     </Styled.HomeContainer>
   )
 }

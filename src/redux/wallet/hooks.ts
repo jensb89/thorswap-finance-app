@@ -8,7 +8,7 @@ import { RootState } from 'redux/store'
 import * as walletActions from 'redux/wallet/actions'
 import { actions } from 'redux/wallet/slice'
 
-import { multichain } from 'helpers/multichain'
+import { multichain } from 'services/multichain'
 
 export const useWallet = () => {
   const dispatch = useDispatch()

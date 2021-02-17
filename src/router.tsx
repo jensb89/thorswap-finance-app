@@ -11,6 +11,7 @@ import {
   CONNECT_WALLET_ROUTE,
   CREATE_WALLET_ROUTE,
   SEND_ROUTE,
+  SWAP_ROUTE,
 } from 'settings/constants'
 
 export type Routes = {
@@ -40,6 +41,11 @@ const routes: Routes = [
     exact: true,
     path: `${SEND_ROUTE}/:asset`,
     component: lazy(() => import('views/Send')),
+  },
+  {
+    exact: true,
+    path: `${SWAP_ROUTE}/:pair`,
+    component: lazy(() => import('views/Swap')),
   },
 ]
 

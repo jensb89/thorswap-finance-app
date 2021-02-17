@@ -24,12 +24,13 @@ import {
   AssetAmount,
   Memo,
   getWalletAddressByChain,
+  Wallet,
 } from 'multichain-sdk'
 
 import { useMidgard } from 'redux/midgard/hooks'
 import { useWallet } from 'redux/wallet/hooks'
 
-import { multichain } from 'helpers/multichain'
+import { multichain } from 'services/multichain'
 
 import { getSendRoute } from 'settings/constants'
 
@@ -41,12 +42,32 @@ enum SendMode {
 }
 
 const SendView = () => {
-  const history = useHistory()
   const { asset } = useParams<{ asset: string }>()
   const { wallet, keystore } = useWallet()
-  const { pools } = useMidgard()
 
   const sendAsset = Asset.fromAssetString(asset)
+
+  if (!sendAsset) {
+    return null
+  }
+
+  if (!wallet || !keystore) {
+    Notification({
+      type: 'error',
+      message: 'Wallet Not Found',
+      description: 'Please connect wallet',
+    })
+    return null
+  }
+
+  return <Send sendAsset={sendAsset} wallet={wallet} />
+}
+
+const Send = ({ sendAsset, wallet }: { sendAsset: Asset; wallet: Wallet }) => {
+  const history = useHistory()
+  const { pools } = useMidgard()
+
+  const asset = useMemo(() => sendAsset.toString(), [sendAsset])
 
   const poolAssets = useMemo(() => {
     const assets = pools.map((pool) => pool.asset)
@@ -54,12 +75,6 @@ const SendView = () => {
 
     return assets
   }, [pools])
-
-  const isSendValid = useMemo(() => wallet && keystore && sendAsset, [
-    wallet,
-    keystore,
-    sendAsset,
-  ])
 
   const [sendMode, setSendMode] = useState(SendMode.NORMAL)
   const isExpertMode = useMemo(() => sendMode === SendMode.EXPERT, [sendMode])
@@ -79,13 +94,11 @@ const SendView = () => {
   const [memo, setMemo] = useState('')
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false)
 
-  const [outputAsset, setOutputAsset] = useState<Asset | undefined>(
-    sendAsset || undefined,
-  )
+  const [outputAsset, setOutputAsset] = useState<Asset>(sendAsset)
 
   const walletAssets = useMemo(() => getWalletAssets(wallet), [wallet])
   const assetBalance: Amount = useMemo(() => {
-    if (sendAsset && wallet) {
+    if (wallet) {
       return getAssetBalance(sendAsset, wallet).amount
     }
     return Amount.fromAssetAmount(0, 8)
@@ -93,14 +106,11 @@ const SendView = () => {
 
   useEffect(() => {
     const fetchPoolAddress = async () => {
-      if (sendAsset) {
-        const poolAddr = await multichain.getPoolAddressByChain(sendAsset.chain)
-
-        setPoolAddress(poolAddr)
-      }
+      const poolAddr = await multichain.getPoolAddressByChain(sendAsset.chain)
+      setPoolAddress(poolAddr)
     }
 
-    if (isExpertMode && sendAsset) {
+    if (isExpertMode) {
       fetchPoolAddress()
     }
   }, [isExpertMode, sendAsset])
@@ -191,33 +201,21 @@ const SendView = () => {
   }, [])
 
   const handleDragSend = useCallback(() => {
-    if (isSendValid) {
-      setVisibleConfirmModal(true)
-    } else {
-      Notification({
-        type: 'error',
-        message: 'Wallet Not Found',
-        description: 'Please connect wallet',
-      })
-    }
-  }, [isSendValid])
+    setVisibleConfirmModal(true)
+  }, [])
 
   const handleSelectDepositMemo = useCallback(() => {
-    if (sendAsset) {
-      setMemo(Memo.depositMemo(sendAsset))
-    }
+    setMemo(Memo.depositMemo(sendAsset))
   }, [sendAsset])
 
   const handleSelectSwapMemo = useCallback(() => {
-    if (outputAsset && wallet) {
+    if (outputAsset) {
       const address = getWalletAddressByChain(wallet, outputAsset.chain) || ''
       setMemo(Memo.swapMemo(outputAsset, address))
     }
   }, [outputAsset, wallet])
 
   const renderConfirmModalContent = useMemo(() => {
-    if (!sendAsset) return <></>
-
     return (
       <Styled.ConfirmModalContent>
         <Information

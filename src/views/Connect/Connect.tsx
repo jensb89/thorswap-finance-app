@@ -29,8 +29,8 @@ const ConnectView = () => {
   }, [])
 
   const handleConnect = useCallback(
-    (keystore: KeystoreType, phrase: string) => {
-      unlockWallet(keystore, phrase)
+    async (keystore: KeystoreType, phrase: string) => {
+      await unlockWallet(keystore, phrase)
 
       history.push(HOME_ROUTE)
     },

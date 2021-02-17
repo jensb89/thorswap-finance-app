@@ -44,14 +44,14 @@ const Home = () => {
       },
       {
         key: 'Price',
-        title: 'Price',
+        title: 'USD Price',
         render: (pool: Pool) =>
-          Amount.fromMidgard(pool.detail.assetPrice).toFixed(8),
+          Amount.fromAssetAmount(pool.detail.assetPriceUSD, 8).toFixed(3),
         sortDirections: ['descend', 'ascend'],
         sorter: (a: Pool, b: Pool) =>
           Amount.sorter(
-            Amount.fromMidgard(a.detail.assetPrice),
-            Amount.fromMidgard(b.detail.assetPrice),
+            Amount.fromAssetAmount(a.detail.assetPriceUSD, 8),
+            Amount.fromAssetAmount(b.detail.assetPriceUSD, 8),
           ),
       },
       {

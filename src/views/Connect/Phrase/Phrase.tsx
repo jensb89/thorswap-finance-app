@@ -88,16 +88,17 @@ const PhraseView = ({ onConnect }: Props) => {
         const keystore = await encryptToKeyStore(phrase, password)
         console.log('keystore', keystore)
 
-        onConnect(keystore, phrase)
-
         // clean up
         setPassword('')
         setPhrase('')
+        setProcessing(false)
+
+        onConnect(keystore, phrase)
       } catch (error) {
+        setProcessing(false)
         setInvalideStatus(true)
         console.error(error)
       }
-      setProcessing(false)
     }
   }, [phrase, password, onConnect])
 

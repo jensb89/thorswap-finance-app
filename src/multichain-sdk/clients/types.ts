@@ -1,5 +1,12 @@
 import { FeeOptionKey } from '@xchainjs/xchain-client'
-import { BTCChain, BNBChain, THORChain, ETHChain } from '@xchainjs/xchain-util'
+import {
+  BTCChain,
+  BNBChain,
+  THORChain,
+  ETHChain,
+  BCHChain,
+  LTCChain,
+} from '@xchainjs/xchain-util'
 
 import { AssetAmount, Pool, Percent } from '../entities'
 
@@ -30,11 +37,14 @@ export type WithdrawParams = {
   percent: Percent
 }
 
+// note only supported chains
 export const supportedChains = [
   BTCChain,
   BNBChain,
   THORChain,
   ETHChain,
+  BCHChain,
+  LTCChain,
 ] as const
 export type SupportedChain = typeof supportedChains[number]
 

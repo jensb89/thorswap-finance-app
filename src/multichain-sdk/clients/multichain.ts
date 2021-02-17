@@ -6,6 +6,8 @@ import {
   BNBChain,
   THORChain,
   ETHChain,
+  BCHChain,
+  LTCChain,
 } from '@xchainjs/xchain-util'
 import {
   MidgardV2,
@@ -16,7 +18,9 @@ import {
 import { Swap, Memo, Asset, AssetAmount } from '../entities'
 import { BnbChain } from './binance'
 import { BtcChain } from './bitcoin'
+import { BchChain } from './bitcoinCash'
 import { EthChain } from './ethereum'
+import { LtcChain } from './litecoin'
 import { ThorChain } from './thorchain'
 import {
   TxParams,
@@ -42,6 +46,8 @@ export interface IMultiChain {
   btc: BtcChain
   bnb: BnbChain
   eth: EthChain
+  bch: BchChain
+  ltc: LtcChain
 
   getPhrase(): string
   setPhrase(phrase: string): void
@@ -78,6 +84,10 @@ export class MultiChain implements IMultiChain {
 
   public eth: EthChain
 
+  public bch: BchChain
+
+  public ltc: LtcChain
+
   constructor({
     network = 'testnet',
     phrase = '',
@@ -96,6 +106,8 @@ export class MultiChain implements IMultiChain {
     this.bnb = new BnbChain({ network, phrase })
     this.btc = new BtcChain({ network, phrase })
     this.eth = new EthChain({ network, phrase })
+    this.bch = new BchChain({ network, phrase })
+    this.ltc = new LtcChain({ network, phrase })
   }
 
   setPhrase = (phrase: string) => {
@@ -105,10 +117,10 @@ export class MultiChain implements IMultiChain {
     this.bnb.getClient().setPhrase(phrase)
     this.btc.getClient().setPhrase(phrase)
     this.eth.getClient().setPhrase(phrase)
+    this.bch.getClient().setPhrase(phrase)
+    this.ltc.getClient().setPhrase(phrase)
 
     this.initWallet()
-
-    console.log('wallet:', this.wallet)
   }
 
   getPhrase = () => {
@@ -138,6 +150,14 @@ export class MultiChain implements IMultiChain {
       },
       ETH: {
         address: this.eth.getClient().getAddress(),
+        balance: [],
+      },
+      BCH: {
+        address: this.bch.getClient().getAddress(),
+        balance: [],
+      },
+      LTC: {
+        address: this.ltc.getClient().getAddress(),
         balance: [],
       },
     }
@@ -182,6 +202,8 @@ export class MultiChain implements IMultiChain {
     if (chain === BNBChain) return this.bnb
     if (chain === BTCChain) return this.btc
     if (chain === ETHChain) return this.eth
+    if (chain === BCHChain) return this.bch
+    if (chain === LTCChain) return this.ltc
 
     return null
   }
@@ -229,6 +251,7 @@ export class MultiChain implements IMultiChain {
         }),
       )
 
+      console.log('wallet', this.wallet)
       return this.wallet
     } catch (error) {
       return Promise.reject(error)

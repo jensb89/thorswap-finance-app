@@ -8,18 +8,21 @@ import { useGlobalState } from 'redux/hooks'
 import * as Styled from './Layout.style'
 
 export type Props = {
+  transparent?: boolean
   children: React.ReactNode
 }
 
 export const Layout = (props: Props) => {
-  const { children } = props
+  const { children, transparent = false } = props
 
   useGlobalState()
 
   return (
     <Styled.LayoutWrapper>
       <Header />
-      <Styled.ContentWrapper>{children}</Styled.ContentWrapper>
+      <Styled.ContentWrapper transparent={transparent}>
+        {children}
+      </Styled.ContentWrapper>
       <Footer />
     </Styled.LayoutWrapper>
   )

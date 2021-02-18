@@ -7,6 +7,10 @@ import { State } from './types'
 const initialState: State = {
   pools: [],
   poolLoading: false,
+  stats: null,
+  networkData: null,
+  constants: null,
+  queue: null,
 }
 
 const slice = createSlice({
@@ -33,6 +37,18 @@ const slice = createSlice({
       })
       .addCase(midgardActions.getPools.rejected, (state) => {
         state.poolLoading = false
+      })
+      .addCase(midgardActions.getStats.fulfilled, (state, action) => {
+        state.stats = action.payload
+      })
+      .addCase(midgardActions.getNetworkData.fulfilled, (state, action) => {
+        state.networkData = action.payload
+      })
+      .addCase(midgardActions.getConstants.fulfilled, (state, action) => {
+        state.constants = action.payload
+      })
+      .addCase(midgardActions.getQueue.fulfilled, (state, action) => {
+        state.queue = action.payload
       })
   },
 })

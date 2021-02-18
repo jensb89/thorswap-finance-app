@@ -25,3 +25,12 @@ export const HeaderAction = styled.div`
   display: flex;
   align-items: center;
 `
+
+export const HeaderCenterWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+
+  border: 1px solid ${palette('gray', 0)};
+  border-radius: 4px;
+`

@@ -13,6 +13,14 @@ import Icon, {
 import { TelegramIcon } from 'components/Icons'
 import { Logo } from 'components/Logo'
 
+import {
+  TOOLS_ROUTE,
+  EXPLORERS_ROUTE,
+  EDUCATION_ROUTE,
+  STATS_ROUTE,
+  FAQS_ROUTE,
+} from 'settings/constants'
+
 import { StyledFooter, FooterContainer, FooterItem } from './Footer.style'
 
 export type Props = {
@@ -34,8 +42,11 @@ export const Footer: React.FC<Props> = ({ commitHash }): JSX.Element => {
         </FooterItem>
         <FooterItem>
           <div className="footer-links-bar">
-            <Link to="/stats">STATS</Link>
-            <Link to="/faqs">FAQS</Link>
+            <Link to={TOOLS_ROUTE}>TOOLS</Link>
+            <Link to={EXPLORERS_ROUTE}>EXPLORERS</Link>
+            <Link to={EDUCATION_ROUTE}>EDUCATION</Link>
+            <Link to={STATS_ROUTE}>STATS</Link>
+            <Link to={FAQS_ROUTE}>FAQS</Link>
           </div>
         </FooterItem>
         <FooterItem>

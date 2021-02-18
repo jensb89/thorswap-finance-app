@@ -4,6 +4,12 @@ export const HOME_ROUTE = '/'
 export const CONNECT_WALLET_ROUTE = '/wallet/connect'
 export const CREATE_WALLET_ROUTE = '/wallet/create'
 
+export const TOOLS_ROUTE = '/tools'
+export const EXPLORERS_ROUTE = '/explorer'
+export const EDUCATION_ROUTE = '/education'
+export const STATS_ROUTE = '/stats'
+export const FAQS_ROUTE = '/faq'
+
 export const SEND_ROUTE = '/send'
 
 export const getSendRoute = (asset: Asset) => {

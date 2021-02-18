@@ -12,6 +12,11 @@ import {
   CREATE_WALLET_ROUTE,
   SEND_ROUTE,
   SWAP_ROUTE,
+  TOOLS_ROUTE,
+  EXPLORERS_ROUTE,
+  EDUCATION_ROUTE,
+  STATS_ROUTE,
+  FAQS_ROUTE,
 } from 'settings/constants'
 
 export type Routes = {
@@ -19,6 +24,7 @@ export type Routes = {
   path?: string | string[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component?: any
+  background?: boolean
 }[]
 
 const routes: Routes = [
@@ -47,6 +53,36 @@ const routes: Routes = [
     path: `${SWAP_ROUTE}/:pair`,
     component: lazy(() => import('views/Swap')),
   },
+  {
+    exact: true,
+    path: TOOLS_ROUTE,
+    component: lazy(() => import('views/Tools')),
+    background: false,
+  },
+  {
+    exact: true,
+    path: EXPLORERS_ROUTE,
+    component: lazy(() => import('views/Explorer')),
+    background: false,
+  },
+  {
+    exact: true,
+    path: EDUCATION_ROUTE,
+    component: lazy(() => import('views/Education')),
+    background: false,
+  },
+  {
+    exact: true,
+    path: STATS_ROUTE,
+    component: lazy(() => import('views/Statistics')),
+    background: false,
+  },
+  {
+    exact: true,
+    path: FAQS_ROUTE,
+    component: lazy(() => import('views/Faqs')),
+    background: false,
+  },
 ]
 
 const PublicRoutes = () => (
@@ -55,6 +91,7 @@ const PublicRoutes = () => (
       <Switch>
         {routes.map((route, index) => {
           const Component = route.component
+          const { background = true } = route
 
           return (
             <Route
@@ -62,7 +99,7 @@ const PublicRoutes = () => (
               path={route.path}
               exact={route.exact}
               render={(props) => (
-                <Layout>
+                <Layout transparent={!background}>
                   {route.path !== HOME_ROUTE && <BackLink />}
                   <Component {...props} />
                 </Layout>

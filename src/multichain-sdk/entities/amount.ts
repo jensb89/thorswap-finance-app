@@ -73,8 +73,8 @@ export class Amount implements IAmount {
 
   public readonly decimal: number
 
-  public static fromMidgard(amount: BigNumber.Value): Amount {
-    return new Amount(amount, AmountType.BASE_AMOUNT, MULTICHAIN_DECIMAL)
+  public static fromMidgard(amount?: BigNumber.Value): Amount {
+    return new Amount(amount || 0, AmountType.BASE_AMOUNT, MULTICHAIN_DECIMAL)
   }
 
   public static fromBaseAmount(
@@ -89,6 +89,10 @@ export class Amount implements IAmount {
     decimal: number,
   ): Amount {
     return new Amount(amount, AmountType.ASSET_AMOUNT, decimal)
+  }
+
+  public static fromNormalAmount(amount?: BigNumber.Value): Amount {
+    return new Amount(amount || 0, AmountType.ASSET_AMOUNT, 1)
   }
 
   public static sorter(a: Amount, b: Amount): number {

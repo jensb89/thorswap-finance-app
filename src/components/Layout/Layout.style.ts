@@ -8,11 +8,12 @@ const { Content } = AntLayout
 
 export const LayoutWrapper = styled(AntLayout)``
 
-export const ContentWrapper = styled(Content)`
+export const ContentWrapper = styled(Content)<{ transparent: boolean }>`
   display: flex;
   flex-direction: column;
 
-  background: ${palette('background', 3)};
+  background: ${(props) =>
+    props.transparent ? 'transparent' : palette('background', 3)};
   min-height: calc(100vh - 120px);
   margin-top: 70px;
   padding: 10px;

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 
 import { useDispatch } from 'react-redux'
 
@@ -11,8 +11,23 @@ export const useGlobalState = () => {
   const dispatch = useDispatch()
   const { actions } = useMidgard()
 
+  const loadInitialData = useCallback(() => {
+    dispatch(actions.getPools())
+    dispatch(actions.getStats())
+    dispatch(actions.getNetworkData())
+    dispatch(actions.getQueue())
+  }, [dispatch, actions])
+
   // initial state when the first load
   useEffect(() => {
-    dispatch(actions.getPools())
-  }, [dispatch, actions])
+    loadInitialData()
+  }, [loadInitialData])
+
+  const refreshPage = useCallback(() => {
+    loadInitialData()
+  }, [loadInitialData])
+
+  return {
+    refreshPage,
+  }
 }

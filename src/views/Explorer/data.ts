@@ -17,4 +17,4 @@ export const data = [
     info: 'defi.delphidigital.io/thorchain',
     link: 'https://defi.delphidigital.io/thorchain',
   },
-];
+]

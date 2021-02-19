@@ -15,7 +15,7 @@ export const StatsCard = styled(Statistic)`
     width: 6px;
     height: 79px;
     left: 8px;
-    top: 8px;
+    top: 0px;
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px;
     background: ${palette('gradient', 0)};

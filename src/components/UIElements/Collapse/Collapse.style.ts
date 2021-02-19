@@ -7,7 +7,7 @@ const { Panel: AntPanel } = Collapse
 export const CollapseWrapper = styled(Collapse)`
   &.ant-collapse {
     border: none;
-    background-color: ${palette('background', 1)};
+    background-color: ${palette('background', 3)};
 
     .ant-collapse-header {
       color: ${palette('text', 0)};

@@ -13,7 +13,7 @@ export const ContentWrapper = styled(Content)<{ transparent: boolean }>`
   flex-direction: column;
 
   background: ${(props) =>
-    props.transparent ? 'transparent' : palette('background', 3)};
+    props.transparent ? palette('background', 3) : palette('background', 3)};
   min-height: calc(100vh - 120px);
   margin-top: 70px;
   padding: 10px;

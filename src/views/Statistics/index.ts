@@ -1,3 +1,3 @@
-import StatisticsView from './StatisticsView';
+import StatisticsView from './StatisticsView'
 
-export default StatisticsView;
+export default StatisticsView

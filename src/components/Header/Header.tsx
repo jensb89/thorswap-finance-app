@@ -8,13 +8,15 @@ import { useWallet } from 'redux/wallet/hooks'
 
 import useNetwork from 'hooks/useNetwork'
 
-import { CONNECT_WALLET_ROUTE, HOME_ROUTE } from 'settings/constants'
+import { CONNECT_WALLET_ROUTE, HOME_ROUTE, TX_ROUTE } from 'settings/constants'
 
+import { TimerFullIcon } from '../Icons'
 import { Logo } from '../Logo'
 import { NetworkStatus } from '../NetworkStatus'
+import { Popover } from '../Popover'
 import { Refresh } from '../Refresh'
 import { ThemeSwitch } from '../ThemeSwitch'
-import { WalletButton, Label } from '../UIElements'
+import { Label } from '../UIElements'
 import { WalletDrawer } from '../WalletDrawer'
 import * as Styled from './Header.style'
 
@@ -40,6 +42,10 @@ export const Header = () => {
     setDrawerVisible(false)
   }, [])
 
+  const handleClickTx = useCallback(() => {
+    history.push(TX_ROUTE)
+  }, [history])
+
   return (
     <Styled.HeaderContainer>
       <Styled.HeaderLogo>
@@ -54,9 +60,18 @@ export const Header = () => {
           {globalRunePooledStatus} {!isValidFundCaps && '(Funds Cap Reached)'}
         </Label>
       </Styled.HeaderCenterWrapper>
+
       <Styled.HeaderAction>
+        <Popover tooltip="View Transaction">
+          <Styled.TxIcon onClick={handleClickTx}>
+            <TimerFullIcon />
+          </Styled.TxIcon>
+        </Popover>
         <ThemeSwitch />
-        <WalletButton onClick={handleClickWalletBtn} connected={isConnected} />
+        <Styled.WalletBtn
+          onClick={handleClickWalletBtn}
+          connected={isConnected}
+        />
         <WalletDrawer visible={drawerVisible} onClose={handleCloseDrawer} />
         <Refresh onRefresh={refreshPage} />
       </Styled.HeaderAction>

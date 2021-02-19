@@ -20,7 +20,12 @@ export const Refresh = ({ onRefresh }: RefreshProps): JSX.Element => {
   }, [onRefresh])
 
   return (
-    <StyledButton onClick={handleRefresh} typevalue="outline" round>
+    <StyledButton
+      onClick={handleRefresh}
+      typevalue="outline"
+      round
+      fixedWidth={false}
+    >
       <SyncOutlined spin={loading} />
     </StyledButton>
   )

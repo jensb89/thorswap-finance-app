@@ -7,7 +7,8 @@ export const toolsData = [
   },
   {
     title: 'RUNEData.info',
-    description: 'Analyse historical pool earnings, as well as simulate future earnings.',
+    description:
+      'Analyse historical pool earnings, as well as simulate future earnings.',
     info: 'runedata.info',
     link: 'http://www.runedata.info',
   },
@@ -35,4 +36,4 @@ export const toolsData = [
     info: '@thor_bot',
     link: 'https://twitter.com/thor_bot',
   },
-];
+]

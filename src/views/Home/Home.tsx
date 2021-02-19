@@ -1,28 +1,42 @@
 import React, { useState, useCallback, useMemo } from 'react'
 
 import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
-import { SyncOutlined, SwapOutlined } from '@ant-design/icons'
+import { SyncOutlined, SwapOutlined, SearchOutlined } from '@ant-design/icons'
 import { ColumnType } from 'antd/lib/table'
-import { AssetIcon, Helmet, PoolStatusFilter, Table, Button } from 'components'
+import {
+  TxTable,
+  GlobalStats,
+  GlobalChart,
+  AssetIcon,
+  Helmet,
+  PoolStatusFilter,
+  Table,
+  Button,
+  Input,
+} from 'components'
 import { PoolStatus } from 'midgard-sdk'
 import { Amount, Asset, Percent, Pool } from 'multichain-sdk'
 import { AlignType } from 'rc-table/lib/interface'
 
 import { useMidgard } from 'redux/midgard/hooks'
 
-import { getSwapRoute } from 'settings/constants'
+import { getSwapRoute, getPoolDetailRoute } from 'settings/constants'
 
 import * as Styled from './Home.style'
 
 const Home = () => {
+  const history = useHistory()
   const dispatch = useDispatch()
   const { actions, pools, poolLoading } = useMidgard()
 
   const [selectedPoolStatus, setSelectedPoolStatus] = useState<PoolStatus>(
     'available',
   )
+
+  const [keyword, setKeyword] = useState('')
 
   const handleLoadPoolData = useCallback(() => {
     dispatch(actions.getPools(selectedPoolStatus))
@@ -31,6 +45,13 @@ const Home = () => {
   const handleSelectPoolStatus = useCallback((status: PoolStatus) => {
     setSelectedPoolStatus(status)
   }, [])
+
+  const handleChangeKeyword = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setKeyword(e.target.value)
+    },
+    [],
+  )
 
   const centerAlign = 'center' as AlignType
   const rightAlign = 'right' as AlignType
@@ -57,7 +78,7 @@ const Home = () => {
 
         return (
           <Styled.ActionContainer>
-            <Link to={swapRouter}>
+            <Link to={swapRouter} onClick={(e) => e.stopPropagation()}>
               <Button round>
                 <SwapOutlined />
                 SWAP
@@ -144,26 +165,53 @@ const Home = () => {
     [poolActions],
   )
 
+  const filteredPools = useMemo(() => {
+    if (!keyword) return pools
+
+    return pools.filter((pool) =>
+      pool.asset.toString().toLowerCase().includes(keyword),
+    )
+  }, [pools, keyword])
+
   const renderPoolview = useMemo(
     () => (
       <Table
         columns={poolColumns}
-        dataSource={pools}
+        dataSource={filteredPools}
         loading={poolLoading}
+        onRow={(record: Pool) => ({
+          onClick: () => history.push(getPoolDetailRoute(record)),
+        })}
         rowKey="key"
       />
     ),
-    [poolColumns, pools, poolLoading],
+    [poolColumns, filteredPools, poolLoading, history],
   )
 
   return (
     <Styled.HomeContainer>
       <Helmet title="Asgardex" content="Multichain Asgardex web app" />
+      <Styled.Section>
+        <GlobalStats />
+      </Styled.Section>
+      <Styled.Section>
+        <GlobalChart />
+      </Styled.Section>
       <PoolStatusFilter
         selected={selectedPoolStatus}
         onClick={handleSelectPoolStatus}
       />
-      <Styled.PoolTableView>{renderPoolview}</Styled.PoolTableView>
+      <Styled.PoolTableView>
+        <Input
+          prefix={<SearchOutlined />}
+          sizevalue="big"
+          placeholder="Search pools..."
+          value={keyword}
+          onChange={handleChangeKeyword}
+        />
+        {renderPoolview}
+      </Styled.PoolTableView>
+      <TxTable />
     </Styled.HomeContainer>
   )
 }

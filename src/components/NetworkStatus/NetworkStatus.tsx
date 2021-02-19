@@ -95,10 +95,10 @@ export const NetworkStatus: React.FC<Props> = ({
 
   return (
     <Dropdown overlay={menu} trigger={['click']}>
-      <a className="ant-dropdown-link" href="/">
+      <Styled.DropdownLink className="ant-dropdown-link" href="/">
         <StatusBadge color={globalStatus} />
         <DownOutlined />
-      </a>
+      </Styled.DropdownLink>
     </Dropdown>
   )
 }

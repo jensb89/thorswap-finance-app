@@ -14,15 +14,26 @@ const StatisticsView: React.FC = (): JSX.Element => {
     2,
   )
 
+  const swapVolume = Amount.fromMidgard(stats?.swapVolume)
+  const addLiquidityVolume = Amount.fromMidgard(stats?.addLiquidityVolume)
+  const withdrawVolume = Amount.fromMidgard(stats?.withdrawVolume)
+
+  const swapCount = Amount.fromMidgard(stats?.swapCount)
+  const addLiquidityCount = Amount.fromMidgard(stats?.addLiquidityCount)
+  const withdrawCount = Amount.fromMidgard(stats?.withdrawCount)
+
+  const totalVolume = swapVolume.add(addLiquidityVolume).add(withdrawVolume)
+  const totalTx = swapCount.add(addLiquidityCount).add(withdrawCount)
+
   const statsData = React.useMemo(() => {
     return [
       {
-        title: 'Monthly Active Users',
-        value: Amount.fromNormalAmount(stats?.monthlyActiveUsers).toFixed(0),
+        title: 'Total Volume',
+        value: totalVolume.toFixed(0),
       },
       {
-        title: 'Daily Active Users',
-        value: Amount.fromNormalAmount(stats?.dailyActiveUsers).toFixed(0),
+        title: 'Total Tx',
+        value: totalTx.toFixed(0),
       },
       {
         title: 'Total Rune Depth',
@@ -69,6 +80,14 @@ const StatisticsView: React.FC = (): JSX.Element => {
         value: Amount.fromMidgard(stats?.withdrawVolume).toFixed(0),
       },
       {
+        title: 'Monthly Active Users',
+        value: Amount.fromNormalAmount(stats?.monthlyActiveUsers).toFixed(0),
+      },
+      {
+        title: 'Daily Active Users',
+        value: Amount.fromNormalAmount(stats?.dailyActiveUsers).toFixed(0),
+      },
+      {
         title: 'Total Pooled',
         value: Amount.fromMidgard(networkData?.totalPooledRune).toFixed(2),
       },
@@ -99,7 +118,14 @@ const StatisticsView: React.FC = (): JSX.Element => {
         value: `${liquidityAPYLabel} %`,
       },
     ]
-  }, [stats, networkData, bondingAPYLabel, liquidityAPYLabel])
+  }, [
+    stats,
+    networkData,
+    bondingAPYLabel,
+    liquidityAPYLabel,
+    totalVolume,
+    totalTx,
+  ])
 
   return (
     <Row gutter={[16, 16]}>

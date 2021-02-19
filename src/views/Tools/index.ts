@@ -1,3 +1,3 @@
-import ToolsView from './ToolsView';
+import ToolsView from './ToolsView'
 
-export default ToolsView;
+export default ToolsView

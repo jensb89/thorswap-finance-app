@@ -122,19 +122,17 @@ export class Amount implements IAmount {
   }
 
   add(amount: Amount): Amount {
-    invariant(this.decimal === amount.decimal, 'Decimals must be same')
     return new Amount(
-      this.baseAmount.plus(amount.baseAmount),
-      AmountType.BASE_AMOUNT,
+      this.assetAmount.plus(amount.assetAmount),
+      AmountType.ASSET_AMOUNT,
       this.decimal,
     )
   }
 
   sub(amount: Amount): Amount {
-    invariant(this.decimal === amount.decimal, 'Decimals must be same')
     return new Amount(
-      this.baseAmount.minus(amount.baseAmount),
-      AmountType.BASE_AMOUNT,
+      this.assetAmount.minus(amount.assetAmount),
+      AmountType.ASSET_AMOUNT,
       this.decimal,
     )
   }
@@ -178,28 +176,23 @@ export class Amount implements IAmount {
   }
 
   gte(amount: Amount): boolean {
-    invariant(this.decimal === amount.decimal, 'Decimal must be same')
-    return this.baseAmount.isGreaterThanOrEqualTo(amount.baseAmount)
+    return this.assetAmount.isGreaterThanOrEqualTo(amount.assetAmount)
   }
 
   gt(amount: Amount): boolean {
-    invariant(this.decimal === amount.decimal, 'Decimal must be same')
-    return this.baseAmount.isGreaterThan(amount.baseAmount)
+    return this.assetAmount.isGreaterThan(amount.assetAmount)
   }
 
   lte(amount: Amount): boolean {
-    invariant(this.decimal === amount.decimal, 'Decimal must be same')
-    return this.baseAmount.isLessThanOrEqualTo(amount.baseAmount)
+    return this.assetAmount.isLessThanOrEqualTo(amount.assetAmount)
   }
 
   lt(amount: Amount): boolean {
-    invariant(this.decimal === amount.decimal, 'Decimal must be same')
-    return this.baseAmount.isLessThan(amount.baseAmount)
+    return this.assetAmount.isLessThan(amount.assetAmount)
   }
 
   eq(amount: Amount): boolean {
-    invariant(this.decimal === amount.decimal, 'Decimal must be same')
-    return this.baseAmount.isEqualTo(amount.baseAmount)
+    return this.assetAmount.isEqualTo(amount.assetAmount)
   }
 
   toSignificant(

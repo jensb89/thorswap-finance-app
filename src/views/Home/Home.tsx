@@ -5,6 +5,7 @@ import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
 import { SyncOutlined, SwapOutlined, SearchOutlined } from '@ant-design/icons'
+import { chainToString } from '@xchainjs/xchain-util'
 import { ColumnType } from 'antd/lib/table'
 import {
   TxTable,
@@ -13,7 +14,6 @@ import {
   AssetIcon,
   Helmet,
   PoolStatusFilter,
-  Table,
   Button,
   Input,
 } from 'components'
@@ -21,6 +21,7 @@ import { PoolStatus } from 'midgard-sdk'
 import { Amount, Asset, Percent, Pool } from 'multichain-sdk'
 import { AlignType } from 'rc-table/lib/interface'
 
+import { useGlobalState } from 'redux/hooks'
 import { useMidgard } from 'redux/midgard/hooks'
 
 import { getSwapRoute, getPoolDetailRoute } from 'settings/constants'
@@ -30,6 +31,7 @@ import * as Styled from './Home.style'
 const Home = () => {
   const history = useHistory()
   const dispatch = useDispatch()
+  const { runeToCurrency } = useGlobalState()
   const { actions, pools, poolLoading } = useMidgard()
 
   const [selectedPoolStatus, setSelectedPoolStatus] = useState<PoolStatus>(
@@ -108,6 +110,17 @@ const Home = () => {
         sorter: (a: Pool, b: Pool) => a.asset.sortsBefore(b.asset),
       },
       {
+        key: 'Chain',
+        title: 'Chain',
+        align: centerAlign,
+        render: (pool: Pool) => chainToString(pool.asset.chain),
+        sortDirections: ['descend', 'ascend'],
+        sorter: (a: Pool, b: Pool) =>
+          chainToString(a.asset.chain).localeCompare(
+            chainToString(b.asset.chain),
+          ),
+      },
+      {
         key: 'Price',
         title: 'USD Price',
         render: (pool: Pool) =>
@@ -124,7 +137,9 @@ const Home = () => {
         key: 'Depth',
         title: 'Depth',
         render: (pool: Pool) =>
-          Amount.fromMidgard(pool.detail.runeDepth).mul(2).toFixed(0),
+          runeToCurrency(
+            Amount.fromMidgard(pool.detail.runeDepth).mul(2),
+          ).toCurrencyFormat(0),
         align: rightAlign,
         sortDirections: ['descend', 'ascend'],
         defaultSortOrder: 'descend',
@@ -138,7 +153,9 @@ const Home = () => {
         key: 'Volume24h',
         title: 'Volume 24h',
         render: (pool: Pool) =>
-          Amount.fromMidgard(pool.detail.volume24h).toFixed(0),
+          runeToCurrency(
+            Amount.fromMidgard(pool.detail.volume24h),
+          ).toCurrencyFormat(0),
         align: rightAlign,
         sortDirections: ['descend', 'ascend'],
         sorter: (a: Pool, b: Pool) =>
@@ -151,7 +168,7 @@ const Home = () => {
         key: 'APY',
         title: 'APY',
         render: (pool: Pool) =>
-          `${new Percent(pool.detail.poolAPY).toFixed(0)}%`,
+          `${new Percent(pool.detail.poolAPY).toFixed(0)}`,
         align: rightAlign,
         sortDirections: ['descend', 'ascend'],
         sorter: (a: Pool, b: Pool) =>
@@ -162,7 +179,7 @@ const Home = () => {
       },
       poolActions,
     ],
-    [poolActions],
+    [poolActions, runeToCurrency],
   )
 
   const filteredPools = useMemo(() => {
@@ -175,7 +192,7 @@ const Home = () => {
 
   const renderPoolview = useMemo(
     () => (
-      <Table
+      <Styled.Table
         columns={poolColumns}
         dataSource={filteredPools}
         loading={poolLoading}

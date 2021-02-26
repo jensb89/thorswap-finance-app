@@ -1,8 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { ThemeType } from '@thorchain/asgardex-theme'
+import { Asset } from 'multichain-sdk'
 
-import { getTheme, saveTheme } from 'helpers/storage'
+import {
+  getTheme,
+  saveTheme,
+  saveBaseCurrency,
+  getBaseCurrency,
+} from 'helpers/storage'
 
 import { State } from './types'
 
@@ -10,6 +16,7 @@ const defaultTheme = getTheme()
 
 const initialState: State = {
   themeType: defaultTheme,
+  baseCurrency: getBaseCurrency(),
 }
 
 const slice = createSlice({
@@ -21,6 +28,11 @@ const slice = createSlice({
 
       state.themeType = themeType
       saveTheme(themeType)
+    },
+    setBaseCurrency(state, action: PayloadAction<Asset>) {
+      const assetString = action.payload.toString()
+      saveBaseCurrency(assetString)
+      state.baseCurrency = assetString
     },
   },
 })

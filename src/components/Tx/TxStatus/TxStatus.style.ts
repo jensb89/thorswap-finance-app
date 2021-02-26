@@ -22,10 +22,6 @@ export const TxStatusWrapper = styled.div`
   `};
   background: ${palette('gray', 1)};
   text-transform: uppercase;
-  &:hover {
-    box-shadow: 2px 2px 4px 1px ${palette('gray', 2)};
-    cursor: pointer;
-  }
 
   height: 20px;
   padding: 8px 8px;
@@ -68,6 +64,11 @@ export const TxStatusContent = styled.div`
       letter-spacing: 1px;
       padding: 0 2px;
     `}
+  }
+
+  &:hover {
+    cursor: pointer;
+    font-weight: bold;
   }
 `
 

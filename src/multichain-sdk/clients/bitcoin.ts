@@ -2,11 +2,6 @@ import { Client as BtcClient, Network } from '@xchainjs/xchain-bitcoin'
 import { TxHash, Balance } from '@xchainjs/xchain-client'
 import { baseAmount, Chain, BTCChain } from '@xchainjs/xchain-util'
 
-import {
-  BLOCKCHAIR_API_KEY,
-  BLOCKCHAIR_TESTNET,
-  BLOCKCHAIR_MAINNET,
-} from '../config'
 import { AmountType, Amount, Asset, AssetAmount } from '../entities'
 import { IClient } from './client'
 import { TxParams } from './types'
@@ -30,14 +25,9 @@ export class BtcChain implements IBtcChain {
     phrase: string
   }) {
     this.chain = BTCChain
-    const blockchairUrl =
-      network === 'testnet' ? BLOCKCHAIR_TESTNET : BLOCKCHAIR_MAINNET
-
     this.client = new BtcClient({
       network,
       phrase,
-      nodeUrl: blockchairUrl,
-      nodeApiKey: BLOCKCHAIR_API_KEY,
     })
   }
 

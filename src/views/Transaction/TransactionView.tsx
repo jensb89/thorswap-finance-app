@@ -41,6 +41,7 @@ const Transaction: React.FC = (): JSX.Element => {
   const query = useQuery()
   const type = (query?.type ?? 'all') as string
   const offset = Number(query?.offset ?? 0)
+  const page = offset + 1
   const address = query?.address as string
   const txId = query?.txId as string
   const asset = query?.asset as string
@@ -72,8 +73,6 @@ const Transaction: React.FC = (): JSX.Element => {
   )
 
   const [filter, setFilter] = useState<TxFilterType>(initialFilter)
-  const [page, setPage] = useState<number>(Number(offset) + 1)
-
   const [filterInput, setFilterInput] = useState(address || txId || '')
 
   const isDesktopView = Grid.useBreakpoint().lg
@@ -93,7 +92,6 @@ const Transaction: React.FC = (): JSX.Element => {
     }
 
     setFilterInput(address || txId || '')
-    setPage(offset + 1)
     setFilter({
       ...initialFilter,
       type: type || 'all',
@@ -121,7 +119,6 @@ const Transaction: React.FC = (): JSX.Element => {
 
   const handleChangePage = useCallback(
     (value: number) => {
-      setPage(value)
       const newFilter = {
         ...filter,
         offset: value - 1,
@@ -136,7 +133,6 @@ const Transaction: React.FC = (): JSX.Element => {
   const prevRefreshTxStatus = usePrevious(txDataLoading)
   useEffect(() => {
     if (!txDataLoading && prevRefreshTxStatus) {
-      setPage(1)
       setFilterInput('')
     }
   }, [txDataLoading, prevRefreshTxStatus])

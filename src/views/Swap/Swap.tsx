@@ -22,10 +22,13 @@ import {
   getWalletAddressByChain,
   Swap,
   Percent,
+  Memo,
 } from 'multichain-sdk'
 
 import { useMidgard } from 'redux/midgard/hooks'
 import { useWallet } from 'redux/wallet/hooks'
+
+import useNetworkFee from 'hooks/useNetworkFee'
 
 import { multichain } from 'services/multichain'
 
@@ -59,7 +62,10 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
 
     return assets
   }, [pools])
-  const walletAssets = useMemo(() => getWalletAssets(wallet), [wallet])
+  const walletAssets = useMemo(
+    () => (wallet ? getWalletAssets(wallet) : poolAssets),
+    [wallet, poolAssets],
+  )
 
   const [inputAmount, setInputAmount] = useState<Amount>(
     Amount.fromAssetAmount(0, 8),
@@ -80,6 +86,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
 
     return null
   }, [inputAsset, outputAsset, pools, inputAmount, poolLoading])
+
   const outputAmount: Amount = useMemo(() => {
     if (swap) {
       return swap.outputAmount.amount
@@ -87,6 +94,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
 
     return Amount.fromAssetAmount(0, 8)
   }, [swap])
+
   const slipPercent: Percent = useMemo(() => {
     if (swap) {
       return swap.slip
@@ -94,6 +102,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
 
     return new Percent(0)
   }, [swap])
+
   const rate: string = useMemo(() => {
     if (swap) {
       return `1 ${swap.inputAsset.ticker} = ${swap.price.toFixedInverted(3)} ${
@@ -103,6 +112,25 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
 
     return ''
   }, [swap])
+
+  const txParam = useMemo(() => {
+    if (!swap) return undefined
+
+    const assetAmount = new AssetAmount(swap.inputAsset, swap.inputAmount)
+    const memo = Memo.swapMemo(
+      swap.outputAsset,
+      recipient,
+      swap.minOutputAmount, // slip limit
+    )
+
+    return {
+      assetAmount,
+      recipient,
+      memo,
+    }
+  }, [recipient, swap])
+
+  const networkFee = useNetworkFee(inputAsset, txParam)
 
   useEffect(() => {
     if (wallet) {
@@ -171,6 +199,20 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
       const txHash = await multichain.swap(swap, recipient)
 
       console.log('txhash', txHash)
+
+      const txURL = multichain.getExplorerTxUrl(swap.inputAsset.chain, txHash)
+
+      Notification({
+        type: 'open',
+        message: 'View Send Tx.',
+        description: 'Transaction sent successfully!',
+        btn: (
+          <a href={txURL} target="_blank" rel="noopener noreferrer">
+            View Transaction
+          </a>
+        ),
+        duration: 20,
+      })
     }
   }, [wallet, swap, recipient])
 
@@ -269,6 +311,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
         <Styled.SwapInfo>
           <Information title="Rate" description={rate} />
           <Information title="Slip" description={slipPercent.toFixed(2)} />
+          <Information title="Network Fee" description={networkFee} />
         </Styled.SwapInfo>
 
         <Styled.DragContainer>

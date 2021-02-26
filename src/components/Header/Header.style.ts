@@ -55,3 +55,7 @@ export const TxIcon = styled.div`
     height: 20px;
   }
 `
+
+export const ToolWrapper = styled.div`
+  margin-right: 8px;
+`

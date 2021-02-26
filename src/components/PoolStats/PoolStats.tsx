@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 import { Row, Col } from 'antd'
 import { Percent, Amount, Pool } from 'multichain-sdk'
 
+import { useGlobalState } from 'redux/hooks'
 import { useMidgard } from 'redux/midgard/hooks'
 
 import { StatsCard } from '../UIElements/StatsCard'
@@ -16,6 +17,7 @@ export type PoolStatsProps = {
 export const PoolStats = ({ pool }: PoolStatsProps): JSX.Element => {
   const dispatch = useDispatch()
   const { poolStatsLoading, poolStats, actions } = useMidgard()
+  const { runeToCurrency } = useGlobalState()
 
   useEffect(() => {
     dispatch(
@@ -40,15 +42,19 @@ export const PoolStats = ({ pool }: PoolStatsProps): JSX.Element => {
     return [
       {
         title: 'Total Volume',
-        value: totalVolume.toFixed(0),
+        value: runeToCurrency(totalVolume).toCurrencyFormat(0),
       },
       {
         title: 'Liquidity',
-        value: Amount.fromMidgard(pool?.detail?.runeDepth).mul(2).toFixed(0),
+        value: runeToCurrency(
+          Amount.fromMidgard(pool?.detail?.runeDepth).mul(2),
+        ).toCurrencyFormat(0),
       },
       {
         title: 'Volume 24H',
-        value: Amount.fromMidgard(pool?.detail?.volume24h).toFixed(0),
+        value: runeToCurrency(
+          Amount.fromMidgard(pool?.detail?.volume24h),
+        ).toCurrencyFormat(0),
       },
       {
         title: 'Pool Units',
@@ -71,7 +77,7 @@ export const PoolStats = ({ pool }: PoolStatsProps): JSX.Element => {
         value: Amount.fromNormalAmount(poolStats?.uniqueMemberCount).toFixed(0),
       },
     ]
-  }, [pool, poolAPY, poolStats, totalVolume, totalTx])
+  }, [pool, poolAPY, poolStats, totalVolume, totalTx, runeToCurrency])
 
   if (poolStatsLoading || !poolStats) return <></>
 

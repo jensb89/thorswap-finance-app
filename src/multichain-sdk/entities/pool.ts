@@ -10,6 +10,7 @@ export interface IPool {
   readonly asset: Asset
   readonly runeDepth: Amount
   readonly assetDepth: Amount
+  readonly assetUSDPrice: Amount
 
   readonly detail: PoolDetail
 
@@ -26,6 +27,8 @@ export class Pool implements IPool {
   public readonly runeDepth: Amount
 
   public readonly assetDepth: Amount
+
+  public readonly assetUSDPrice: Amount
 
   public readonly detail: PoolDetail
 
@@ -54,13 +57,17 @@ export class Pool implements IPool {
     asset: Asset,
     runeDepth: Amount,
     assetDepth: Amount,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    detail: any,
+    detail: PoolDetail,
   ) {
     this.asset = asset
     this.runeDepth = runeDepth
     this.assetDepth = assetDepth
     this.detail = detail
+
+    this.assetUSDPrice = Amount.fromAssetAmount(
+      detail.assetPriceUSD,
+      MULTICHAIN_DECIMAL,
+    )
   }
 
   get assetPriceInRune(): Amount {

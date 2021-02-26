@@ -1,6 +1,14 @@
-import { TxHash, Network } from '@xchainjs/xchain-client'
+import {
+  TxHash,
+  Network,
+  Fees,
+  TxsPage,
+  TxHistoryParams,
+  Tx,
+} from '@xchainjs/xchain-client'
 import { decryptFromKeystore, Keystore } from '@xchainjs/xchain-crypto'
 import {
+  baseAmount,
   Chain,
   BTCChain,
   BNBChain,
@@ -32,6 +40,9 @@ import {
   SupportedChain,
 } from './types'
 
+// specifying non-eth client is needed for getFees method
+type NonETHChainClient = BnbChain | BtcChain | LtcChain | ThorChain
+
 // thorchain pool address is empty string
 const THORCHAIN_POOL_ADDRESS = ''
 
@@ -54,11 +65,23 @@ export interface IMultiChain {
   validateKeystore(keystore: Keystore, password: string): Promise<boolean>
 
   getMidgard(): MidgardV2
+
   getChainClient(chain: Chain): void
+
   getPoolAddressByChain(chain: Chain): Promise<PoolAddress>
+
   getWalletByChain(chain: Chain): Promise<ChainWallet>
   loadAllWallets(): Promise<Wallet | null>
   getWalletAddressByChain(chain: Chain): string | null
+
+  getExplorerUrl(chain: Chain): string
+  getExplorerAddressUrl(chain: Chain, address: string): string
+  getExplorerTxUrl(chain: Chain, txHash: string): string
+
+  getTransactions(chain: Chain, params?: TxHistoryParams): Promise<TxsPage>
+  getTransactionData(chain: Chain, txHash: string): Promise<Tx>
+
+  getFees(chain: Chain): Promise<Fees>
 
   transfer(tx: TxParams, native?: boolean): Promise<TxHash>
   swap(swap: Swap, recipient?: string): Promise<TxHash>
@@ -265,6 +288,68 @@ export class MultiChain implements IMultiChain {
     }
 
     return null
+  }
+
+  getExplorerUrl = (chain: Chain): string => {
+    const chainClient = this.getChainClient(chain)
+    if (!chainClient) throw new Error('invalid chain')
+
+    return chainClient.getClient().getExplorerUrl()
+  }
+
+  getExplorerAddressUrl = (chain: Chain, address: string): string => {
+    const chainClient = this.getChainClient(chain)
+    if (!chainClient) throw new Error('invalid chain')
+
+    return chainClient.getClient().getExplorerAddressUrl(address)
+  }
+
+  getExplorerTxUrl = (chain: Chain, txHash: string): string => {
+    const chainClient = this.getChainClient(chain)
+    if (!chainClient) throw new Error('invalid chain')
+
+    return chainClient.getClient().getExplorerTxUrl(txHash)
+  }
+
+  getTransactions = (
+    chain: Chain,
+    params?: TxHistoryParams,
+  ): Promise<TxsPage> => {
+    const chainClient = this.getChainClient(chain)
+    if (!chainClient) throw new Error('invalid chain')
+
+    return chainClient.getClient().getTransactions(params)
+  }
+
+  getTransactionData = (chain: Chain, txHash: string): Promise<Tx> => {
+    const chainClient = this.getChainClient(chain)
+    if (!chainClient) throw new Error('invalid chain')
+
+    return chainClient.getClient().getTransactionData(txHash)
+  }
+
+  getFees = (chain: Chain, tx?: TxParams): Promise<Fees> => {
+    const chainClient = this.getChainClient(chain)
+    if (!chainClient) throw new Error('invalid chain')
+
+    if (chain === 'ETH' && tx) {
+      const { assetAmount, recipient } = tx
+      const { asset } = assetAmount
+      const amount = baseAmount(assetAmount.amount.baseAmount)
+
+      const assetObj = {
+        chain: asset.chain,
+        symbol: asset.symbol,
+        ticker: asset.ticker,
+      }
+      return chainClient.getClient().getFees({
+        asset: assetObj,
+        amount,
+        recipient,
+      })
+    }
+
+    return (chainClient as NonETHChainClient).getClient().getFees()
   }
 
   /**

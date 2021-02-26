@@ -2,20 +2,26 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
 
 import { LinkOutlined } from '@ant-design/icons'
+import { THORChain } from '@xchainjs/xchain-util'
 import { Grid, Tag } from 'antd'
 import { ColumnType } from 'antd/lib/table'
-import { ActionTypeEnum, ActionType, Action, Coin } from 'midgard-sdk'
+import { ActionTypeEnum, ActionType, Action, Transaction } from 'midgard-sdk'
 import moment from 'moment'
 import { Amount, Asset } from 'multichain-sdk'
 import { FixmeType } from 'types'
 
 import { useMidgard } from 'redux/midgard/hooks'
 
+import { multichain } from 'services/multichain'
+
+import { truncateAddress } from 'helpers/string'
+
 import { TX_PUBLIC_PAGE_LIMIT } from 'settings/constants'
 
 import { Label } from '../../UIElements/Label'
 import { Table } from '../../UIElements/Table'
 import {
+  StyledTx,
   StyledText,
   StyledLink,
   StyledLinkText,
@@ -41,8 +47,6 @@ type Props = {
   limit?: number
 }
 
-// TODO: implement explorer url
-
 export const TxTable: React.FC<Props> = React.memo(
   (props: Props): JSX.Element => {
     const { address, txId, asset, type, limit = TX_PUBLIC_PAGE_LIMIT } = props
@@ -64,13 +68,59 @@ export const TxTable: React.FC<Props> = React.memo(
       })
     }, [address, txId, asset, type, limit, currentTxPage, getTxData])
 
-    const truncateAddress = useCallback((addr: string) => {
-      if (addr && addr.length > 9) {
-        const first = addr.substr(0, 6)
-        const last = addr.substr(addr.length - 3, 3)
-        return `${first}...${last}`
+    const renderTxAssets = useCallback((tx: Transaction[]) => {
+      if (tx.length === 0) {
+        return <StyledLinkText>N/A</StyledLinkText>
       }
-      return addr
+
+      return (
+        <StyledTx>
+          {tx.map((txObj: Transaction, index: number) => {
+            const txHash = txObj.txID
+            const coinAsset = txObj.coins?.[0]
+
+            if (!coinAsset) {
+              const txUrl = multichain.getExplorerTxUrl(THORChain, txHash)
+
+              return (
+                <StyledLink
+                  href={txUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={index}
+                >
+                  <LinkOutlined />
+                </StyledLink>
+              )
+            }
+
+            const { asset: assetName, amount } = coinAsset
+            const assetObj = Asset.fromAssetString(assetName)
+            const assetValue = assetObj?.ticker ?? 'N/A'
+            const amountValue = Amount.fromMidgard(amount).toFixed(3)
+
+            const txUrl = assetObj
+              ? multichain.getExplorerTxUrl(assetObj.chain, txHash)
+              : '#'
+
+            const displayLabel = `${assetValue}: ${amountValue}`
+
+            return (
+              <>
+                <StyledLink
+                  href={txUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={index}
+                >
+                  <LinkOutlined />
+                  <StyledLinkText>{displayLabel}</StyledLinkText>
+                </StyledLink>
+              </>
+            )
+          })}
+        </StyledTx>
+      )
     }, [])
 
     const getColumnRenderer = useCallback((): Record<
@@ -90,54 +140,8 @@ export const TxTable: React.FC<Props> = React.memo(
             <Tag color={tags[row?.type ?? ActionTypeEnum.Swap]}>{row.type}</Tag>
           )
         },
-        in: (_, row) => {
-          if (row?.type === ActionTypeEnum.Withdraw) {
-            return <StyledLinkText>N/A</StyledLinkText>
-          }
-
-          const coins = row?.in?.[0].coins ?? []
-          let inData = ''
-          coins.forEach((txDetail: Coin, index: number) => {
-            const { asset, amount } = txDetail
-            const assetValue = Asset.fromAssetString(asset)?.ticker ?? 'N/A'
-            const amountValue = Amount.fromMidgard(amount).toFixed(2)
-            inData += `${assetValue}: ${amountValue}`
-            if (index < coins.length - 1) inData += ' | '
-          })
-
-          return (
-            <StyledLink href="#" target="_blank" rel="noopener noreferrer">
-              <StyledLinkText>{inData}</StyledLinkText>
-              <LinkOutlined />
-            </StyledLink>
-          )
-        },
-        out: (_, row) => {
-          if (row?.type === ActionTypeEnum.AddLiquidity) {
-            return <StyledLinkText>N/A</StyledLinkText>
-          }
-
-          const coins = row?.out?.[0]?.coins ?? []
-          if (row?.type === ActionTypeEnum.Withdraw) {
-            coins.concat(row?.out?.[1]?.coins ?? [])
-          }
-          let outData = ''
-          coins.forEach((txDetail: Coin, index: number) => {
-            const { asset, amount } = txDetail
-            const assetValue = Asset.fromAssetString(asset)?.ticker ?? 'N/A'
-            const amountValue = Amount.fromMidgard(amount).toFixed(2)
-
-            outData += `${assetValue}: ${amountValue}`
-            if (index < coins.length - 1) outData += ' | '
-          })
-
-          return (
-            <StyledLink href="#" target="_blank" rel="noopener noreferrer">
-              <StyledLinkText>{outData}</StyledLinkText>
-              <LinkOutlined />
-            </StyledLink>
-          )
-        },
+        in: (_, row) => renderTxAssets(row.in),
+        out: (_, row) => renderTxAssets(row.out),
         date: (_, row) => {
           return (
             <span>
@@ -146,7 +150,7 @@ export const TxTable: React.FC<Props> = React.memo(
           )
         },
       }
-    }, [truncateAddress])
+    }, [renderTxAssets])
 
     const columnRenders = useMemo(() => getColumnRenderer(), [
       getColumnRenderer,

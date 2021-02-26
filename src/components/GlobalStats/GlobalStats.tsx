@@ -3,12 +3,14 @@ import React from 'react'
 import { Row, Col } from 'antd'
 import { Percent, Amount } from 'multichain-sdk'
 
+import { useGlobalState } from 'redux/hooks'
 import { useMidgard } from 'redux/midgard/hooks'
 
 import { StatsCard } from '../UIElements/StatsCard'
 
 export const GlobalStats: React.FC = (): JSX.Element => {
   const { stats, networkData } = useMidgard()
+  const { runeToCurrency } = useGlobalState()
 
   const bondingAPYLabel = new Percent(networkData?.bondingAPY ?? 0).toFixed(2)
   const liquidityAPYLabel = new Percent(networkData?.liquidityAPY ?? 0).toFixed(
@@ -19,9 +21,9 @@ export const GlobalStats: React.FC = (): JSX.Element => {
   const addLiquidityVolume = Amount.fromMidgard(stats?.addLiquidityVolume)
   const withdrawVolume = Amount.fromMidgard(stats?.withdrawVolume)
 
-  const swapCount = Amount.fromMidgard(stats?.swapCount)
-  const addLiquidityCount = Amount.fromMidgard(stats?.addLiquidityCount)
-  const withdrawCount = Amount.fromMidgard(stats?.withdrawCount)
+  const swapCount = Amount.fromNormalAmount(stats?.swapCount)
+  const addLiquidityCount = Amount.fromNormalAmount(stats?.addLiquidityCount)
+  const withdrawCount = Amount.fromNormalAmount(stats?.withdrawCount)
 
   const totalVolume = swapVolume.add(addLiquidityVolume).add(withdrawVolume)
   const totalTx = swapCount.add(addLiquidityCount).add(withdrawCount)
@@ -30,7 +32,7 @@ export const GlobalStats: React.FC = (): JSX.Element => {
     return [
       {
         title: 'Total Volume',
-        value: totalVolume.toFixed(0),
+        value: runeToCurrency(totalVolume).toCurrencyFormat(0),
       },
       {
         title: 'Total Tx',
@@ -38,7 +40,9 @@ export const GlobalStats: React.FC = (): JSX.Element => {
       },
       {
         title: 'Total Rune Depth',
-        value: Amount.fromMidgard(stats?.runeDepth).toFixed(0),
+        value: runeToCurrency(
+          Amount.fromMidgard(stats?.runeDepth),
+        ).toCurrencyFormat(0),
       },
       {
         title: 'Monthly Active Users',
@@ -46,14 +50,21 @@ export const GlobalStats: React.FC = (): JSX.Element => {
       },
       {
         title: 'Bonding APY',
-        value: `${bondingAPYLabel} %`,
+        value: bondingAPYLabel,
       },
       {
         title: 'Liquidity APY',
-        value: `${liquidityAPYLabel} %`,
+        value: liquidityAPYLabel,
       },
     ]
-  }, [stats, bondingAPYLabel, liquidityAPYLabel, totalVolume, totalTx])
+  }, [
+    stats,
+    bondingAPYLabel,
+    liquidityAPYLabel,
+    totalVolume,
+    totalTx,
+    runeToCurrency,
+  ])
 
   return (
     <Row gutter={[16, 16]}>

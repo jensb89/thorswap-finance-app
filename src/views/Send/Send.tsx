@@ -30,6 +30,8 @@ import {
 import { useMidgard } from 'redux/midgard/hooks'
 import { useWallet } from 'redux/wallet/hooks'
 
+import useNetworkFee from 'hooks/useNetworkFee'
+
 import { multichain } from 'services/multichain'
 
 import { getSendRoute } from 'settings/constants'
@@ -103,6 +105,18 @@ const Send = ({ sendAsset, wallet }: { sendAsset: Asset; wallet: Wallet }) => {
     }
     return Amount.fromAssetAmount(0, 8)
   }, [sendAsset, wallet])
+
+  const txParam = useMemo(() => {
+    const assetAmount = new AssetAmount(sendAsset, sendAmount)
+
+    return {
+      assetAmount,
+      recipient,
+      memo,
+    }
+  }, [sendAsset, sendAmount, recipient, memo])
+
+  const networkFee = useNetworkFee(sendAsset, txParam)
 
   useEffect(() => {
     const fetchPoolAddress = async () => {
@@ -184,8 +198,7 @@ const Send = ({ sendAsset, wallet }: { sendAsset: Asset; wallet: Wallet }) => {
 
     if (sendAsset) {
       const assetAmount = new AssetAmount(sendAsset, sendAmount)
-      console.log('recipient', recipient)
-      console.log('memo', memo)
+
       const txHash = await multichain.transfer({
         assetAmount,
         recipient,
@@ -193,6 +206,20 @@ const Send = ({ sendAsset, wallet }: { sendAsset: Asset; wallet: Wallet }) => {
       })
 
       console.log('txhash', txHash)
+
+      const txURL = multichain.getExplorerTxUrl(sendAsset.chain, txHash)
+
+      Notification({
+        type: 'open',
+        message: 'View Send Tx.',
+        description: 'Transaction sent successfully!',
+        btn: (
+          <a href={txURL} target="_blank" rel="noopener noreferrer">
+            View Transaction
+          </a>
+        ),
+        duration: 20,
+      })
     }
   }, [sendAsset, sendAmount, recipient, memo])
 
@@ -227,8 +254,6 @@ const Send = ({ sendAsset, wallet }: { sendAsset: Asset; wallet: Wallet }) => {
       </Styled.ConfirmModalContent>
     )
   }, [sendAsset, memo, recipientAddress])
-
-  if (!sendAsset || !outputAsset) return null
 
   return (
     <Styled.Container>
@@ -316,6 +341,10 @@ const Send = ({ sendAsset, wallet }: { sendAsset: Asset; wallet: Wallet }) => {
             onChange={handleChangeMemo}
             placeholder="Memo"
           />
+        </Styled.FormItem>
+
+        <Styled.FormItem>
+          <Information title="Network Fee" description={networkFee} />
         </Styled.FormItem>
 
         <Styled.DragContainer>

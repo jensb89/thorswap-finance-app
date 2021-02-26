@@ -19,7 +19,7 @@ export interface IPrice extends IAmount {
 export class Price extends Amount {
   public readonly baseAsset: Asset
 
-  public readonly quoteAsset: Asset
+  public readonly quoteAsset?: Asset
 
   public readonly unitPrice: BigNumber
 
@@ -27,12 +27,17 @@ export class Price extends Amount {
 
   public readonly amount: Amount
 
-  constructor(
-    baseAsset: Asset,
-    quoteAsset: Asset,
-    pools: Pool[],
-    priceAmount?: Amount,
-  ) {
+  constructor({
+    baseAsset,
+    quoteAsset,
+    pools,
+    priceAmount,
+  }: {
+    baseAsset: Asset
+    quoteAsset?: Asset
+    pools: Pool[]
+    priceAmount?: Amount
+  }) {
     const amount = priceAmount
       ? Amount.fromAssetAmount(priceAmount.assetAmount, baseAsset.decimal)
       : Amount.fromAssetAmount(1, baseAsset.decimal)
@@ -47,14 +52,31 @@ export class Price extends Amount {
     let unitPrice: BigNumber = new BigNumber(0)
     let price: BigNumber = new BigNumber(0)
 
-    if (baseAsset.isRUNE() && !quoteAsset.isRUNE()) {
+    // if quoteAsset is not specified OR is USD, calc the price for USD
+    if (!quoteAsset || quoteAsset.eq(Asset.USD())) {
+      // set USD price for non-RUNE asset
+      if (!baseAsset.isRUNE()) {
+        const pool = Pool.byAsset(baseAsset, pools)
+        invariant(pool, `${baseAsset.toString()} Pool does not exist`)
+
+        if (pool) {
+          unitPrice = pool.assetUSDPrice.assetAmount
+        }
+      } else {
+        // set USD Price of RUNE
+        const pool = pools?.[0]
+
+        if (pool) {
+          unitPrice = pool.runePriceInAsset.mul(pool.assetUSDPrice).assetAmount
+        }
+      }
+    } else if (baseAsset.isRUNE() && !quoteAsset.isRUNE()) {
       const pool = Pool.byAsset(quoteAsset, pools)
 
       invariant(pool, `${quoteAsset.toString()} Pool does not exist`)
 
       if (pool) {
         unitPrice = pool.runePriceInAsset.assetAmount
-        price = unitPrice.multipliedBy(amount.assetAmount)
       }
     } else if (!baseAsset.isRUNE() && quoteAsset.isRUNE()) {
       const pool = Pool.byAsset(baseAsset, pools)
@@ -63,7 +85,6 @@ export class Price extends Amount {
 
       if (pool) {
         unitPrice = pool.assetPriceInRune.assetAmount
-        price = unitPrice.multipliedBy(amount.assetAmount)
       }
     } else if (!baseAsset.isRUNE() && !quoteAsset.isRUNE()) {
       const baseAssetPool = Pool.byAsset(baseAsset, pools)
@@ -75,14 +96,13 @@ export class Price extends Amount {
         unitPrice = baseAssetPool.assetPriceInRune.div(
           quoteAssetPool.assetPriceInRune,
         ).assetAmount
-        price = unitPrice.multipliedBy(amount.assetAmount)
       }
     } else {
       // both are RUNE
       unitPrice = new BigNumber(1)
-      price = unitPrice.multipliedBy(amount.assetAmount)
     }
 
+    price = unitPrice.multipliedBy(amount.assetAmount)
     this.price = price
     this.unitPrice = unitPrice
   }
@@ -93,6 +113,20 @@ export class Price extends Amount {
 
   invert(): BigNumber {
     return new BigNumber(1).dividedBy(this.raw())
+  }
+
+  toCurrencyFormat(
+    decimalPlaces = 8,
+    format: BigNumber.Format = NUMBER_FORMAT,
+    rounding: Rounding = Rounding.ROUND_DOWN,
+  ): string {
+    const fixedLabel = this.toFixedRaw(decimalPlaces, format, rounding)
+
+    const isUSDBased = !this.quoteAsset || this.quoteAsset.ticker === 'USD'
+
+    return isUSDBased
+      ? `$${fixedLabel}`
+      : `${fixedLabel} ${this.quoteAsset?.ticker}`
   }
 
   toFixedRaw(

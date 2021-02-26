@@ -11,9 +11,19 @@ export const StyledText = styled(Label)`
   text-transform: lowercase;
 `
 
+export const StyledTx = styled.div`
+  display: flex;
+  align-items: center;
+`
+
 export const StyledLink = styled.a`
   display: flex;
   align-items: center;
+  cursor: pointer;
+
+  :hover {
+    font-weight: bold;
+  }
 `
 
 export const StyledLinkText = styled(Label)`

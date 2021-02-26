@@ -175,15 +175,19 @@ export class AssetAmount extends Amount implements IAssetAmount {
   }
 
   unitPriceIn(quoteAsset: Asset, pools: Pool[]): Price {
-    return new Price(this.asset, quoteAsset, pools)
+    return new Price({
+      baseAsset: this.asset,
+      quoteAsset,
+      pools,
+    })
   }
 
   totalPriceIn(quoteAsset: Asset, pools: Pool[]): Price {
-    return new Price(
-      this.asset,
+    return new Price({
+      baseAsset: this.asset,
       quoteAsset,
       pools,
-      Amount.fromAssetAmount(this.assetAmount, this.decimal),
-    )
+      priceAmount: Amount.fromAssetAmount(this.assetAmount, this.decimal),
+    })
   }
 }

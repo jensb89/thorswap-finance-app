@@ -100,7 +100,11 @@ export class Swap implements ISwap {
     this.outputAsset = outputAsset
 
     // input asset price based in output asset
-    this.price = new Price(this.outputAsset, this.inputAsset, pools)
+    this.price = new Price({
+      baseAsset: this.outputAsset,
+      quoteAsset: this.inputAsset,
+      pools,
+    })
 
     this._0_AMOUNT = Amount.fromAssetAmount(0, inputAsset.decimal)
 

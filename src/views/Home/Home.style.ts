@@ -1,4 +1,4 @@
-import { ContentView } from 'components'
+import { ContentView, Table as UnstyledTable } from 'components'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
 
@@ -19,4 +19,10 @@ export const ActionContainer = styled.div`
 
 export const Section = styled.div`
   margin-bottom: 20px;
+`
+
+export const Table = styled(UnstyledTable)`
+  .ant-table-row {
+    cursor: pointer;
+  }
 `

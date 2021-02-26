@@ -43,10 +43,19 @@ export const AddressLabel = styled(Label)`
   }
 `
 
-export const Reload = styled.div`
+export const Tools = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+export const ToolWrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 4px;
 
   cursor: ponter;
+
+  svg {
+    width: 16px;
+  }
 `

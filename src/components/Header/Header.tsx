@@ -1,14 +1,20 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
+import { Asset } from 'multichain-sdk'
+
+import { CurrencySelector } from 'components/CurrencySelector'
+
+import { useApp } from 'redux/app/hooks'
 import { useGlobalState } from 'redux/hooks'
 import { useWallet } from 'redux/wallet/hooks'
 
 import useNetwork from 'hooks/useNetwork'
 
 import { CONNECT_WALLET_ROUTE, HOME_ROUTE, TX_ROUTE } from 'settings/constants'
+import { currencyIndexAssets } from 'settings/constants/currency'
 
 import { TimerFullIcon } from '../Icons'
 import { Logo } from '../Logo'
@@ -22,6 +28,8 @@ import * as Styled from './Header.style'
 
 export const Header = () => {
   const history = useHistory()
+
+  const { baseCurrencyAsset, setBaseCurrency } = useApp()
   const { wallet } = useWallet()
   const { refreshPage } = useGlobalState()
   const { isValidFundCaps, globalRunePooledStatus, statusColor } = useNetwork()
@@ -29,6 +37,10 @@ export const Header = () => {
   const [drawerVisible, setDrawerVisible] = useState(false)
 
   const isConnected = !!wallet
+
+  useEffect(() => {
+    refreshPage()
+  }, [refreshPage])
 
   const handleClickWalletBtn = useCallback(() => {
     if (!isConnected) {
@@ -46,6 +58,13 @@ export const Header = () => {
     history.push(TX_ROUTE)
   }, [history])
 
+  const handleSelectCurrency = useCallback(
+    (baseAsset: Asset) => {
+      setBaseCurrency(baseAsset)
+    },
+    [setBaseCurrency],
+  )
+
   return (
     <Styled.HeaderContainer>
       <Styled.HeaderLogo>
@@ -62,6 +81,13 @@ export const Header = () => {
       </Styled.HeaderCenterWrapper>
 
       <Styled.HeaderAction>
+        <Styled.ToolWrapper>
+          <CurrencySelector
+            selected={baseCurrencyAsset}
+            currencies={currencyIndexAssets}
+            onSelect={handleSelectCurrency}
+          />
+        </Styled.ToolWrapper>
         <Popover tooltip="View Transaction">
           <Styled.TxIcon onClick={handleClickTx}>
             <TimerFullIcon />

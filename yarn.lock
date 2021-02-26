@@ -4497,16 +4497,10 @@
     "@xchainjs/xchain-client" "^0.3.0"
     "@xchainjs/xchain-crypto" "^0.2.0"
 
-"@xchainjs/xchain-bitcoin@^0.8.2":
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-bitcoin/-/xchain-bitcoin-0.8.2.tgz#dd0e76778fef020cb1bb4d8db221907760cb5097"
-  integrity sha512-+FDCC9H3Ixm1bAw/A/X7urIidCAY9fHaClTJyJfVtLqycXoGR+r8Hkjoh4rTQDEhR8UQJGfpTuDJANZQXuS9Rw==
-  dependencies:
-    "@xchainjs/xchain-client" "^0.3.0"
-    "@xchainjs/xchain-crypto" "^0.2.1"
-    axios "^0.20.0"
-    bitcoinjs-lib "^5.2.0"
-    wif "^2.0.6"
+"@xchainjs/xchain-bitcoin@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-bitcoin/-/xchain-bitcoin-0.11.0.tgz#9aea85f7024f6b78ea3d841b8d152a8bf2ae2123"
+  integrity sha512-/yP7P4cazrejThyEY8x32UAZ6b47LF/1++d6QvJYrUziENSZ1LVF71jbfw7d17YWKtgxSZ0yXoVnstC6D6YNtA==
 
 "@xchainjs/xchain-client@^0.3.0":
   version "0.3.0"

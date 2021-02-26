@@ -4,10 +4,12 @@ import { Row, Col } from 'antd'
 import { Helmet, StatsCard } from 'components'
 import { Percent, Amount } from 'multichain-sdk'
 
+import { useGlobalState } from 'redux/hooks'
 import { useMidgard } from 'redux/midgard/hooks'
 
 const StatisticsView: React.FC = (): JSX.Element => {
   const { stats, networkData } = useMidgard()
+  const { runeToCurrency } = useGlobalState()
 
   const bondingAPYLabel = new Percent(networkData?.bondingAPY ?? 0).toFixed(2)
   const liquidityAPYLabel = new Percent(networkData?.liquidityAPY ?? 0).toFixed(
@@ -18,9 +20,9 @@ const StatisticsView: React.FC = (): JSX.Element => {
   const addLiquidityVolume = Amount.fromMidgard(stats?.addLiquidityVolume)
   const withdrawVolume = Amount.fromMidgard(stats?.withdrawVolume)
 
-  const swapCount = Amount.fromMidgard(stats?.swapCount)
-  const addLiquidityCount = Amount.fromMidgard(stats?.addLiquidityCount)
-  const withdrawCount = Amount.fromMidgard(stats?.withdrawCount)
+  const swapCount = Amount.fromNormalAmount(stats?.swapCount)
+  const addLiquidityCount = Amount.fromNormalAmount(stats?.addLiquidityCount)
+  const withdrawCount = Amount.fromNormalAmount(stats?.withdrawCount)
 
   const totalVolume = swapVolume.add(addLiquidityVolume).add(withdrawVolume)
   const totalTx = swapCount.add(addLiquidityCount).add(withdrawCount)
@@ -29,19 +31,21 @@ const StatisticsView: React.FC = (): JSX.Element => {
     return [
       {
         title: 'Total Volume',
-        value: totalVolume.toFixed(0),
+        value: runeToCurrency(totalVolume).toCurrencyFormat(0),
       },
       {
         title: 'Total Tx',
-        value: totalTx.toFixed(0),
+        value: totalTx.toFixed(),
       },
       {
         title: 'Total Rune Depth',
-        value: Amount.fromMidgard(stats?.runeDepth).toFixed(0),
+        value: runeToCurrency(
+          Amount.fromMidgard(stats?.runeDepth),
+        ).toCurrencyFormat(0),
       },
       {
         title: 'Rune Price in USD',
-        value: Amount.fromNormalAmount(stats?.runePriceUSD).toFixed(4),
+        value: `$${Amount.fromNormalAmount(stats?.runePriceUSD).toFixed(4)}`,
       },
       {
         title: 'Swap Count',
@@ -61,7 +65,9 @@ const StatisticsView: React.FC = (): JSX.Element => {
       },
       {
         title: 'Swap Volume',
-        value: Amount.fromMidgard(stats?.swapVolume).toFixed(0),
+        value: runeToCurrency(
+          Amount.fromMidgard(stats?.swapVolume),
+        ).toCurrencyFormat(0),
       },
       {
         title: 'Add Liquidity Count',
@@ -69,7 +75,9 @@ const StatisticsView: React.FC = (): JSX.Element => {
       },
       {
         title: 'Add Liquidity Volume',
-        value: Amount.fromMidgard(stats?.addLiquidityVolume).toFixed(0),
+        value: runeToCurrency(
+          Amount.fromMidgard(stats?.addLiquidityVolume),
+        ).toCurrencyFormat(0),
       },
       {
         title: 'Withdraw Count',
@@ -77,7 +85,9 @@ const StatisticsView: React.FC = (): JSX.Element => {
       },
       {
         title: 'Withdraw Volume',
-        value: Amount.fromMidgard(stats?.withdrawVolume).toFixed(0),
+        value: runeToCurrency(
+          Amount.fromMidgard(stats?.withdrawVolume),
+        ).toCurrencyFormat(0),
       },
       {
         title: 'Monthly Active Users',
@@ -89,11 +99,15 @@ const StatisticsView: React.FC = (): JSX.Element => {
       },
       {
         title: 'Total Pooled',
-        value: Amount.fromMidgard(networkData?.totalPooledRune).toFixed(2),
+        value: runeToCurrency(
+          Amount.fromMidgard(networkData?.totalPooledRune),
+        ).toCurrencyFormat(2),
       },
       {
         title: 'Total Reserve',
-        value: Amount.fromMidgard(networkData?.totalReserve).toFixed(2),
+        value: runeToCurrency(
+          Amount.fromMidgard(networkData?.totalReserve),
+        ).toCurrencyFormat(2),
       },
       {
         title: 'Active Node Count',
@@ -111,11 +125,11 @@ const StatisticsView: React.FC = (): JSX.Element => {
       },
       {
         title: 'Bonding APY',
-        value: `${bondingAPYLabel} %`,
+        value: bondingAPYLabel,
       },
       {
         title: 'Liquidity APY',
-        value: `${liquidityAPYLabel} %`,
+        value: liquidityAPYLabel,
       },
     ]
   }, [
@@ -125,6 +139,7 @@ const StatisticsView: React.FC = (): JSX.Element => {
     liquidityAPYLabel,
     totalVolume,
     totalTx,
+    runeToCurrency,
   ])
 
   return (

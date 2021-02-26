@@ -51,6 +51,11 @@ export class Asset implements IAsset {
 
   public readonly decimal: number
 
+  // created for USD pricing
+  public static USD(): Asset {
+    return new Asset(THORChain, 'USD-USD')
+  }
+
   public static BNB(): Asset {
     return new Asset(AssetBNB.chain, AssetBNB.symbol)
   }

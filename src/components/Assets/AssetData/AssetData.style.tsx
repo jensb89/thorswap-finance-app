@@ -20,6 +20,7 @@ export const TickerLabel = styled(Label).attrs({
   textTransform: 'uppercase',
   weight: '600',
 })`
+  min-width: 50px;
   padding-left: 10px;
 `
 

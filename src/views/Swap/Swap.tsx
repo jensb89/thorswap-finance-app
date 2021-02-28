@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from 'react'
 
 import { useHistory, useParams } from 'react-router'
 
+import { SwapOutlined } from '@ant-design/icons'
 import {
   ContentTitle,
   Helmet,
@@ -12,6 +13,7 @@ import {
   ConfirmModal,
   Information,
   Notification,
+  IconButton,
 } from 'components'
 import {
   getWalletAssets,
@@ -170,6 +172,10 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
     [history, inputAsset],
   )
 
+  const handleSwitchPair = useCallback(() => {
+    history.push(getSwapRoute(outputAsset, inputAsset))
+  }, [history, inputAsset, outputAsset])
+
   const handleChangeInputAmount = useCallback(
     (amount: Amount) => {
       if (amount.gt(assetBalance)) {
@@ -278,17 +284,24 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
         <Helmet title={title} content={title} />
         <ContentTitle>{title}</ContentTitle>
 
-        <Styled.CardContainer>
-          <AssetInputCard
-            title="send"
-            asset={inputAsset}
-            assets={walletAssets}
-            amount={inputAmount}
-            onChange={handleChangeInputAmount}
-            onSelect={handleSelectInputAsset}
-          />
-          <Slider value={percent} onChange={handleChangePercent} withLabel />
-        </Styled.CardContainer>
+        <AssetInputCard
+          title="send"
+          asset={inputAsset}
+          assets={walletAssets}
+          amount={inputAmount}
+          onChange={handleChangeInputAmount}
+          onSelect={handleSelectInputAsset}
+        />
+        <Styled.ToolContainer>
+          <Styled.SliderWrapper>
+            <Slider value={percent} onChange={handleChangePercent} withLabel />
+          </Styled.SliderWrapper>
+          <Styled.SwitchPair>
+            <IconButton onClick={handleSwitchPair}>
+              <SwapOutlined />
+            </IconButton>
+          </Styled.SwitchPair>
+        </Styled.ToolContainer>
         <AssetInputCard
           title="receive"
           asset={outputAsset}

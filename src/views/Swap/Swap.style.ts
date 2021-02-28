@@ -16,11 +16,28 @@ export const ContentPanel = styled.div`
   width: 600px;
 `
 
-export const CardContainer = styled.div`
+export const ToolContainer = styled.div`
   display: flex;
-  flex-direction: column;
 
-  margin: 24px 0;
+  height: 80px;
+`
+
+export const SliderWrapper = styled.div`
+  width: 410px;
+`
+
+export const SwitchPair = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    color: ${palette('primary', 0)};
+    transform: rotate(90deg);
+  }
 `
 
 export const PoolSelect = styled.div`

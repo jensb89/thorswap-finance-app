@@ -7,6 +7,7 @@ export const ContentTitleWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 52px;
+  margin-bottom: 24px;
 
   background: ${palette('gradient', 0)};
   color: ${palette('text', 3)};

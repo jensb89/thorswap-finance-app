@@ -292,21 +292,21 @@ export class MultiChain implements IMultiChain {
 
   getExplorerUrl = (chain: Chain): string => {
     const chainClient = this.getChainClient(chain)
-    if (!chainClient) throw new Error('invalid chain')
+    if (!chainClient) return '#'
 
     return chainClient.getClient().getExplorerUrl()
   }
 
   getExplorerAddressUrl = (chain: Chain, address: string): string => {
     const chainClient = this.getChainClient(chain)
-    if (!chainClient) throw new Error('invalid chain')
+    if (!chainClient) return '#'
 
     return chainClient.getClient().getExplorerAddressUrl(address)
   }
 
   getExplorerTxUrl = (chain: Chain, txHash: string): string => {
     const chainClient = this.getChainClient(chain)
-    if (!chainClient) throw new Error('invalid chain')
+    if (!chainClient) return '#'
 
     return chainClient.getClient().getExplorerTxUrl(txHash)
   }

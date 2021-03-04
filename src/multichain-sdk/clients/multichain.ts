@@ -38,6 +38,7 @@ import {
   ChainWallet,
   supportedChains,
   SupportedChain,
+  AddLiquidityTxns,
 } from './types'
 
 // specifying non-eth client is needed for getFees method
@@ -85,7 +86,7 @@ export interface IMultiChain {
 
   transfer(tx: TxParams, native?: boolean): Promise<TxHash>
   swap(swap: Swap, recipient?: string): Promise<TxHash>
-  addLiquidity(params: AddLiquidityParams): Promise<TxHash>
+  addLiquidity(params: AddLiquidityParams): Promise<AddLiquidityTxns>
   withdraw(params: WithdrawParams): Promise<TxHash>
 }
 
@@ -432,7 +433,9 @@ export class MultiChain implements IMultiChain {
    * add liquidity to pool
    * @param {AddLiquidityParams} params
    */
-  addLiquidity = async (params: AddLiquidityParams): Promise<TxHash> => {
+  addLiquidity = async (
+    params: AddLiquidityParams,
+  ): Promise<AddLiquidityTxns> => {
     /**
      * 1. get pool address
      * 2. get add liquidity memo
@@ -453,29 +456,38 @@ export class MultiChain implements IMultiChain {
         }
 
         // 1. send rune (NOTE: recipient should be empty string)
-        await this.transfer({
+        const runeTx = await this.transfer({
           assetAmount: runeAmount,
           recipient: THORCHAIN_POOL_ADDRESS,
           memo: Memo.depositMemo(Asset.RUNE()),
         })
 
         // 2. send asset
-        return await this.transfer({
+        const assetTx = await this.transfer({
           assetAmount,
           recipient: poolAddress,
           memo: Memo.depositMemo(pool.asset),
         })
+
+        return {
+          runeTx,
+          assetTx,
+        }
       }
       // asym stake
       if (assetAmount.lte(assetAmount._0_AMOUNT)) {
         return await Promise.reject(new Error('Invalid Asset Amount'))
       }
 
-      return await this.transfer({
+      const assetTx = await this.transfer({
         assetAmount,
         recipient: poolAddress,
         memo: Memo.depositMemo(pool.asset),
       })
+
+      return {
+        assetTx,
+      }
     } catch (error) {
       return Promise.reject(error)
     }

@@ -19,6 +19,7 @@ import {
   FAQS_ROUTE,
   TX_ROUTE,
   POOL_DETAIL_ROUTE,
+  LIQUIDITY_ROUTE,
 } from 'settings/constants'
 
 export type Routes = {
@@ -59,6 +60,12 @@ const routes: Routes = [
     exact: true,
     path: `${SWAP_ROUTE}/:pair`,
     component: lazy(() => import('views/Swap')),
+  },
+  {
+    exact: true,
+    path: `${LIQUIDITY_ROUTE}/:asset`,
+    component: lazy(() => import('views/Liquidity')),
+    background: false,
   },
   {
     exact: true,

@@ -9,12 +9,15 @@ import {
   SwapHistory,
   LiquidityHistory,
   ActionsList,
+  MemberDetails,
 } from 'midgard-sdk'
 import { Pool } from 'multichain-sdk'
 
 export interface State {
   pools: Pool[]
   poolLoading: boolean
+  memberDetails: MemberDetails
+  memberDetailsLoading: boolean
   poolStats: PoolStatsDetail | null
   poolStatsLoading: boolean
   depthHistory: DepthHistory | null

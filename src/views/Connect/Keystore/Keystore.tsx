@@ -72,7 +72,6 @@ const KeystoreView = ({ onConnect }: Props) => {
         setPassword('')
         setKeystore(undefined)
         setProcessing(false)
-
         onConnect(keystore, phrase)
       } catch (error) {
         setProcessing(false)

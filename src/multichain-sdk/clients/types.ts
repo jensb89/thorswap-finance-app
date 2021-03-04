@@ -1,4 +1,4 @@
-import { FeeOptionKey } from '@xchainjs/xchain-client'
+import { FeeOptionKey, TxHash } from '@xchainjs/xchain-client'
 import {
   BTCChain,
   BNBChain,
@@ -30,6 +30,11 @@ export type AddLiquidityParams = {
   pool: Pool
   runeAmount?: AssetAmount
   assetAmount: AssetAmount
+}
+
+export type AddLiquidityTxns = {
+  runeTx?: TxHash
+  assetTx?: TxHash
 }
 
 export type WithdrawParams = {

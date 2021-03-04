@@ -29,3 +29,9 @@ export const SWAP_ROUTE = '/swap'
 export const getSwapRoute = (input: Asset, output: Asset) => {
   return `${SWAP_ROUTE}/${input.toString()}_${output.toString()}`
 }
+
+export const LIQUIDITY_ROUTE = '/liquidity'
+
+export const getLiquidityRoute = (asset: Asset) => {
+  return `${LIQUIDITY_ROUTE}/${asset.toString()}`
+}

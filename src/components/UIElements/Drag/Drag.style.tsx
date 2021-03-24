@@ -21,7 +21,7 @@ export const DragContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  width: 244px;
+  width: 200px;
   height: 40px;
   border: 1px solid ${palette('primary', 0)};
   padding: 0 4px;

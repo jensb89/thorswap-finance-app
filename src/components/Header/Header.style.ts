@@ -1,11 +1,10 @@
+import { transparentize } from 'polished'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
 
 import { WalletButton } from '../UIElements'
 
 export const HeaderContainer = styled.div`
-  position: fixed;
-
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -14,8 +13,15 @@ export const HeaderContainer = styled.div`
   width: 100vw;
   height: 70px;
 
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-image: ${({ theme }) =>
+    `linear-gradient(180deg, ${transparentize(
+      0.8,
+      '#23DCC8',
+    )} 0%, ${transparentize(1, theme.palette.background[0])} 100%)`};
+
   padding: 0 10px;
-  background-color: ${palette('background', 0)};
   z-index: 999;
 `
 
@@ -24,6 +30,12 @@ export const HeaderLogo = styled.div`
   align-items: center;
   margin: 0 20px;
   padding-top: 12px;
+`
+
+export const HeaderActions = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `
 
 export const HeaderAction = styled.div`
@@ -48,7 +60,6 @@ export const TxIcon = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin: 0 10px;
 
   svg {
     width: 20px;
@@ -58,4 +69,8 @@ export const TxIcon = styled.div`
 
 export const ToolWrapper = styled.div`
   margin-right: 8px;
+`
+
+export const LogoWrapper = styled.div`
+  margin-top: 8px;
 `

@@ -111,7 +111,7 @@ export const PoolChart = ({ pool, ...otherProps }: PoolChartProps) => {
       },
       Price: {
         values: priceChart,
-        unit: '$USD',
+        unit: '$',
       },
     }
   }, [depthHistory, liquidityHistory, swapHistory, isLoading, initialChartData])

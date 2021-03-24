@@ -1,19 +1,35 @@
-import { Label, ContentView } from 'components'
+import { Label, Panel } from 'components'
 import styled from 'styled-components/macro'
 import { palette } from 'styled-theme'
 
-export const Container = styled(ContentView)`
+import { media } from 'helpers/style'
+
+export const Container = styled(Panel)`
   display: flex;
   flex-direction: column;
 
   align-items: center;
   justify-content: center;
+
+  background: ${palette('background', 0)};
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 0px;
+
+  border-radius: 14px;
+  border: 1px solid ${palette('gray', 0)};
 `
 
 export const ContentPanel = styled.div`
   display: flex;
   flex-direction: column;
-  width: 600px;
+  width: 100%;
+
+  padding: 16px 8px 8px 8px;
+
+  ${media.sm`
+    padding: 16px 12px 4px 12px;
+  `}
 `
 
 export const ToolContainer = styled.div`
@@ -23,7 +39,7 @@ export const ToolContainer = styled.div`
 `
 
 export const SliderWrapper = styled.div`
-  width: 410px;
+  width: 260px;
 `
 
 export const SwitchPair = styled.div`
@@ -60,12 +76,18 @@ export const FormLabel = styled(Label).attrs({
   margin-bottom: 8px;
 `
 
-export const DragContainer = styled.div`
+export const ConfirmButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  padding: 0 2%;
 
   margin-top: 14px;
+
+  button {
+    flex: 1;
+  }
 `
 
 export const ConfirmModalContent = styled.div`
@@ -83,4 +105,19 @@ export const SwapInfo = styled.div`
   margin-top: 14px;
 
   border: 1px solid ${palette('gray', 0)};
+`
+
+export const HeaderContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+
+  padding: 0 20px;
+`
+
+export const HeaderActions = styled.div`
+  display: flex;
+  align-items: center;
 `

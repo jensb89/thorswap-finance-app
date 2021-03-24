@@ -8,7 +8,7 @@ import { ThemeProvider } from 'styled-components'
 
 import { store as reduxStore, RootState } from 'redux/store'
 
-import { AppHolder, fontConfig } from 'settings/appStyle'
+import { AppHolder, fontConfig, ThemedGlobalStyle } from 'settings/appStyle'
 
 import Router from './router'
 
@@ -20,6 +20,7 @@ const Main = () => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <ThemedGlobalStyle />
       <AppHolder id="app-global">
         <Router />
       </AppHolder>

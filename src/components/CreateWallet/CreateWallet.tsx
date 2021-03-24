@@ -9,8 +9,8 @@ import { useWallet } from 'redux/wallet/hooks'
 
 import { HOME_ROUTE } from 'settings/constants'
 
-import * as Styled from './Connect.style'
-import KeystoreView from './Keystore'
+import KeystoreView from './CreateKeystore'
+import * as Styled from './CreateWallet.style'
 import PhraseView from './Phrase'
 
 enum TabType {
@@ -18,8 +18,9 @@ enum TabType {
   PHRASE = 'PHRASE',
 }
 
-const ConnectView = () => {
+const CreateWallet = () => {
   const history = useHistory()
+
   const { unlockWallet } = useWallet()
 
   const [activeTab, setActiveTab] = useState<TabType>(TabType.KEYSTORE)
@@ -29,8 +30,8 @@ const ConnectView = () => {
   }, [])
 
   const handleConnect = useCallback(
-    async (keystore: KeystoreType, phrase: string) => {
-      await unlockWallet(keystore, phrase)
+    (keystore: KeystoreType, phrase: string) => {
+      unlockWallet(keystore, phrase)
 
       history.push(HOME_ROUTE)
     },
@@ -39,13 +40,13 @@ const ConnectView = () => {
 
   return (
     <ContentView>
-      <Helmet title="Connect Wallet" content="Connect Wallet" />
-      <Styled.ConnectTabHeader>
+      <Helmet title="Create Wallet" content="Create Wallet" />
+      <Styled.TabHeader>
         <Tabs activeKey={activeTab} onChange={handleChangeTab} action>
           <TabPane key={TabType.KEYSTORE} tab="Keystore" />
           <TabPane key={TabType.PHRASE} tab="Phrase" />
         </Tabs>
-      </Styled.ConnectTabHeader>
+      </Styled.TabHeader>
       <Styled.TabContent>
         {activeTab === TabType.KEYSTORE && (
           <KeystoreView onConnect={handleConnect} />
@@ -58,4 +59,4 @@ const ConnectView = () => {
   )
 }
 
-export default ConnectView
+export default CreateWallet

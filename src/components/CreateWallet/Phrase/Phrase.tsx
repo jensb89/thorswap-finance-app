@@ -1,7 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
 
-import { Link } from 'react-router-dom'
-
 import { QuestionCircleOutlined, SyncOutlined } from '@ant-design/icons'
 import {
   validatePhrase,
@@ -13,8 +11,6 @@ import { Form, Tooltip } from 'antd'
 import { Button, Input, Label } from 'components'
 
 import { downloadAsFile } from 'helpers/download'
-
-import { CONNECT_WALLET_ROUTE } from 'settings/constants'
 
 import * as Styled from './Phrase.style'
 
@@ -162,9 +158,7 @@ const PhraseView = ({ onConnect }: Props) => {
         </Styled.Content>
         <Styled.Footer>
           <Styled.FooterContent>
-            <Link to={CONNECT_WALLET_ROUTE}>
-              <Label color="primary">Connect Wallet</Label>
-            </Link>
+            <Label color="primary">Connect Wallet</Label>
             <Button
               htmlType="submit"
               onClick={handleCreate}

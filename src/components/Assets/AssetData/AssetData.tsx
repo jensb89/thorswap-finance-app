@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { Col } from 'antd'
 import { Amount, Asset, Price } from 'multichain-sdk'
@@ -34,6 +34,11 @@ export const AssetData: React.FC<Props> = (props): JSX.Element => {
     ...others
   } = props
 
+  const labelSize = useMemo(() => {
+    if (size === 'big') return 'large'
+    return 'big'
+  }, [size])
+
   return (
     <Styled.Wrapper {...others}>
       <Col>
@@ -41,19 +46,23 @@ export const AssetData: React.FC<Props> = (props): JSX.Element => {
       </Col>
       {showLabel && (
         <Col>
-          <Styled.TickerLabel size={size}>{asset.ticker}</Styled.TickerLabel>
+          <Styled.TickerLabel size={labelSize}>
+            {asset.ticker}
+          </Styled.TickerLabel>
         </Col>
       )}
       {!!amount && (
         <Col>
-          <Styled.AmountLabel size={size}>
+          <Styled.AmountLabel size={labelSize}>
             {amount.toFixed(decimal)}
           </Styled.AmountLabel>
         </Col>
       )}
       {!!price && (
         <Col>
-          <Styled.PriceLabel size={size}>{price.toFixed(2)}</Styled.PriceLabel>
+          <Styled.PriceLabel size={labelSize}>
+            {price.toFixed(2)}
+          </Styled.PriceLabel>
         </Col>
       )}
     </Styled.Wrapper>

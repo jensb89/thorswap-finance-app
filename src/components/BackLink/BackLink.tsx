@@ -4,6 +4,8 @@ import { useHistory } from 'react-router'
 
 import { LeftOutlined } from '@ant-design/icons'
 
+import { IconButton } from 'components/UIElements'
+
 import { BackLinkWrapper } from './BackLink.style'
 
 export const BackLink = () => {
@@ -15,8 +17,10 @@ export const BackLink = () => {
 
   return (
     <BackLinkWrapper onClick={handleGoBack}>
-      <LeftOutlined />
-      <span>Back</span>
+      <IconButton>
+        <LeftOutlined />
+        <span>Back</span>
+      </IconButton>
     </BackLinkWrapper>
   )
 }

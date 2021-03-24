@@ -31,9 +31,4 @@ export const faqs: Faq[] = [
     content:
       'Feedback is always appreciated and we encourage you to submit issues to gitlab (https://gitlab.com/thorchain/bepswap) or in telegram (https://t.me/thorchain_org).',
   },
-  {
-    title: 'How can I get involved?',
-    content:
-      'If youre a talented engineer or believe you can bring value to the project, talk to one of the admins on telegram or join https://t.me/thorchain_dev.',
-  },
 ]

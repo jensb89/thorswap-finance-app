@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { PlusOutlined } from '@ant-design/icons'
-
 import { Button, ButtonProps } from '../Button'
 
 type ComponentProps = {
@@ -16,16 +14,7 @@ export const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
   const getBtnValue = () => {
     if (!connected) {
       return (
-        <span style={{ display: 'flex', alignItems: 'center' }}>
-          <PlusOutlined
-            style={{
-              marginRight: '6px',
-              top: '1px',
-              position: 'relative',
-            }}
-          />
-          Add Wallet
-        </span>
+        <span style={{ display: 'flex', alignItems: 'center' }}>Connect</span>
       )
     }
 
@@ -35,7 +24,13 @@ export const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
   }
 
   return (
-    <Button sizevalue="normal" round fixedWidth={false} {...otherProps}>
+    <Button
+      sizevalue="normal"
+      color={connected ? 'primary' : 'warning'}
+      round
+      fixedWidth={false}
+      {...otherProps}
+    >
       {getBtnValue()}
     </Button>
   )

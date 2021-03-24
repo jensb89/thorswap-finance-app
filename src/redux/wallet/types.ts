@@ -5,4 +5,5 @@ export interface State {
   keystore: Keystore | null
   wallet: Wallet | null
   walletLoading: boolean
+  isConnectModalOpen: boolean
 }

@@ -2,18 +2,12 @@
 import React, { useCallback } from 'react'
 
 import { CheckCircleOutlined, FieldTimeOutlined } from '@ant-design/icons'
-import { Popover } from 'antd'
 import { PoolStatus } from 'midgard-sdk'
 
 import { Button } from 'components/UIElements/Button'
+import { Question } from 'components/UIElements/Tooltip'
 
-import { getAppContainer } from 'helpers/element'
-
-import {
-  PoolFilterWrapper,
-  PopoverContent,
-  PopoverIcon,
-} from './PoolStatusFilter.style'
+import { PoolFilterWrapper } from './PoolStatusFilter.style'
 
 export type Props = {
   selected: PoolStatus
@@ -30,15 +24,6 @@ export const PoolStatusFilter: React.FC<Props> = (
       onClick(key)
     },
     [onClick],
-  )
-
-  const renderPopoverContent = () => (
-    <PopoverContent>
-      Pools don't immediately become enabled on THORChain and must participate
-      in a liquidity competition to become enabled. Every 50k blocks (approx 3
-      days), the pool with the most liquidity wins & becomes enabled. During
-      this time swapping is disabled but liquidity can be added & withdrawn.
-    </PopoverContent>
   )
 
   return (
@@ -63,19 +48,12 @@ export const PoolStatusFilter: React.FC<Props> = (
         <FieldTimeOutlined />
         Pending
       </Button>
-      <Popover
-        content={renderPopoverContent}
-        getPopupContainer={getAppContainer}
-        placement="bottomRight"
-        overlayClassName="pool-filter-info"
-        overlayStyle={{
-          padding: '6px',
-          animationDuration: '0s !important',
-          animation: 'none !important',
-        }}
-      >
-        <PopoverIcon />
-      </Popover>
+      <Question
+        tooltip="Pools don't immediately become enabled on THORChain and must participate
+      in a liquidity competition to become enabled. Every 50k blocks (approx 3
+      days), the pool with the most liquidity wins & becomes enabled. During
+      this time swapping is disabled but liquidity can be added & withdrawn."
+      />
     </PoolFilterWrapper>
   )
 }

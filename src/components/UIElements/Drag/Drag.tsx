@@ -47,7 +47,7 @@ export const Drag: React.FC<Props> = ({
     left: 0,
     top: 0,
     bottom: 0,
-    right: 202,
+    right: 160,
   }
 
   useEffect(() => {
@@ -82,8 +82,8 @@ export const Drag: React.FC<Props> = ({
 
     const { x } = data
 
-    const overlapLimit = 164
-    const successLimit = 190
+    const overlapLimit = 124
+    const successLimit = 150
 
     if (x >= successLimit && !success) {
       setSuccess(true)
@@ -104,7 +104,7 @@ export const Drag: React.FC<Props> = ({
 
     const { x } = data
 
-    const successLimit = 190
+    const successLimit = 150
 
     if (x >= successLimit) {
       setSuccess(true)

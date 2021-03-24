@@ -20,7 +20,6 @@ const Template: Story<Props> = (args) => {
 export const Default = Template.bind({})
 Default.args = {
   title: 'input',
-  info: 'slip 3%',
   label: '$100',
   asset: Asset.BNB(),
   assets: [Asset.BNB(), Asset.RUNE()],

@@ -4,7 +4,7 @@ import { DownOutlined } from '@ant-design/icons'
 import { Dropdown } from 'antd'
 import { Asset } from 'multichain-sdk'
 
-import { Menu, Label } from '../UIElements'
+import { Menu, Label, IconButton } from '../UIElements'
 import * as Styled from './CurrencySelector.style'
 
 export type CurrencySelectorProps = {
@@ -40,10 +40,12 @@ export const CurrencySelector: React.FC<CurrencySelectorProps> = ({
 
   return (
     <Dropdown overlay={menu} trigger={['click']}>
-      <Styled.DropdownLink className="ant-dropdown-link" href="/">
-        <Label weight="bold">{selected.ticker}</Label>
-        <DownOutlined />
-      </Styled.DropdownLink>
+      <IconButton>
+        <Styled.DropdownLink className="ant-dropdown-link" href="/">
+          <Label weight="bold">{selected.ticker}</Label>
+          <DownOutlined />
+        </Styled.DropdownLink>
+      </IconButton>
     </Dropdown>
   )
 }

@@ -7,7 +7,6 @@ export const StatusItem = styled.div`
 export const DropdownLink = styled.a`
   display: flex;
   align-items: center;
-  padding-bottom: 10px;
 
   svg {
     margin-left: 8px;

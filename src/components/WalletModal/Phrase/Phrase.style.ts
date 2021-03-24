@@ -1,6 +1,7 @@
-import { Label } from 'components'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
+
+import { Label } from '../../UIElements'
 
 export const Container = styled.div`
   position: relative;
@@ -65,5 +66,9 @@ export const FooterContent = styled.div`
   a {
     margin-right: 12px;
     text-decoration: underline;
+  }
+
+  .ant-btn {
+    margin-left: 10px;
   }
 `

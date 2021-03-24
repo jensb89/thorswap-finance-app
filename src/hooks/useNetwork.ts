@@ -43,16 +43,15 @@ const useNetwork = () => {
   }
   const statusColor: StatusColor = statusColors[outboundQueueLevel]
 
-  const maxPooledRuneValue = 'UNLIMITED'
   const maxPooledRuneAmount: Amount | null = null
 
   const totalPooledRune: Amount = Amount.fromMidgard(
     networkData?.totalPooledRune ?? 0,
   )
 
-  const globalRunePooledStatus = `${totalPooledRune.toFixed(
+  const globalRunePooledStatus = `TOTAL ${totalPooledRune.toFixed(
     0,
-  )} / ${maxPooledRuneValue} RUNE POOLED`
+  )} RUNE POOLED`
 
   // totalStake / maxStake < 95% OR maxStakeRuneAmount is 0
   const isValidFundCaps: boolean =

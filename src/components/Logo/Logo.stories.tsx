@@ -14,5 +14,5 @@ const Template: Story<Props> = (args) => <Logo {...args} />
 
 export const Default = Template.bind({})
 Default.args = {
-  type: 'asgardex',
+  type: 'thorswap',
 }

@@ -7,7 +7,7 @@ import { midgardApi } from 'services/midgard'
 
 import { getHostnameFromUrl } from 'helpers/api'
 
-import { StatusBadge, Menu, Label } from '../UIElements'
+import { StatusBadge, Menu, Label, IconButton } from '../UIElements'
 import * as Styled from './NetworkStatus.style'
 
 type MenuItem = {
@@ -95,10 +95,12 @@ export const NetworkStatus: React.FC<Props> = ({
 
   return (
     <Dropdown overlay={menu} trigger={['click']}>
-      <Styled.DropdownLink className="ant-dropdown-link" href="/">
-        <StatusBadge color={globalStatus} />
-        <DownOutlined />
-      </Styled.DropdownLink>
+      <IconButton>
+        <Styled.DropdownLink className="ant-dropdown-link" href="/">
+          <StatusBadge color={globalStatus} />
+          <DownOutlined />
+        </Styled.DropdownLink>
+      </IconButton>
     </Dropdown>
   )
 }

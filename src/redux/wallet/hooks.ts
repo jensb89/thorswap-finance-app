@@ -26,9 +26,17 @@ export const useWallet = () => {
     [dispatch],
   )
 
+  const setIsConnectModalOpen = useCallback(
+    (visible: boolean) => {
+      dispatch(actions.setIsConnectModalOpen(visible))
+    },
+    [dispatch],
+  )
+
   return {
     ...walletState,
     ...walletActions,
     unlockWallet,
+    setIsConnectModalOpen,
   }
 }

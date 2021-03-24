@@ -11,7 +11,7 @@ export const Wrapper = styled(Row).attrs({
   align: 'middle',
 })`
   display: flex;
-  padding: 0 16px;
+  padding: 0 8px;
 `
 
 export const AssetIcon = styled(UIAssetIcon)``

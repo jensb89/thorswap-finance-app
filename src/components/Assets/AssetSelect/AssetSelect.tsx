@@ -40,6 +40,7 @@ export type Props = {
   onSelect: (_: Asset) => void
   minWidth?: number
   searchPlaceholder?: string
+  size?: 'small' | 'normal' | 'big'
 }
 
 export const AssetSelect: React.FC<Props> = (props): JSX.Element => {
@@ -53,6 +54,7 @@ export const AssetSelect: React.FC<Props> = (props): JSX.Element => {
     children,
     minWidth,
     searchPlaceholder = 'Search...',
+    size = 'small',
     ...others
   } = props
 
@@ -115,10 +117,7 @@ export const AssetSelect: React.FC<Props> = (props): JSX.Element => {
   const renderDropDownButton = () => {
     const disabled = assets.length === 0
     return (
-      <AssetDropdownButton
-        disabled={disabled}
-        onClick={handleDropdownButtonClicked}
-      >
+      <AssetDropdownButton disabled={disabled}>
         {!disabled ? <DropdownCarret open={openDropdown} /> : null}
       </AssetDropdownButton>
     )
@@ -129,8 +128,8 @@ export const AssetSelect: React.FC<Props> = (props): JSX.Element => {
       <Dropdown overlay={renderMenu()} trigger={[]} visible={openDropdown}>
         <>
           {!!children && children}
-          <Selector>
-            <AssetData asset={asset} showLabel={showLabel} />
+          <Selector onClick={handleDropdownButtonClicked}>
+            <AssetData asset={asset} showLabel={showLabel} size={size} />
             {renderDropDownButton()}
           </Selector>
         </>

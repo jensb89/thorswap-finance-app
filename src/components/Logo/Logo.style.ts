@@ -11,9 +11,9 @@ export const LogoWrapper = styled.div`
     }
   }
 
-  #asgardex_logo {
-    path {
-      fill: ${palette('text', 1)};
-    }
+  #thorswap-logo-black,
+  #thorswap-logo-white {
+    width: 180px;
+    height: 50px;
   }
 `

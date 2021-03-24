@@ -12,6 +12,11 @@ export const getAssetIconUrl = (asset: Asset): string => {
     return nativeRuneIcon
   }
 
+  // ethereum logos
+  if (asset.ticker === 'WETH') {
+    return 'https://assets.coingecko.com/coins/images/2518/large/weth.png'
+  }
+
   const logoSymbol = assetIconMap[asset.ticker]
 
   if (logoSymbol) {

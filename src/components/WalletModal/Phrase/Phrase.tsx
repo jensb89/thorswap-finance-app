@@ -1,7 +1,5 @@
 import React, { useState, useCallback } from 'react'
 
-import { Link } from 'react-router-dom'
-
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import {
   encryptToKeyStore,
@@ -12,8 +10,6 @@ import { Form, Tooltip } from 'antd'
 import { Button, Input, Label } from 'components'
 
 import { downloadAsFile } from 'helpers/download'
-
-import { CREATE_WALLET_ROUTE } from 'settings/constants'
 
 import * as Styled from './Phrase.style'
 
@@ -145,9 +141,7 @@ const PhraseView = ({ onConnect }: Props) => {
         </Styled.Content>
         <Styled.Footer>
           <Styled.FooterContent>
-            <Link to={CREATE_WALLET_ROUTE}>
-              <Label color="primary">Create Wallet</Label>
-            </Link>
+            <Label color="primary">Create Wallet</Label>
             <Button
               htmlType="submit"
               onClick={handleBackupKeystore}

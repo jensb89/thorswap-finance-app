@@ -76,7 +76,7 @@ const Home = () => {
         </Styled.ActionContainer>
       ),
       render: (_: string, pool: Pool) => {
-        const swapRouter = getSwapRoute(Asset.RUNE(), pool.asset)
+        const swapRouter = getSwapRoute(Asset.BNB(), pool.asset)
 
         return (
           <Styled.ActionContainer>
@@ -98,7 +98,11 @@ const Home = () => {
       {
         key: 'Pool',
         title: 'Pool',
-        render: (pool: Pool) => <AssetIcon asset={pool.asset} />,
+        render: (pool: Pool) => (
+          <Styled.ActionContainer>
+            <AssetIcon asset={pool.asset} />
+          </Styled.ActionContainer>
+        ),
         align: centerAlign,
       },
       {
@@ -207,7 +211,7 @@ const Home = () => {
 
   return (
     <Styled.HomeContainer>
-      <Helmet title="Asgardex" content="Multichain Asgardex web app" />
+      <Helmet title="THORSwap" content="THORSwap" />
       <Styled.Section>
         <GlobalStats />
       </Styled.Section>

@@ -13,24 +13,23 @@ import { useWallet } from 'redux/wallet/hooks'
 
 import useNetwork from 'hooks/useNetwork'
 
-import { CONNECT_WALLET_ROUTE, HOME_ROUTE, TX_ROUTE } from 'settings/constants'
+import { HOME_ROUTE, TX_ROUTE } from 'settings/constants'
 import { currencyIndexAssets } from 'settings/constants/currency'
 
 import { TimerFullIcon } from '../Icons'
 import { Logo } from '../Logo'
 import { NetworkStatus } from '../NetworkStatus'
-import { Popover } from '../Popover'
 import { Refresh } from '../Refresh'
 import { ThemeSwitch } from '../ThemeSwitch'
-import { Label } from '../UIElements'
+import { Tooltip, IconButton, Label } from '../UIElements'
 import { WalletDrawer } from '../WalletDrawer'
 import * as Styled from './Header.style'
 
 export const Header = () => {
   const history = useHistory()
 
-  const { baseCurrencyAsset, setBaseCurrency } = useApp()
-  const { wallet } = useWallet()
+  const { themeType, baseCurrencyAsset, setBaseCurrency } = useApp()
+  const { wallet, setIsConnectModalOpen } = useWallet()
   const { refreshPage } = useGlobalState()
   const { isValidFundCaps, globalRunePooledStatus, statusColor } = useNetwork()
 
@@ -44,11 +43,11 @@ export const Header = () => {
 
   const handleClickWalletBtn = useCallback(() => {
     if (!isConnected) {
-      history.push(CONNECT_WALLET_ROUTE)
+      setIsConnectModalOpen(true)
     } else {
       setDrawerVisible(true)
     }
-  }, [history, isConnected])
+  }, [isConnected, setIsConnectModalOpen])
 
   const handleCloseDrawer = useCallback(() => {
     setDrawerVisible(false)
@@ -68,10 +67,15 @@ export const Header = () => {
   return (
     <Styled.HeaderContainer>
       <Styled.HeaderLogo>
-        <Link to={HOME_ROUTE}>
-          <Logo type="asgardex" />
-        </Link>
-        <NetworkStatus status={statusColor} />
+        <Styled.LogoWrapper>
+          <Link to={HOME_ROUTE}>
+            <Logo type="thorswap" color={themeType} />
+          </Link>
+        </Styled.LogoWrapper>
+        <Styled.HeaderAction>
+          <NetworkStatus status={statusColor} />
+          <ThemeSwitch />
+        </Styled.HeaderAction>
       </Styled.HeaderLogo>
 
       <Styled.HeaderCenterWrapper>
@@ -88,12 +92,13 @@ export const Header = () => {
             onSelect={handleSelectCurrency}
           />
         </Styled.ToolWrapper>
-        <Popover tooltip="View Transaction">
-          <Styled.TxIcon onClick={handleClickTx}>
-            <TimerFullIcon />
-          </Styled.TxIcon>
-        </Popover>
-        <ThemeSwitch />
+        <Tooltip tooltip="View Transaction">
+          <IconButton onClick={handleClickTx}>
+            <Styled.TxIcon>
+              <TimerFullIcon />
+            </Styled.TxIcon>
+          </IconButton>
+        </Tooltip>
         <Styled.WalletBtn
           onClick={handleClickWalletBtn}
           connected={isConnected}

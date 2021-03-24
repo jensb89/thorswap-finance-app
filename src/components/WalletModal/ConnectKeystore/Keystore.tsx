@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react'
 
 import { FilePicker } from 'react-file-picker'
-import { Link } from 'react-router-dom'
 
 import {
   QuestionCircleOutlined,
@@ -10,17 +9,16 @@ import {
 } from '@ant-design/icons'
 import { decryptFromKeystore, Keystore } from '@xchainjs/xchain-crypto'
 import { Form, Tooltip } from 'antd'
-import { Button, Input, Label } from 'components'
-
-import { CREATE_WALLET_ROUTE } from 'settings/constants'
+import { Helmet, Button, Input, Label } from 'components'
 
 import * as Styled from './Keystore.style'
 
 type Props = {
   onConnect: (keystore: Keystore, phrase: string) => void
+  toggleMode: () => void
 }
 
-const KeystoreView = ({ onConnect }: Props) => {
+const KeystoreView = ({ onConnect, toggleMode }: Props) => {
   const [keystore, setKeystore] = useState<Keystore>()
   const [password, setPassword] = useState<string>('')
   const [invalideStatus, setInvalideStatus] = useState(false)
@@ -86,6 +84,7 @@ const KeystoreView = ({ onConnect }: Props) => {
 
   return (
     <Styled.Container>
+      <Helmet title="Connect Wallet" content="Connect Wallet" />
       <Form onFinish={unlock}>
         <Styled.Content>
           <Styled.FormLabel weight="bold" color="normal">
@@ -108,7 +107,7 @@ const KeystoreView = ({ onConnect }: Props) => {
               </Label>
               <Tooltip
                 title="This is the password used to decrypt your encrypted keystore file"
-                placement="bottomRight"
+                placement="topLeft"
               >
                 <QuestionCircleOutlined />
               </Tooltip>
@@ -126,9 +125,6 @@ const KeystoreView = ({ onConnect }: Props) => {
         </Styled.Content>
         <Styled.Footer>
           <Styled.FooterContent>
-            <Link to={CREATE_WALLET_ROUTE}>
-              <Label color="primary">Create Wallet</Label>
-            </Link>
             <Button
               htmlType="submit"
               onClick={unlock}
@@ -137,8 +133,11 @@ const KeystoreView = ({ onConnect }: Props) => {
               loading={processing}
               fixedWidth={false}
             >
-              Unlock Wallet
+              Unlock
             </Button>
+            <Styled.ActionButton onClick={toggleMode}>
+              <Label color="primary">Create Wallet</Label>
+            </Styled.ActionButton>
           </Styled.FooterContent>
         </Styled.Footer>
       </Form>

@@ -1,8 +1,6 @@
 import { Pool, Asset } from 'multichain-sdk'
 
 export const HOME_ROUTE = '/'
-export const CONNECT_WALLET_ROUTE = '/wallet/connect'
-export const CREATE_WALLET_ROUTE = '/wallet/create'
 
 export const TOOLS_ROUTE = '/tools'
 export const EXPLORERS_ROUTE = '/explorer'
@@ -16,6 +14,10 @@ export const POOL_DETAIL_ROUTE = '/pool'
 
 export const getPoolDetailRoute = (pool: Pool) => {
   return `${POOL_DETAIL_ROUTE}/${pool.asset.toString()}`
+}
+
+export const getPoolDetailRouteFromAsset = (asset: Asset) => {
+  return `${POOL_DETAIL_ROUTE}/${asset.toString()}`
 }
 
 export const SEND_ROUTE = '/send'

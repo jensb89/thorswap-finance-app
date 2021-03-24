@@ -8,8 +8,6 @@ import { history } from 'helpers/history'
 
 import {
   HOME_ROUTE,
-  CONNECT_WALLET_ROUTE,
-  CREATE_WALLET_ROUTE,
   SEND_ROUTE,
   SWAP_ROUTE,
   TOOLS_ROUTE,
@@ -35,16 +33,6 @@ const routes: Routes = [
     exact: true,
     path: HOME_ROUTE,
     component: lazy(() => import('views/Home')),
-  },
-  {
-    exact: true,
-    path: CONNECT_WALLET_ROUTE,
-    component: lazy(() => import('views/Connect')),
-  },
-  {
-    exact: true,
-    path: CREATE_WALLET_ROUTE,
-    component: lazy(() => import('views/CreateWallet')),
   },
   {
     exact: true,

@@ -1,15 +1,13 @@
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
 
-import { Modal } from '../../UIElements'
+import { FancyButton } from '../../UIElements'
 
-export const StyledModal = styled(Modal)`
-  .ant-modal-body {
-    padding: 18px 32px;
-    .ant-form-item {
-      margin-bottom: 0;
-    }
-  }
+export const Content = styled.div`
+  width: 100%;
+  flex-direction: column;
+
+  padding: 20px 20px;
 `
 
 export const ModalIcon = styled.div`
@@ -22,4 +20,8 @@ export const ModalIcon = styled.div`
 
 export const ModalData = styled.div`
   margin-bottom: 10px;
+`
+
+export const Button = styled(FancyButton)`
+  width: 100%;
 `

@@ -11,17 +11,13 @@ export const AssetSelectWrapper = styled.div<{ minWidth?: number }>`
   justify-content: center;
   align-items: center;
 
-  width: 170px;
-  height: 60px;
   border-radius: 2px;
   text-transform: uppercase;
   ${transition()};
-  min-width: ${({ minWidth }) => minWidth || 170}px;
 `
 
 export const AssetSelectMenuWrapper = styled.div<{ minWidth?: number }>`
   margin-top: 10px;
-  min-width: ${({ minWidth }) => minWidth || 170}px;
 `
 
 export const DropdownIcon = styled(CaretDownOutlined)`
@@ -76,9 +72,19 @@ export const AssetDropdownButton = styled.button`
 
 export const AssetData = styled(UnstyledAssetData)`
   flex: 1;
+  padding-left: 0;
 `
+
 export const Selector = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  padding: 2px 4px 2px 4px;
+  border-radius: 0.5rem;
+  cursor: pointer;
+
+  :hover {
+    background-color: ${palette('background', 2)};
+  }
 `

@@ -41,6 +41,7 @@ export interface ISwap {
   readonly estimatedNetworkFee: AssetAmount
 
   minOutputAmount: Amount
+  slipLimitPercent: number
 
   setSlipLimitPercent(limit: number): void
   getSlipLimitPercent(): number
@@ -55,7 +56,7 @@ export interface ISwap {
 }
 
 export class Swap implements ISwap {
-  private slipLimitPercent: number = DEFAULT_SLIP_LIMIT
+  public slipLimitPercent: number
 
   public readonly swapType: SwapType
 
@@ -95,9 +96,11 @@ export class Swap implements ISwap {
     outputAsset: Asset,
     pools: Pool[],
     amount: AssetAmount,
+    slip = DEFAULT_SLIP_LIMIT,
   ) {
     this.inputAsset = inputAsset
     this.outputAsset = outputAsset
+    this.slipLimitPercent = slip
 
     // input asset price based in output asset
     this.price = new Price({
@@ -197,6 +200,29 @@ export class Swap implements ISwap {
 
   public get minOutputAmount(): Amount {
     return this.outputAmount.mul(100 - this.slipLimitPercent).div(100).amount
+  }
+
+  isSlipValid(): boolean {
+    if (this.slip.gt(new Percent(this.slipLimitPercent / 100))) {
+      return false
+    }
+
+    return true
+  }
+
+  isValid(): boolean {
+    // check input amount
+    if (
+      this.inputAmount.lte(Amount.fromAssetAmount(0, this.inputAmount.decimal))
+    )
+      return false
+
+    // check slip amount
+    if (!this.isSlipValid()) {
+      return false
+    }
+
+    return true
   }
 
   public static getSingleSwapOutput(

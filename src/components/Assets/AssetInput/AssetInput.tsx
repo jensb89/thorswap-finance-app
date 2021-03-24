@@ -17,6 +17,7 @@ export type Props = {
   inputProps?: InputAmountProps
   decimal?: number
   disabled?: boolean
+  border?: boolean
   onChange: (value: Amount) => void
 }
 
@@ -29,6 +30,7 @@ export const AssetInput: React.FC<Props> = (props): JSX.Element => {
     inputProps = {},
     onChange,
     decimal = 8,
+    border = true,
     ...otherProps
   } = props
 
@@ -52,11 +54,12 @@ export const AssetInput: React.FC<Props> = (props): JSX.Element => {
     <AssetInputWrapper
       disabled={disabled}
       onClick={handleClickWrapper}
+      border={border}
       {...otherProps}
     >
       <div className="asset-input-header">
         <span className="asset-input-title">{title}</span>
-        {info && <span className="asset-input-header-label">{info}</span>}
+        {info && <span className="asset-input-info">{info}</span>}
       </div>
       <div className="asset-input-content" ref={inputRef}>
         <InputAmount

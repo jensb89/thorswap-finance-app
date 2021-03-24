@@ -3,20 +3,24 @@ import { palette } from 'styled-theme'
 
 import { transition } from 'settings/style-util'
 
-export const AssetInputWrapper = styled.div`
+export const AssetInputWrapper = styled.div<{
+  disabled: boolean
+  border: boolean
+}>`
   display: flex;
   flex-direction: column;
-  min-width: 212px;
-  height: 70px;
-  padding: 8px;
+  justify-content: space-between;
+  min-width: 50px;
+  height: 64px;
+  padding: 2px 8px;
 
-  border-radius: 2px;
   text-transform: uppercase;
   ${transition()};
 
+  border-radius: 2px;
   border: 1px solid
-    ${({ disabled }: { disabled: boolean }) =>
-      disabled ? 'transaparent' : palette('gray', 0)};
+    ${({ disabled, border }) =>
+      disabled || !border ? 'transaparent' : palette('gray', 0)};
 
   &:hover {
     border-color: ${palette('success', 0)};
@@ -24,16 +28,16 @@ export const AssetInputWrapper = styled.div`
 
   .asset-input-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
 
     .asset-input-title {
-      font-size: 11px;
-      color: ${palette('text', 2)};
+      font-size: 13px;
+      color: ${palette('text', 0)};
       letter-spacing: 1px;
+      margin-right: 4px;
     }
-    .asset-input-header-label {
-      font-size: 11px;
+    .asset-input-info {
+      font-size: 13px;
       color: ${palette('text', 2)};
       letter-spacing: 1px;
     }

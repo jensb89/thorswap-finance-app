@@ -3,7 +3,9 @@ import { Keystore } from '@xchainjs/xchain-crypto'
 import { Asset } from 'multichain-sdk'
 
 const THEME_TYPE = 'THEME_TYPE'
-const ASGARDEX_KEYSTORE = 'ASGARDEX_KEYSTORE'
+const THORSWAP_MULTICHAIN_KEYSTORE = 'THORSWAP_MULTICHAIN_KEYSTORE'
+const THORSWAP_MULTICHAIN_ADDR = 'THORSWAP_MULTICHAIN_ADDR'
+
 const BASE_CURRENCY = 'BASE_CURRENCY'
 
 export const saveBaseCurrency = (currency: string) => {
@@ -21,18 +23,32 @@ export const saveTheme = (themeType: ThemeType) => {
 }
 
 export const getTheme = (): ThemeType => {
-  return (localStorage.getItem(THEME_TYPE) as ThemeType) || ThemeType.LIGHT
+  return (localStorage.getItem(THEME_TYPE) as ThemeType) || ThemeType.DARK
 }
 
 export const saveKeystore = (keystore: Keystore) => {
-  localStorage.setItem(ASGARDEX_KEYSTORE, JSON.stringify(keystore))
+  sessionStorage.setItem(THORSWAP_MULTICHAIN_KEYSTORE, JSON.stringify(keystore))
 }
 
 export const getKeystore = (): Keystore | null => {
-  const item = localStorage.getItem(ASGARDEX_KEYSTORE)
+  const item = sessionStorage.getItem(THORSWAP_MULTICHAIN_KEYSTORE)
 
   if (item) {
     return JSON.parse(item) as Keystore
+  }
+
+  return null
+}
+
+export const saveAddress = (address: string) => {
+  sessionStorage.setItem(THORSWAP_MULTICHAIN_ADDR, address)
+}
+
+export const getAddress = (): string | null => {
+  const item = sessionStorage.getItem(THORSWAP_MULTICHAIN_ADDR)
+
+  if (item) {
+    return item
   }
   return null
 }

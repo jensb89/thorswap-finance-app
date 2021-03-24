@@ -6,7 +6,7 @@ import { media } from 'helpers/style'
 
 const { Content } = AntLayout
 
-export const LayoutWrapper = styled(AntLayout)``
+export const LayoutWrapper = styled.div``
 
 export const ContentWrapper = styled(Content)<{ transparent: boolean }>`
   display: flex;
@@ -14,14 +14,14 @@ export const ContentWrapper = styled(Content)<{ transparent: boolean }>`
 
   background: ${(props) =>
     props.transparent ? palette('background', 3) : palette('background', 3)};
-  min-height: calc(100vh - 120px);
-  margin-top: 70px;
-  padding: 10px;
 
+  min-height: calc(100vh - 230px);
+  padding: 10px 10px 0px 10px;
   ${media.sm`
-    padding: 20px;
+    padding: 10px 20px 0px 20px;
   `}
   ${media.md`
-    padding: 30px;
+    padding: 10px 30px 0px 30px;
+    min-height: calc(100vh - 146px);
   `}
 `

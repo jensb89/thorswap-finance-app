@@ -1,15 +1,22 @@
-import { Label } from 'components'
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
+
+import { media } from 'helpers/style'
+
+import { Label, CoreButton } from '../../UIElements'
 
 export const Container = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
 
-  margin-top: 40px;
+  padding: 0 8px;
+  ${media.sm`
+    padding: 0 20px;
+  `}
+
+  margin-top: 10px;
 
   .ant-form {
     display: flex;
@@ -20,7 +27,6 @@ export const Container = styled.div`
 `
 
 export const Content = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
   width: 300px;
@@ -51,23 +57,23 @@ export const PasswordInput = styled.div`
 `
 
 export const Footer = styled.div`
-  position: absolute;
-  bottom: 0;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   width: 100%;
+
+  margin-top: 16px;
 `
 
 export const FooterContent = styled.div`
   display: flex;
   align-items: center;
+`
 
-  a {
-    margin-right: 12px;
-    text-decoration: underline;
-  }
+export const ActionButton = styled(CoreButton)`
+  border-radius: 18px;
 
-  .ant-btn {
-    margin-left: 10px;
+  div {
+    padding-left: 4px;
+    padding-right: 4px;
   }
 `

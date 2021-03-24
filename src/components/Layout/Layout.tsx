@@ -3,6 +3,7 @@ import React from 'react'
 import { Footer } from 'components/Footer'
 import { Header } from 'components/Header'
 
+import WalletModal from '../WalletModal'
 import * as Styled from './Layout.style'
 
 export type Props = {
@@ -20,6 +21,7 @@ export const Layout = (props: Props) => {
         {children}
       </Styled.ContentWrapper>
       <Footer />
+      <WalletModal />
     </Styled.LayoutWrapper>
   )
 }

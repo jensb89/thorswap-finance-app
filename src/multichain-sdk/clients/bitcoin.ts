@@ -112,11 +112,7 @@ export class BtcChain implements IBtcChain {
       const feeRate = feeRates[feeOptionKey]
 
       return await this.client.transfer({
-        asset: {
-          chain: asset.chain,
-          symbol: asset.symbol,
-          ticker: asset.ticker,
-        },
+        asset: asset.getAssetObj(),
         amount,
         recipient,
         memo,

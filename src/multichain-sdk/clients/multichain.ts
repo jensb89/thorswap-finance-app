@@ -15,18 +15,18 @@ import {
   THORChain,
   ETHChain,
   LTCChain,
-  // BCHChain,
+  BCHChain,
 } from '@xchainjs/xchain-util'
 import {
   MidgardV2,
   NetworkType as MidgardNetwork,
-  PoolAddress,
+  InboundAddressesItem,
 } from 'midgard-sdk'
 
 import { Swap, Memo, Asset, AssetAmount } from '../entities'
 import { BnbChain } from './binance'
 import { BtcChain } from './bitcoin'
-// import { BchChain } from './bitcoinCash'
+import { BchChain } from './bitcoinCash'
 import { EthChain } from './ethereum'
 import { LtcChain } from './litecoin'
 import { ThorChain } from './thorchain'
@@ -59,7 +59,7 @@ export interface IMultiChain {
   bnb: BnbChain
   eth: EthChain
   ltc: LtcChain
-  // bch: BchChain
+  bch: BchChain
 
   getPhrase(): string
   setPhrase(phrase: string): void
@@ -69,7 +69,7 @@ export interface IMultiChain {
 
   getChainClient(chain: Chain): void
 
-  getPoolAddressByChain(chain: Chain): Promise<PoolAddress>
+  getPoolAddressDataByChain(chain: Chain): Promise<InboundAddressesItem>
 
   getWalletByChain(chain: Chain): Promise<ChainWallet>
   loadAllWallets(): Promise<Wallet | null>
@@ -109,7 +109,7 @@ export class MultiChain implements IMultiChain {
 
   public eth: EthChain
 
-  // public bch: BchChain
+  public bch: BchChain
 
   public ltc: LtcChain
 
@@ -132,7 +132,7 @@ export class MultiChain implements IMultiChain {
     this.btc = new BtcChain({ network, phrase })
     this.eth = new EthChain({ network, phrase })
     this.ltc = new LtcChain({ network, phrase })
-    // this.bch = new BchChain({ network, phrase })
+    this.bch = new BchChain({ network, phrase })
   }
 
   setPhrase = (phrase: string) => {
@@ -143,7 +143,7 @@ export class MultiChain implements IMultiChain {
     this.btc.getClient().setPhrase(phrase)
     this.eth.getClient().setPhrase(phrase)
     this.ltc.getClient().setPhrase(phrase)
-    // this.bch.getClient().setPhrase(phrase)
+    this.bch.getClient().setPhrase(phrase)
 
     this.initWallet()
   }
@@ -181,10 +181,10 @@ export class MultiChain implements IMultiChain {
         address: this.ltc.getClient().getAddress(),
         balance: [],
       },
-      // BCH: {
-      //   address: this.bch.getClient().getAddress(),
-      //   balance: [],
-      // },
+      BCH: {
+        address: this.bch.getClient().getAddress(),
+        balance: [],
+      },
     }
   }
 
@@ -209,12 +209,21 @@ export class MultiChain implements IMultiChain {
     return this.midgard
   }
 
-  getPoolAddressByChain = async (chain: Chain): Promise<PoolAddress> => {
+  getPoolAddressDataByChain = async (
+    chain: Chain,
+  ): Promise<InboundAddressesItem> => {
     try {
       // for thorchain, return empty string
-      if (chain === THORChain) return THORCHAIN_POOL_ADDRESS
+      if (chain === THORChain) {
+        return {
+          address: THORCHAIN_POOL_ADDRESS,
+          halted: false,
+          chain: 'THORChain',
+          pub_key: '',
+        }
+      }
 
-      const poolAddress = await this.midgard.getInboundAddressByChain(chain)
+      const poolAddress = await this.midgard.getInboundDataByChain(chain)
 
       return poolAddress
     } catch (error) {
@@ -228,7 +237,7 @@ export class MultiChain implements IMultiChain {
     if (chain === BTCChain) return this.btc
     if (chain === ETHChain) return this.eth
     if (chain === LTCChain) return this.ltc
-    // if (chain === BCHChain) return this.bch
+    if (chain === BCHChain) return this.bch
 
     return null
   }
@@ -317,7 +326,7 @@ export class MultiChain implements IMultiChain {
     params?: TxHistoryParams,
   ): Promise<TxsPage> => {
     const chainClient = this.getChainClient(chain)
-    if (!chainClient) throw new Error('invalid chain')
+    if (!chainClient || !params) throw new Error('invalid chain')
 
     return chainClient.getClient().getTransactions(params)
   }
@@ -357,7 +366,10 @@ export class MultiChain implements IMultiChain {
    * transfer on binance chain
    * @param {TxParams} tx transfer parameter
    */
-  transfer = async (tx: TxParams, native = true): Promise<TxHash> => {
+  transfer = async (
+    tx: TxParams & { router?: string },
+    native = true,
+  ): Promise<TxHash> => {
     const { chain } = tx.assetAmount.asset
 
     // for swap, add, withdraw tx in thorchain, send deposit tx
@@ -367,6 +379,17 @@ export class MultiChain implements IMultiChain {
       native
     ) {
       return this.thor.deposit(tx)
+    }
+
+    // deposit contract for eth chain
+    if (chain === ETHChain) {
+      if (tx.router) {
+        return this.eth.deposit({
+          ...tx,
+          router: tx.router,
+        })
+      }
+      throw new Error('Invalid ETH Router')
     }
 
     const chainClient = this.getChainClient(chain)
@@ -410,9 +433,10 @@ export class MultiChain implements IMultiChain {
 
       const recipientAddress = recipient || walletAddress
 
-      const poolAddress = await this.getPoolAddressByChain(
-        swap.inputAsset.chain,
-      )
+      const {
+        address: poolAddress,
+        router,
+      } = await this.getPoolAddressDataByChain(swap.inputAsset.chain)
       const memo = Memo.swapMemo(
         swap.outputAsset,
         recipientAddress,
@@ -423,6 +447,7 @@ export class MultiChain implements IMultiChain {
         assetAmount: swap.inputAmount,
         recipient: poolAddress,
         memo,
+        router,
       })
     } catch (error) {
       return Promise.reject(error)
@@ -447,7 +472,9 @@ export class MultiChain implements IMultiChain {
       const { pool, runeAmount, assetAmount } = params
       const { chain } = pool.asset
 
-      const poolAddress = await this.getPoolAddressByChain(chain)
+      const { address: poolAddress } = await this.getPoolAddressDataByChain(
+        chain,
+      )
 
       // sym stake
       if (runeAmount && runeAmount.gt(runeAmount._0_AMOUNT)) {
@@ -509,7 +536,9 @@ export class MultiChain implements IMultiChain {
       const memo = Memo.withdrawMemo(pool.asset, percent)
       const { chain } = pool.asset
 
-      const poolAddress = await this.getPoolAddressByChain(chain)
+      const { address: poolAddress } = await this.getPoolAddressDataByChain(
+        chain,
+      )
 
       const txHash = await this.transfer({
         assetAmount: AssetAmount.getMinAmountByChain(chain),

@@ -5,7 +5,7 @@ import {
   THORChain,
   ETHChain,
   LTCChain,
-  // BCHChain,
+  BCHChain,
 } from '@xchainjs/xchain-util'
 
 import { AssetAmount, Pool, Percent } from '../entities'
@@ -49,7 +49,7 @@ export const supportedChains = [
   THORChain,
   ETHChain,
   LTCChain,
-  // BCHChain,
+  BCHChain,
 ] as const
 export type SupportedChain = typeof supportedChains[number]
 
@@ -59,3 +59,12 @@ export type ChainWallet = {
 }
 
 export type Wallet = Record<SupportedChain, ChainWallet>
+
+export type ApproveParams = {
+  spender: string
+  sender: string
+}
+
+export type DepositParams = TxParams & {
+  router: string
+}

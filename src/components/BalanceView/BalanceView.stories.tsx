@@ -36,9 +36,9 @@ Default.args = {
       address: 'ltcaddress123',
       balance: [],
     },
-    // BCH: {
-    //   address: 'bchaddress123',
-    //   balance: [],
-    // },
+    BCH: {
+      address: 'bchaddress123',
+      balance: [],
+    },
   },
 }

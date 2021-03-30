@@ -4,6 +4,7 @@ import {
   THORChain,
   ETHChain,
   LTCChain,
+  BCHChain,
   Chain,
 } from '@xchainjs/xchain-util'
 import BigNumber from 'bignumber.js'
@@ -74,10 +75,18 @@ export class AssetAmount extends Amount implements IAssetAmount {
         Amount.fromBaseAmount(0, Asset.ETH().decimal),
       )
     }
+    // 1000 satoshi
     if (chain === LTCChain) {
       return new AssetAmount(
         Asset.LTC(),
-        Amount.fromBaseAmount(1, Asset.LTC().decimal),
+        Amount.fromBaseAmount(1000, Asset.LTC().decimal),
+      )
+    }
+    // 1000 satoshi
+    if (chain === BCHChain) {
+      return new AssetAmount(
+        Asset.BCH(),
+        Amount.fromBaseAmount(1000, Asset.BCH().decimal),
       )
     }
 

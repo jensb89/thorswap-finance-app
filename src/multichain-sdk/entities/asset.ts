@@ -12,7 +12,9 @@ import {
   AssetBTC,
   AssetETH,
   AssetLTC,
+  AssetBCH,
   AssetRuneNative,
+  BCHChain,
 } from '@xchainjs/xchain-util'
 
 import {
@@ -22,9 +24,16 @@ import {
   BTC_DECIMAL,
   ETH_DECIMAL,
   LTC_DECIMAL,
+  BCH_DECIMAL,
 } from '../constants/decimals'
 
 export type AssetNetwork = 'mainnet' | 'testnet'
+
+export type AssetObj = {
+  chain: string
+  symbol: string
+  ticker: string
+}
 
 export interface IAsset {
   readonly chain: Chain
@@ -34,6 +43,7 @@ export interface IAsset {
 
   // TODO: add asset icon url
 
+  getAssetObj(): AssetObj
   toString(): string
   currencySymbol(): string
   eq(asset: Asset): boolean
@@ -76,6 +86,10 @@ export class Asset implements IAsset {
     return new Asset(AssetLTC.chain, AssetLTC.symbol)
   }
 
+  public static BCH(): Asset {
+    return new Asset(AssetBCH.chain, AssetBCH.symbol)
+  }
+
   public static fromAssetString(asset: string): Asset | null {
     const { chain, symbol } = assetFromString(asset) || {}
 
@@ -91,6 +105,7 @@ export class Asset implements IAsset {
     if (chain === BTCChain) return BTC_DECIMAL
     if (chain === THORChain) return THORCHAIN_DECIMAL
     if (chain === LTCChain) return LTC_DECIMAL
+    if (chain === BCHChain) return BCH_DECIMAL
 
     // TODO: decimals are vary in the ETH chain
     if (chain === ETHChain) return ETH_DECIMAL
@@ -109,7 +124,7 @@ export class Asset implements IAsset {
     return symbol.split('-')[0]
   }
 
-  private getAssetObj() {
+  public getAssetObj() {
     return { chain: this.chain, symbol: this.symbol, ticker: this.ticker }
   }
 
@@ -136,6 +151,10 @@ export class Asset implements IAsset {
 
   isBNB(): boolean {
     return this.eq(Asset.BNB())
+  }
+
+  isETH(): boolean {
+    return this.eq(Asset.ETH())
   }
 
   sortsBefore(asset: Asset): number {

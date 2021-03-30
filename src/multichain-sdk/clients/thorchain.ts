@@ -116,11 +116,7 @@ export class ThorChain implements IThorChain {
       const amount = baseAmount(assetAmount.amount.baseAmount)
 
       return await this.client.transfer({
-        asset: {
-          chain: asset.chain,
-          symbol: asset.symbol,
-          ticker: asset.ticker,
-        },
+        asset: asset.getAssetObj(),
         amount,
         recipient,
         memo,
@@ -138,11 +134,7 @@ export class ThorChain implements IThorChain {
 
       if (memo) {
         return await this.client.deposit({
-          asset: {
-            chain: asset.chain,
-            symbol: asset.symbol,
-            ticker: asset.ticker,
-          },
+          asset: asset.getAssetObj(),
           amount,
           memo,
         })

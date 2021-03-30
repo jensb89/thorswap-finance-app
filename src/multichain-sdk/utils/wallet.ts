@@ -11,7 +11,6 @@ export const getWalletAssets = (wallet: Wallet | null) => {
 
   Object.keys(wallet).map((chain) => {
     const chainWallet = wallet[chain as SupportedChain]
-
     chainWallet.balance.forEach((data: AssetAmount) => {
       assets.push(data.asset)
     })

@@ -11,10 +11,12 @@ import type { ThunkAction } from 'redux-thunk'
 
 import rootReducer from './rootReducer'
 
+const middlewares = process.env.NODE_ENV !== 'production' ? [logger] : []
+
 const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }).concat(logger),
+    getDefaultMiddleware({ serializableCheck: false }).concat(middlewares),
   devTools: process.env.NODE_ENV === 'development',
 })
 

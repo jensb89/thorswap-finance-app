@@ -119,7 +119,9 @@ const Send = ({ sendAsset, wallet }: { sendAsset: Asset; wallet: Wallet }) => {
 
   useEffect(() => {
     const fetchPoolAddress = async () => {
-      const poolAddr = await multichain.getPoolAddressByChain(sendAsset.chain)
+      const { address: poolAddr } = await multichain.getPoolAddressDataByChain(
+        sendAsset.chain,
+      )
       setPoolAddress(poolAddr)
     }
 

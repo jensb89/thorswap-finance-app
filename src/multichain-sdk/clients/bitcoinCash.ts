@@ -1,19 +1,19 @@
-import { TxHash, Balance } from '@xchainjs/xchain-client'
-import { Client as LtcClient, Network } from '@xchainjs/xchain-litecoin'
-import { baseAmount, Chain, LTCChain } from '@xchainjs/xchain-util'
+import { Client as BchClient } from '@xchainjs/xchain-bitcoincash'
+import { TxHash, Balance, Network } from '@xchainjs/xchain-client'
+import { baseAmount, Chain, BCHChain } from '@xchainjs/xchain-util'
 
 import { AmountType, Amount, Asset, AssetAmount } from '../entities'
 import { IClient } from './client'
 import { TxParams } from './types'
 
-export interface ILtcChain extends IClient {
-  getClient(): LtcClient
+export interface IBchChain extends IClient {
+  getClient(): BchClient
 }
 
-export class LtcChain implements ILtcChain {
+export class BchChain implements IBchChain {
   private balances: AssetAmount[] = []
 
-  private client: LtcClient
+  private client: BchClient
 
   public readonly chain: Chain
 
@@ -24,8 +24,8 @@ export class LtcChain implements ILtcChain {
     network?: Network
     phrase: string
   }) {
-    this.chain = LTCChain
-    this.client = new LtcClient({
+    this.chain = BCHChain
+    this.client = new BchClient({
       network,
       phrase,
     })
@@ -34,7 +34,7 @@ export class LtcChain implements ILtcChain {
   /**
    * get xchain-binance client
    */
-  getClient(): LtcClient {
+  getClient(): BchClient {
     return this.client
   }
 

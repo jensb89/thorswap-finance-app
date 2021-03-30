@@ -21,9 +21,9 @@ const useNetworkFee = (asset: Asset, txParam?: TxParams): string => {
       try {
         if (chain === ETHChain) {
           if (txParam) {
-            const ethPoolAddress = await multichain.getPoolAddressByChain(
-              ETHChain,
-            )
+            const {
+              address: ethPoolAddress,
+            } = await multichain.getPoolAddressDataByChain(ETHChain)
             const feeValue = await multichain.getFees(asset.chain, {
               ...txParam,
               recipient: ethPoolAddress,

@@ -115,11 +115,7 @@ export class BnbChain implements IBnbChain {
       const amount = baseAmount(assetAmount.amount.baseAmount)
 
       return await this.client.transfer({
-        asset: {
-          chain: asset.chain,
-          symbol: asset.symbol,
-          ticker: asset.ticker,
-        },
+        asset: asset.getAssetObj(),
         amount,
         recipient,
         memo,
@@ -143,19 +139,11 @@ export class BnbChain implements IBnbChain {
           to: recipient,
           coins: [
             {
-              asset: {
-                chain: assetAmount1.asset.chain,
-                symbol: assetAmount1.asset.symbol,
-                ticker: assetAmount1.asset.ticker,
-              },
+              asset: assetAmount1.asset.getAssetObj(),
               amount: baseAmount(assetAmount1.amount.baseAmount),
             },
             {
-              asset: {
-                chain: assetAmount2.asset.chain,
-                symbol: assetAmount2.asset.symbol,
-                ticker: assetAmount2.asset.ticker,
-              },
+              asset: assetAmount2.asset.getAssetObj(),
               amount: baseAmount(assetAmount2.amount.baseAmount),
             },
           ],

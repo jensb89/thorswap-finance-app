@@ -62,6 +62,7 @@ export interface MidgardSDKV2 {
   getConstants: () => Promise<Constants>
   getInboundAddresses: () => Promise<InboundAddressesItem[]>
   getInboundAddressByChain: (chain: string) => Promise<PoolAddress>
+  getInboundDataByChain: (chain: string) => Promise<InboundAddressesItem>
   getLastblock: () => Promise<Lastblock>
   getQueue: () => Promise<Queue>
 }
@@ -377,6 +378,27 @@ class MidgardV2 implements MidgardSDKV2 {
       if (chainAddress) {
         return chainAddress.address
       }
+      throw new Error('pool address not found')
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  getInboundDataByChain = async (
+    chain: string,
+  ): Promise<InboundAddressesItem> => {
+    try {
+      const inboundData = await this.getInboundAddresses()
+      const addresses = inboundData || []
+
+      const chainAddressData = addresses.find(
+        (item: InboundAddressesItem) => item.chain === chain,
+      )
+
+      if (chainAddressData) {
+        return chainAddressData
+      }
+
       throw new Error('pool address not found')
     } catch (error) {
       return Promise.reject(error)

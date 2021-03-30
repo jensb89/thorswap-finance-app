@@ -156,8 +156,6 @@ export class EthChain implements IEthChain {
       router,
     } = params
 
-    console.log(assetAmount, recipient, memo, router)
-
     const { asset } = assetAmount
 
     const amount = asset.isETH()

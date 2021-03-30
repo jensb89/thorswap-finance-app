@@ -39,19 +39,11 @@ export class EthChain implements IEthChain {
   }) {
     this.chain = ETHChain
 
-    const infuraCreds = INFURA_PROJECT_ID
-      ? {
-          infuraCreds: {
-            projectId: INFURA_PROJECT_ID,
-          },
-        }
-      : {}
-
     this.client = new EthClient({
       network,
       phrase,
       etherscanApiKey: ETHERSCAN_API_KEY,
-      ...infuraCreds,
+      infuraCreds: { projectId: INFURA_PROJECT_ID },
     })
   }
 

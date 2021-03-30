@@ -64,7 +64,7 @@
     "chart.js": "^2.9.4",
     "coininfo": "^5.1.0",
     "copy-to-clipboard": "^3.3.1",
-    "cosmos-client": "^0.39.2",
+    "cosmos-client": "0.39.2",
     "ethers": "^5.0.9",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",

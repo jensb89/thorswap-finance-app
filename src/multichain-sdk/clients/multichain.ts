@@ -138,12 +138,13 @@ export class MultiChain implements IMultiChain {
   setPhrase = (phrase: string) => {
     this.phrase = phrase
 
-    this.thor.getClient().setPhrase(phrase)
     this.bnb.getClient().setPhrase(phrase)
     this.btc.getClient().setPhrase(phrase)
-    this.eth.getClient().setPhrase(phrase)
     this.ltc.getClient().setPhrase(phrase)
     this.bch.getClient().setPhrase(phrase)
+
+    this.thor = new ThorChain({ network: this.network, phrase })
+    this.eth = new EthChain({ network: this.network, phrase })
 
     this.initWallet()
   }

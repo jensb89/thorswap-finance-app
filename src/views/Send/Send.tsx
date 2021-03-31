@@ -47,7 +47,20 @@ const SendView = () => {
   const { asset } = useParams<{ asset: string }>()
   const { wallet, keystore } = useWallet()
 
-  const sendAsset = Asset.fromAssetString(asset)
+  const [sendAsset, setSendAsset] = useState<Asset>()
+
+  useEffect(() => {
+    const getSendAsset = async () => {
+      const assetObj = Asset.fromAssetString(asset)
+
+      if (assetObj) {
+        await assetObj.setDecimal()
+        setSendAsset(assetObj)
+      }
+    }
+
+    getSendAsset()
+  }, [asset])
 
   if (!sendAsset) {
     return null
@@ -255,10 +268,9 @@ const Send = ({ sendAsset, wallet }: { sendAsset: Asset; wallet: Wallet }) => {
           description={sendAsset.ticker.toUpperCase()}
         />
         <Information title="Recipient" description={recipientAddress} />
-        <Information title="Memo" description={memo} />
       </Styled.ConfirmModalContent>
     )
-  }, [sendAsset, memo, recipientAddress])
+  }, [sendAsset, recipientAddress])
 
   return (
     <Styled.Container>

@@ -103,7 +103,10 @@ export const SettingsOverlay = () => {
           <StyledCol>
             <StyledRow>
               <Label>Slippage Tolerance</Label>
-              <Question tooltip="Your transaction will revert if the price changes unfavorably by more than this percentage." />
+              <Question
+                tooltip="Your transaction will revert if the price changes unfavorably by more than this percentage."
+                placement="top"
+              />
             </StyledRow>
             <StyledRow>
               {slipOptions.map((slipOption: number) => (
@@ -120,7 +123,10 @@ export const SettingsOverlay = () => {
           <StyledCol>
             <StyledRow>
               <Label>Transaction Fee</Label>
-              <Question tooltip="Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster" />
+              <Question
+                tooltip="Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster"
+                placement="top"
+              />
             </StyledRow>
             <StyledRow>
               <StyledToggleBtn

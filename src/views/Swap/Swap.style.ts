@@ -1,4 +1,4 @@
-import { Label, Panel } from 'components'
+import { Label, Panel, FancyButton } from 'components'
 import styled from 'styled-components/macro'
 import { palette } from 'styled-theme'
 
@@ -120,4 +120,8 @@ export const HeaderContent = styled.div`
 export const HeaderActions = styled.div`
   display: flex;
   align-items: center;
+`
+
+export const ApproveBtn = styled(FancyButton)`
+  margin-right: 8px;
 `

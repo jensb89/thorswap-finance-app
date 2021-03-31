@@ -36,7 +36,7 @@ export const GlobalChart = () => {
   const earningChartIndexes = useMemo(
     () =>
       isDesktopView
-        ? ['Total', 'Liquidity', 'Fee', 'Boding']
+        ? ['Total', 'Liquidity', 'Fee', 'Bonding']
         : ['Total', 'Liquidity'],
     [isDesktopView],
   )

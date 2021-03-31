@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import invariant from 'tiny-invariant'
+// import invariant from 'tiny-invariant'
 
 import { AmountType, Amount, IAmount, Rounding, NUMBER_FORMAT } from './amount'
 import { Asset } from './asset'
@@ -57,7 +57,7 @@ export class Price extends Amount {
       // set USD price for non-RUNE asset
       if (!baseAsset.isRUNE()) {
         const pool = Pool.byAsset(baseAsset, pools)
-        invariant(pool, `${baseAsset.toString()} Pool does not exist`)
+        // invariant(pool, `${baseAsset.toString()} Pool does not exist`)
 
         if (pool) {
           unitPrice = pool.assetUSDPrice.assetAmount
@@ -73,7 +73,7 @@ export class Price extends Amount {
     } else if (baseAsset.isRUNE() && !quoteAsset.isRUNE()) {
       const pool = Pool.byAsset(quoteAsset, pools)
 
-      invariant(pool, `${quoteAsset.toString()} Pool does not exist`)
+      // invariant(pool, `${quoteAsset.toString()} Pool does not exist`)
 
       if (pool) {
         unitPrice = pool.runePriceInAsset.assetAmount
@@ -81,7 +81,7 @@ export class Price extends Amount {
     } else if (!baseAsset.isRUNE() && quoteAsset.isRUNE()) {
       const pool = Pool.byAsset(baseAsset, pools)
 
-      invariant(pool, `${baseAsset.toString()} Pool does not exist`)
+      // invariant(pool, `${baseAsset.toString()} Pool does not exist`)
 
       if (pool) {
         unitPrice = pool.assetPriceInRune.assetAmount
@@ -90,7 +90,7 @@ export class Price extends Amount {
       const baseAssetPool = Pool.byAsset(baseAsset, pools)
       const quoteAssetPool = Pool.byAsset(quoteAsset, pools)
 
-      invariant(baseAssetPool && quoteAssetPool, 'Pool does not exist')
+      // invariant(baseAssetPool && quoteAssetPool, 'Pool does not exist')
 
       if (baseAssetPool && quoteAssetPool) {
         unitPrice = baseAssetPool.assetPriceInRune.div(

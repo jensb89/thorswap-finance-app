@@ -188,7 +188,7 @@ const Transaction: React.FC = (): JSX.Element => {
             value={filterInput}
             onChange={handleChangeFilterInput}
             autoComplete="off"
-            placeholder="Searcy by Address / Tx ID"
+            placeholder="Search by Address / Tx ID"
           />
         </Form>
       </FilterContainer>

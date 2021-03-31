@@ -23,5 +23,5 @@ export const ModalData = styled.div`
 `
 
 export const Button = styled(FancyButton)`
-  width: 100%;
+  width: 100% !important;
 `

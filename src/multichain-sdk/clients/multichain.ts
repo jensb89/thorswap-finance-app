@@ -7,6 +7,7 @@ import {
   Tx,
 } from '@xchainjs/xchain-client'
 import { decryptFromKeystore, Keystore } from '@xchainjs/xchain-crypto'
+import { getTokenAddress } from '@xchainjs/xchain-ethereum'
 import {
   baseAmount,
   Chain,
@@ -83,6 +84,9 @@ export interface IMultiChain {
   getTransactionData(chain: Chain, txHash: string): Promise<Tx>
 
   getFees(chain: Chain): Promise<Fees>
+
+  isAssetApproved(asset: Asset): Promise<boolean>
+  approveAsset(asset: Asset): Promise<TxHash | null>
 
   transfer(tx: TxParams, native?: boolean): Promise<TxHash>
   swap(swap: Swap, recipient?: string): Promise<TxHash>
@@ -361,6 +365,42 @@ export class MultiChain implements IMultiChain {
     }
 
     return (chainClient as NonETHChainClient).getClient().getFees()
+  }
+
+  isAssetApproved = async (asset: Asset): Promise<boolean> => {
+    if (asset.chain !== ETHChain || asset.isETH()) return true
+
+    const { router } = await this.getPoolAddressDataByChain(ETHChain)
+
+    const assetAddress = getTokenAddress(asset.getAssetObj())
+
+    if (router && assetAddress) {
+      const isApproved = await this.eth.isApproved({
+        spender: router,
+        sender: assetAddress,
+      })
+
+      return isApproved
+    }
+
+    return false
+  }
+
+  approveAsset = async (asset: Asset): Promise<TxHash | null> => {
+    if (asset.chain !== ETHChain || asset.isETH()) return null
+
+    const { router } = await this.getPoolAddressDataByChain(ETHChain)
+
+    const assetAddress = getTokenAddress(asset.getAssetObj())
+
+    if (router && assetAddress) {
+      return this.eth.approve({
+        spender: router,
+        sender: assetAddress,
+      })
+    }
+
+    return null
   }
 
   /**

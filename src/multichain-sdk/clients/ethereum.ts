@@ -1,4 +1,3 @@
-import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { TxHash, Balance, Network } from '@xchainjs/xchain-client'
 import {
   Client as EthClient,
@@ -13,6 +12,7 @@ import { ETH_DECIMAL } from 'multichain-sdk/constants'
 
 import { ETHERSCAN_API_KEY, INFURA_PROJECT_ID } from '../config'
 import { erc20ABI } from '../constants/erc20.abi'
+import { ETHAssets } from '../constants/erc20Assets'
 import { TCRopstenAbi } from '../constants/thorchain-ropsten.abi'
 import { AmountType, Amount, Asset, AssetAmount } from '../entities'
 import { IClient } from './client'
@@ -21,6 +21,8 @@ import { TxParams, ApproveParams, DepositParams } from './types'
 export interface IEthChain extends IClient {
   getClient(): EthClient
   getERC20AssetDecimal(asset: Asset): Promise<number>
+  isApproved({ spender, sender }: ApproveParams): Promise<boolean>
+  approve({ spender, sender }: ApproveParams): Promise<TxHash>
 }
 
 export class EthChain implements IEthChain {
@@ -60,20 +62,29 @@ export class EthChain implements IEthChain {
 
   loadBalance = async (): Promise<AssetAmount[]> => {
     try {
-      const balances: Balance[] = await this.client.getBalance()
+      const balances: Balance[] = await this.client.getBalance(
+        this.client.getAddress(),
+        ETHAssets,
+      )
 
-      this.balances = balances.map((data: Balance) => {
-        const { asset, amount } = data
+      this.balances = await Promise.all(
+        balances.map(async (data: Balance) => {
+          const { asset, amount } = data
 
-        const assetObj = new Asset(asset.chain, asset.symbol)
-        const amountObj = new Amount(
-          amount.amount(),
-          AmountType.BASE_AMOUNT,
-          assetObj.decimal,
-        )
+          const assetObj = new Asset(asset.chain, asset.symbol)
 
-        return new AssetAmount(assetObj, amountObj)
-      })
+          // set asset decimal
+          await assetObj.setDecimal()
+
+          const amountObj = new Amount(
+            amount.amount(),
+            AmountType.BASE_AMOUNT,
+            assetObj.decimal,
+          )
+
+          return new AssetAmount(assetObj, amountObj)
+        }),
+      )
 
       return this.balances
     } catch (error) {
@@ -197,11 +208,10 @@ export class EthChain implements IEthChain {
    * @param param0 approve params
    * @returns approved status
    */
-  approve = async ({
-    spender,
-    sender,
-  }: ApproveParams): Promise<TransactionResponse> => {
-    return this.client.approve(spender, sender)
+  approve = async ({ spender, sender }: ApproveParams): Promise<TxHash> => {
+    const response = await this.client.approve(spender, sender)
+
+    return response.hash
   }
 
   /**

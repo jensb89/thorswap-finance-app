@@ -48,8 +48,9 @@ export const getAssetBalance = (asset: Asset, wallet: Wallet): AssetAmount => {
     const { balance } = wallet?.[asset.chain as SupportedChain]
 
     return (
-      balance.find((assetData: AssetAmount) => assetData.asset.eq(asset)) ||
-      emptyAmount
+      balance.find((assetData: AssetAmount) => {
+        return assetData.asset.eq(asset)
+      }) || emptyAmount
     )
   }
 

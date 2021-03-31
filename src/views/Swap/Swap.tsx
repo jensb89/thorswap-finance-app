@@ -46,8 +46,19 @@ import { getSwapPair } from './utils'
 
 const SwapView = () => {
   const { pair } = useParams<{ pair: string }>()
+  const [swapPair, setSwapPair] = useState<Pair>()
 
-  const swapPair = getSwapPair(pair)
+  useEffect(() => {
+    const getPair = async () => {
+      const swapPairData = await getSwapPair(pair)
+
+      if (swapPairData) {
+        setSwapPair(swapPairData)
+      }
+    }
+
+    getPair()
+  }, [pair])
 
   if (swapPair) {
     const { inputAsset, outputAsset } = swapPair
@@ -80,6 +91,20 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
   const [percent, setPercent] = useState(0)
   const [recipient, setRecipient] = useState('')
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false)
+  const [visibleApproveModal, setVisibleApproveModal] = useState(false)
+
+  const [isApproved, setApproved] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    const checkApproved = async () => {
+      const approved = await multichain.isAssetApproved(inputAsset)
+      setApproved(approved)
+    }
+
+    if (wallet) {
+      checkApproved()
+    }
+  }, [inputAsset, wallet])
 
   const swap: Swap | null = useMemo(() => {
     if (poolLoading) return null
@@ -263,6 +288,31 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
     setVisibleConfirmModal(false)
   }, [])
 
+  const handleConfirmApprove = useCallback(async () => {
+    setVisibleApproveModal(false)
+
+    if (wallet) {
+      const txHash = await multichain.approveAsset(inputAsset)
+
+      if (txHash) {
+        console.log('txhash', txHash)
+        const txURL = multichain.getExplorerTxUrl(inputAsset.chain, txHash)
+
+        Notification({
+          type: 'open',
+          message: 'View Approve Tx.',
+          description: 'Transaction sent successfully!',
+          btn: (
+            <a href={txURL} target="_blank" rel="noopener noreferrer">
+              View Transaction
+            </a>
+          ),
+          duration: 20,
+        })
+      }
+    }
+  }, [inputAsset, wallet])
+
   const handleSwap = useCallback(() => {
     if (wallet && swap) {
       if (swap.hasInSufficientFee) {
@@ -275,6 +325,18 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
       }
 
       setVisibleConfirmModal(true)
+    } else {
+      Notification({
+        type: 'error',
+        message: 'Wallet Not Found',
+        description: 'Please connect wallet',
+      })
+    }
+  }, [wallet, swap])
+
+  const handleApprove = useCallback(() => {
+    if (wallet && swap) {
+      setVisibleApproveModal(true)
     } else {
       Notification({
         type: 'error',
@@ -301,7 +363,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
         <Information
           title="Slip"
           description={slipPercent.toFixed(2)}
-          error={isValidSlip}
+          error={!isValidSlip}
         />
         <Information
           title="Minimum Received"
@@ -318,6 +380,18 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
     isValidSlip,
     minReceive,
   ])
+
+  const renderApproveModal = useMemo(() => {
+    return (
+      <Styled.ConfirmModalContent>
+        <Information
+          title="Approve"
+          description={`${inputAmount.toFixed()} ${inputAsset.ticker.toUpperCase()}`}
+        />
+        <Information title="Fee" description={networkFee} />
+      </Styled.ConfirmModalContent>
+    )
+  }, [inputAmount, networkFee, inputAsset])
 
   const title = useMemo(
     () => `Swap ${inputAsset.ticker} >> ${outputAsset.ticker}`,
@@ -390,11 +464,22 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
           <Information title="Fee" description={networkFee} />
         </Styled.SwapInfo>
 
-        <Styled.ConfirmButtonContainer>
-          <FancyButton onClick={handleSwap} error={!isValidSwap}>
-            Swap
-          </FancyButton>
-        </Styled.ConfirmButtonContainer>
+        {isApproved !== null && (
+          <Styled.ConfirmButtonContainer>
+            {!isApproved && (
+              <Styled.ApproveBtn onClick={handleApprove} error={!isValidSwap}>
+                Approve
+              </Styled.ApproveBtn>
+            )}
+            <FancyButton
+              disabled={!isApproved}
+              onClick={handleSwap}
+              error={!isValidSwap}
+            >
+              Swap
+            </FancyButton>
+          </Styled.ConfirmButtonContainer>
+        )}
       </Styled.ContentPanel>
 
       <ConfirmModal
@@ -403,6 +488,13 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
         onCancel={handleCancel}
       >
         {renderConfirmModalContent}
+      </ConfirmModal>
+      <ConfirmModal
+        visible={visibleApproveModal}
+        onOk={handleConfirmApprove}
+        onCancel={() => setVisibleApproveModal(false)}
+      >
+        {renderApproveModal}
       </ConfirmModal>
     </Styled.Container>
   )

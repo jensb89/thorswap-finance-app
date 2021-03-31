@@ -2,7 +2,7 @@ import { Asset } from 'multichain-sdk'
 
 import { Pair } from './types'
 
-export const getSwapPair = (pair: string): Pair | null => {
+export const getSwapPair = async (pair: string): Promise<Pair | null> => {
   if (!pair || pair.split('_').length !== 2) {
     return null
   }
@@ -16,6 +16,9 @@ export const getSwapPair = (pair: string): Pair | null => {
   const outputAsset = Asset.fromAssetString(output)
 
   if (!inputAsset || !outputAsset) return null
+
+  await inputAsset.setDecimal()
+  await outputAsset.setDecimal()
 
   return {
     inputAsset,

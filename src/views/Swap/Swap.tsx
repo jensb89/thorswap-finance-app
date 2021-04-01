@@ -2,10 +2,9 @@ import React, { useEffect, useMemo, useState, useCallback } from 'react'
 
 import { useHistory, useParams } from 'react-router'
 
-import { SwapOutlined, BarChartOutlined } from '@ant-design/icons'
+import { SwapOutlined } from '@ant-design/icons'
 import {
-  ContentTitle,
-  Helmet,
+  PanelView,
   AssetInputCard,
   Slider,
   ConfirmModal,
@@ -13,12 +12,7 @@ import {
   Notification,
   IconButton,
   FancyButton,
-  SettingsOverlay,
   PriceRate,
-  ExternalButtonLink,
-  Tooltip,
-  CoreButton,
-  Label,
 } from 'components'
 import {
   getWalletAssets,
@@ -41,7 +35,7 @@ import useNetworkFee from 'hooks/useNetworkFee'
 
 import { multichain } from 'services/multichain'
 
-import { getSwapRoute, getPoolDetailRouteFromAsset } from 'settings/constants'
+import { getSwapRoute } from 'settings/constants'
 
 import * as Styled from './Swap.style'
 import { Pair } from './types'
@@ -410,117 +404,87 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
   )
 
   return (
-    <Styled.Container>
-      <Helmet title={title} content={title} />
-      <ContentTitle>
-        <Styled.HeaderContent>
-          <Styled.HeaderMenu>
-            <CoreButton>
-              <Label size="big" weight="bold" color="primary">
-                SWAP
-              </Label>
-            </CoreButton>
-            <CoreButton>
-              <Label size="big">PROVIDE</Label>
-            </CoreButton>
-            <CoreButton>
-              <Label size="big">WITHDRAW</Label>
-            </CoreButton>
-          </Styled.HeaderMenu>
-          <Styled.HeaderActions>
-            <ExternalButtonLink link={getPoolDetailRouteFromAsset(poolAsset)}>
-              <Tooltip tooltip="View Pool Analytics ↗" placement="top">
-                <Styled.PoolDetailLink>
-                  <BarChartOutlined />
-                </Styled.PoolDetailLink>
-              </Tooltip>
-            </ExternalButtonLink>
-            <SettingsOverlay />
-          </Styled.HeaderActions>
-        </Styled.HeaderContent>
-      </ContentTitle>
-      <Styled.ContentPanel>
-        <AssetInputCard
-          title="send"
-          asset={inputAsset}
-          assets={walletAssets}
-          amount={inputAmount}
-          balance={inputAssetBalance}
-          onChange={handleChangeInputAmount}
-          onSelect={handleSelectInputAsset}
-          onMax={handleSelectMax}
-          usdPrice={inputAssetPriceInUSD}
-        />
-        <Styled.ToolContainer>
-          <Styled.SliderWrapper>
-            <Slider value={percent} onChange={handleChangePercent} withLabel />
-          </Styled.SliderWrapper>
-          <Styled.SwitchPair>
-            <IconButton onClick={handleSwitchPair}>
-              <SwapOutlined />
-            </IconButton>
-          </Styled.SwitchPair>
-        </Styled.ToolContainer>
-        <AssetInputCard
-          title="receive"
-          asset={outputAsset}
-          assets={poolAssets}
-          amount={outputAmount}
-          onSelect={handleSelectOutputAsset}
-          inputProps={{ disabled: true }}
-          usdPrice={outputAssetPriceInUSD}
-        />
+    <PanelView meta={title} poolAsset={poolAsset} type="swap">
+      <AssetInputCard
+        title="send"
+        asset={inputAsset}
+        assets={walletAssets}
+        amount={inputAmount}
+        balance={inputAssetBalance}
+        onChange={handleChangeInputAmount}
+        onSelect={handleSelectInputAsset}
+        onMax={handleSelectMax}
+        usdPrice={inputAssetPriceInUSD}
+      />
+      <Styled.ToolContainer>
+        <Styled.SliderWrapper>
+          <Slider value={percent} onChange={handleChangePercent} withLabel />
+        </Styled.SliderWrapper>
+        <Styled.SwitchPair>
+          <IconButton onClick={handleSwitchPair}>
+            <SwapOutlined />
+          </IconButton>
+        </Styled.SwitchPair>
+      </Styled.ToolContainer>
+      <AssetInputCard
+        title="receive"
+        asset={outputAsset}
+        assets={poolAssets}
+        amount={outputAmount}
+        onSelect={handleSelectOutputAsset}
+        inputProps={{ disabled: true }}
+        usdPrice={outputAssetPriceInUSD}
+      />
 
-        <Styled.SwapInfo>
-          <PriceRate
-            price={swap?.price}
-            inputAsset={swap?.inputAsset}
-            outputAsset={swap?.outputAsset}
-          />
-          <Information
-            title="Slip"
-            description={slipPercent.toFixed(3)}
-            error={!isValidSlip}
-            tooltip="The difference between the market price and estimated price due to trade size."
-          />
-          <Information
-            title="Minimum Received"
-            description={`${minReceive.toFixed(
-              6,
-            )} ${outputAsset.ticker.toUpperCase()}`}
-            tooltip="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed."
-          />
-          <Information
-            title="Network Fee"
-            description={networkFee}
-            tooltip="Gas fee to submit the transaction using the thorchain protocol"
-          />
-        </Styled.SwapInfo>
+      <Styled.SwapInfo>
+        <PriceRate
+          price={swap?.price}
+          inputAsset={swap?.inputAsset}
+          outputAsset={swap?.outputAsset}
+        />
+        <Information
+          title="Slip"
+          description={slipPercent.toFixed(3)}
+          error={!isValidSlip}
+          tooltip="The difference between the market price and estimated price due to trade size."
+        />
+        <Information
+          title="Minimum Received"
+          description={`${minReceive.toFixed(
+            6,
+          )} ${outputAsset.ticker.toUpperCase()}`}
+          tooltip="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed."
+        />
+        <Information
+          title="Network Fee"
+          description={networkFee}
+          tooltip="Gas fee to submit the transaction using the thorchain protocol"
+        />
+      </Styled.SwapInfo>
 
-        {isApproved !== null && (
-          <Styled.ConfirmButtonContainer>
-            {!isApproved && (
-              <Styled.ApproveBtn onClick={handleApprove} error={!isValidSwap}>
-                Approve
-              </Styled.ApproveBtn>
-            )}
-            <FancyButton
-              disabled={!isApproved}
-              onClick={handleSwap}
-              error={!isValidSwap}
-            >
-              Swap
-            </FancyButton>
-          </Styled.ConfirmButtonContainer>
-        )}
-        {!wallet && (
-          <Styled.ConfirmButtonContainer>
-            <FancyButton onClick={handleSwap} error={!isValidSwap}>
-              Swap
-            </FancyButton>
-          </Styled.ConfirmButtonContainer>
-        )}
-      </Styled.ContentPanel>
+      {isApproved !== null && (
+        <Styled.ConfirmButtonContainer>
+          {!isApproved && (
+            <Styled.ApproveBtn onClick={handleApprove} error={!isValidSwap}>
+              Approve
+            </Styled.ApproveBtn>
+          )}
+          <FancyButton
+            disabled={!isApproved}
+            onClick={handleSwap}
+            error={!isValidSwap}
+          >
+            Swap
+          </FancyButton>
+        </Styled.ConfirmButtonContainer>
+      )}
+      {!wallet && (
+        <Styled.ConfirmButtonContainer>
+          <FancyButton onClick={handleSwap} error={!isValidSwap}>
+            Swap
+          </FancyButton>
+        </Styled.ConfirmButtonContainer>
+      )}
 
       <ConfirmModal
         visible={visibleConfirmModal}
@@ -536,7 +500,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
       >
         {renderApproveModal}
       </ConfirmModal>
-    </Styled.Container>
+    </PanelView>
   )
 }
 

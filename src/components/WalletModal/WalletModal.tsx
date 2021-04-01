@@ -16,6 +16,7 @@ const WalletModal = () => {
     unlockWallet,
     setIsConnectModalOpen,
     isConnectModalOpen,
+    walletLoading,
   } = useWallet()
 
   const handleConnect = useCallback(
@@ -41,6 +42,7 @@ const WalletModal = () => {
           <ConnectKeystoreView
             onConnect={handleConnect}
             toggleMode={toggleMode}
+            loading={walletLoading}
           />
         )}
         {!isConnectMode && (

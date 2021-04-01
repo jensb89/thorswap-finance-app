@@ -16,9 +16,10 @@ import * as Styled from './Keystore.style'
 type Props = {
   onConnect: (keystore: Keystore, phrase: string) => void
   toggleMode: () => void
+  loading?: boolean
 }
 
-const KeystoreView = ({ onConnect, toggleMode }: Props) => {
+const KeystoreView = ({ onConnect, toggleMode, loading = false }: Props) => {
   const [keystore, setKeystore] = useState<Keystore>()
   const [password, setPassword] = useState<string>('')
   const [invalideStatus, setInvalideStatus] = useState(false)
@@ -130,7 +131,7 @@ const KeystoreView = ({ onConnect, toggleMode }: Props) => {
               onClick={unlock}
               disabled={!ready}
               round
-              loading={processing}
+              loading={processing || loading}
               fixedWidth={false}
             >
               Unlock

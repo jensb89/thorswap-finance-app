@@ -65,7 +65,7 @@ export const WalletDrawer = (props: WalletDrawerProps) => {
         </Label>
         <SyncOutlined spin={walletLoading} />
       </Styled.Refresh>
-      {!wallet && <Label>Please connect wallet.</Label>}
+      {!wallet && !walletLoading && <Label>Please connect wallet.</Label>}
       {wallet && (
         <BalanceView
           wallet={wallet}

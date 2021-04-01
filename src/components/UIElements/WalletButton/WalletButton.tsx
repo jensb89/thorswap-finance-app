@@ -4,14 +4,17 @@ import { Button, ButtonProps } from '../Button'
 
 type ComponentProps = {
   connected?: boolean
+  loading?: boolean
 }
 
 export type Props = ComponentProps & ButtonProps
 
 export const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
-  const { connected = '', ...otherProps } = props
+  const { connected = false, loading = false, ...otherProps } = props
 
   const getBtnValue = () => {
+    if (loading) return 'Loading...'
+
     if (!connected) {
       return (
         <span style={{ display: 'flex', alignItems: 'center' }}>Connect</span>

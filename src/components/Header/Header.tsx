@@ -29,7 +29,7 @@ export const Header = () => {
   const history = useHistory()
 
   const { themeType, baseCurrencyAsset, setBaseCurrency } = useApp()
-  const { wallet, setIsConnectModalOpen } = useWallet()
+  const { wallet, walletLoading, setIsConnectModalOpen } = useWallet()
   const { refreshPage } = useGlobalState()
   const { isValidFundCaps, globalRunePooledStatus, statusColor } = useNetwork()
 
@@ -42,12 +42,12 @@ export const Header = () => {
   }, [refreshPage])
 
   const handleClickWalletBtn = useCallback(() => {
-    if (!isConnected) {
+    if (!isConnected && !walletLoading) {
       setIsConnectModalOpen(true)
     } else {
       setDrawerVisible(true)
     }
-  }, [isConnected, setIsConnectModalOpen])
+  }, [isConnected, walletLoading, setIsConnectModalOpen])
 
   const handleCloseDrawer = useCallback(() => {
     setDrawerVisible(false)
@@ -102,6 +102,7 @@ export const Header = () => {
         <Styled.WalletBtn
           onClick={handleClickWalletBtn}
           connected={isConnected}
+          loading={walletLoading}
         />
         <WalletDrawer visible={drawerVisible} onClose={handleCloseDrawer} />
         <Refresh onRefresh={refreshPage} />

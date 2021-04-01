@@ -11,7 +11,7 @@ import { useOnClickOutside } from 'hooks/useOnClickOutside'
 
 import { media } from 'helpers/style'
 
-import { Button, CoreButton, Label, Question } from '../UIElements'
+import { Button, CoreButton, Label, Question, Tooltip } from '../UIElements'
 
 const StyledMenuIcon = styled(Settings)`
   height: 20px;
@@ -96,7 +96,9 @@ export const SettingsOverlay = () => {
   return (
     <StyledMenu ref={node as any}>
       <CoreButton onClick={toggle}>
-        <StyledMenuIcon />
+        <Tooltip tooltip="Setting" placement="top">
+          <StyledMenuIcon />
+        </Tooltip>
       </CoreButton>
       {open && (
         <MenuFlyout>

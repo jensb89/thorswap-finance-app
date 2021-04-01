@@ -66,9 +66,10 @@ export const MaxBtn = styled(Button).attrs({
   fixedWidth: false,
 })`
   &.ant-btn {
-    border-radius: 8px;
     width: 44px;
     margin-bottom: 6px;
+    padding-left: 18px;
+    border-radius: 8px;
   }
 `
 

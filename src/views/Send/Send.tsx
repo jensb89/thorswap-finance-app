@@ -268,9 +268,14 @@ const Send = ({ sendAsset, wallet }: { sendAsset: Asset; wallet: Wallet }) => {
           description={sendAsset.ticker.toUpperCase()}
         />
         <Information title="Recipient" description={recipientAddress} />
+        <Information
+          title="Network Fee"
+          description={networkFee}
+          tooltip="Gas fee to send the transaction, There's no extra charges from THORChain Protocol"
+        />
       </Styled.ConfirmModalContent>
     )
-  }, [sendAsset, recipientAddress])
+  }, [networkFee, sendAsset, recipientAddress])
 
   return (
     <Styled.Container>
@@ -360,7 +365,11 @@ const Send = ({ sendAsset, wallet }: { sendAsset: Asset; wallet: Wallet }) => {
         </Styled.FormItem>
 
         <Styled.FormItem>
-          <Information title="Network Fee" description={networkFee} />
+          <Information
+            title="Network Fee"
+            description={networkFee}
+            tooltip="Gas fee to send the transaction, There's no extra charges from THORChain Protocol"
+          />
         </Styled.FormItem>
 
         <Styled.ConfirmButtonContainer>

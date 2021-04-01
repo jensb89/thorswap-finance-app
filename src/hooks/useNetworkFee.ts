@@ -10,7 +10,8 @@ import useDebounce from './useDebounce'
 const useNetworkFee = (asset: Asset, txParam?: TxParams): string => {
   const [networkFee, setNetworkFee] = useState('')
 
-  const debouncedTxParams = useDebounce(txParam, 1000)
+  // debounce tx param per 5 secs
+  const debouncedTxParams = useDebounce(txParam, 5000)
 
   useEffect(() => {
     const getFeeValue = async () => {

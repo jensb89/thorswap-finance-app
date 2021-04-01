@@ -33,10 +33,15 @@ export const useWallet = () => {
     [dispatch],
   )
 
+  const disconnectWallet = useCallback(() => {
+    dispatch(actions.disconnect())
+  }, [dispatch])
+
   return {
     ...walletState,
     ...walletActions,
     unlockWallet,
     setIsConnectModalOpen,
+    disconnectWallet,
   }
 }

@@ -2,6 +2,8 @@ import { Drawer as AntDrawer } from 'antd'
 import styled from 'styled-components/macro'
 import { palette } from 'styled-theme'
 
+import { CoreButton } from '../UIElements'
+
 export const Drawer = styled(AntDrawer)`
   .ant-drawer-body {
     height: 100%;
@@ -10,7 +12,17 @@ export const Drawer = styled(AntDrawer)`
   }
 `
 
-export const Refresh = styled.div`
+export const ActionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    margin-right: 4px;
+  }
+`
+
+export const Refresh = styled(CoreButton)`
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -13,5 +13,6 @@ export const TooltipContent = styled.div`
 
 export const InfoIcon = styled(InfoCircleOutlined)`
   color: ${(props) => palette(props.color, 0)};
-  margin: 0 10px;
+  margin: 0 8px;
+  font-size: 16px;
 `

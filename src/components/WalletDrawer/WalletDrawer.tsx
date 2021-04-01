@@ -11,6 +11,7 @@ import { useWallet } from 'redux/wallet/hooks'
 import { getSendRoute } from 'settings/constants'
 
 import { BalanceView } from '../BalanceView'
+import { CoreButton } from '../UIElements/CoreButton'
 import { Label } from '../UIElements/Label'
 import { Drawer } from './WalletDrawer.style'
 import * as Styled from './WalletDrawer.style'
@@ -31,6 +32,7 @@ export const WalletDrawer = (props: WalletDrawerProps) => {
     getWalletByChain,
     walletLoading,
     wallet,
+    disconnectWallet,
   } = useWallet()
 
   const handleRefresh = useCallback(() => {
@@ -59,12 +61,20 @@ export const WalletDrawer = (props: WalletDrawerProps) => {
       closable={false}
       width={350}
     >
-      <Styled.Refresh onClick={handleRefresh}>
-        <Label size="big" color="primary">
-          Refresh
-        </Label>
-        <SyncOutlined spin={walletLoading} />
-      </Styled.Refresh>
+      <Styled.ActionHeader>
+        <Styled.Refresh onClick={handleRefresh}>
+          <Label size="big" color="primary">
+            Refresh
+          </Label>
+          <SyncOutlined spin={walletLoading} />
+        </Styled.Refresh>
+        <CoreButton onClick={disconnectWallet}>
+          <Label size="big" color="warning">
+            Disconnect
+          </Label>
+        </CoreButton>
+      </Styled.ActionHeader>
+
       {!wallet && !walletLoading && <Label>Please connect wallet.</Label>}
       {wallet && (
         <BalanceView

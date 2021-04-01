@@ -18,6 +18,11 @@ const slice = createSlice({
   name: 'wallet',
   initialState,
   reducers: {
+    disconnect(state) {
+      state.keystore = null
+      state.wallet = null
+      state.walletLoading = false
+    },
     connectWallet(state, action: PayloadAction<Keystore>) {
       const keystore = action.payload
 

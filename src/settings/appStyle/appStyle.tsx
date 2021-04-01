@@ -111,7 +111,7 @@ export const AppHolder = styled.div`
     .ant-popover-arrow {
       border-bottom: none;
       border-right: none;
-      border-color: ${palette('gray', 0)};
+      border-color: transparent;
     }
     .ant-popover-inner {
       border: 1px solid ${palette('gray', 0)};

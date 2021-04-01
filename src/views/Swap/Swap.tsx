@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 
 import { useHistory, useParams } from 'react-router'
-import { Link } from 'react-router-dom'
 
-import { SwapOutlined } from '@ant-design/icons'
+import { SwapOutlined, BarChartOutlined } from '@ant-design/icons'
 import {
   ContentTitle,
   Helmet,
@@ -13,9 +12,13 @@ import {
   Information,
   Notification,
   IconButton,
-  Button,
   FancyButton,
   SettingsOverlay,
+  PriceRate,
+  ExternalButtonLink,
+  Tooltip,
+  CoreButton,
+  Label,
 } from 'components'
 import {
   getWalletAssets,
@@ -141,16 +144,6 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
 
   const slipPercent: Percent = useMemo(
     () => (swap ? swap.slip : new Percent(0)),
-    [swap],
-  )
-
-  const rate: string = useMemo(
-    () =>
-      swap
-        ? `1 ${swap.inputAsset.ticker} = ${swap.price.toFixedInverted(3)} ${
-            swap.outputAsset.ticker
-          }`
-        : '',
     [swap],
   )
 
@@ -317,7 +310,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
     if (wallet && swap) {
       if (swap.hasInSufficientFee) {
         Notification({
-          type: 'error',
+          type: 'info',
           message: 'Swap Insufficient Fee',
           description: 'Input amount is not enough to cover the fee',
         })
@@ -327,7 +320,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
       setVisibleConfirmModal(true)
     } else {
       Notification({
-        type: 'error',
+        type: 'info',
         message: 'Wallet Not Found',
         description: 'Please connect wallet',
       })
@@ -339,7 +332,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
       setVisibleApproveModal(true)
     } else {
       Notification({
-        type: 'error',
+        type: 'info',
         message: 'Wallet Not Found',
         description: 'Please connect wallet',
       })
@@ -362,12 +355,21 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
         />
         <Information
           title="Slip"
-          description={slipPercent.toFixed(2)}
+          description={slipPercent.toFixed(3)}
           error={!isValidSlip}
+          tooltip="The difference between the market price and estimated price due to trade size."
         />
         <Information
           title="Minimum Received"
-          description={minReceive.toFixed(2)}
+          description={`${minReceive.toFixed(
+            6,
+          )} ${outputAsset.ticker.toUpperCase()}`}
+          tooltip="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed."
+        />
+        <Information
+          title="Network Fee"
+          description={networkFee}
+          tooltip="Gas fee to submit the transaction using the thorchain protocol"
         />
       </Styled.ConfirmModalContent>
     )
@@ -379,19 +381,24 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
     slipPercent,
     isValidSlip,
     minReceive,
+    networkFee,
   ])
 
   const renderApproveModal = useMemo(() => {
     return (
       <Styled.ConfirmModalContent>
         <Information
-          title="Approve"
-          description={`${inputAmount.toFixed()} ${inputAsset.ticker.toUpperCase()}`}
+          title="Approve Transaction"
+          description={`${inputAsset.ticker.toUpperCase()}`}
         />
-        <Information title="Fee" description={networkFee} />
+        <Information
+          title="Network Fee"
+          description={networkFee}
+          tooltip="Gas fee to submit the transaction using the thorchain protocol"
+        />
       </Styled.ConfirmModalContent>
     )
-  }, [inputAmount, networkFee, inputAsset])
+  }, [networkFee, inputAsset])
 
   const title = useMemo(
     () => `Swap ${inputAsset.ticker} >> ${outputAsset.ticker}`,
@@ -407,13 +414,27 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
       <Helmet title={title} content={title} />
       <ContentTitle>
         <Styled.HeaderContent>
-          <div>{title}</div>
+          <Styled.HeaderMenu>
+            <CoreButton>
+              <Label size="big" weight="bold" color="primary">
+                SWAP
+              </Label>
+            </CoreButton>
+            <CoreButton>
+              <Label size="big">PROVIDE</Label>
+            </CoreButton>
+            <CoreButton>
+              <Label size="big">WITHDRAW</Label>
+            </CoreButton>
+          </Styled.HeaderMenu>
           <Styled.HeaderActions>
-            <Link to={getPoolDetailRouteFromAsset(poolAsset)}>
-              <Button typevalue="outline" fixedWidth={false} round>
-                Add
-              </Button>
-            </Link>
+            <ExternalButtonLink link={getPoolDetailRouteFromAsset(poolAsset)}>
+              <Tooltip tooltip="View Pool Analytics ↗" placement="top">
+                <Styled.PoolDetailLink>
+                  <BarChartOutlined />
+                </Styled.PoolDetailLink>
+              </Tooltip>
+            </ExternalButtonLink>
             <SettingsOverlay />
           </Styled.HeaderActions>
         </Styled.HeaderContent>
@@ -451,17 +472,29 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
         />
 
         <Styled.SwapInfo>
-          <Information title="Rate" description={rate} />
+          <PriceRate
+            price={swap?.price}
+            inputAsset={swap?.inputAsset}
+            outputAsset={swap?.outputAsset}
+          />
           <Information
             title="Slip"
-            description={slipPercent.toFixed(2)}
+            description={slipPercent.toFixed(3)}
             error={!isValidSlip}
+            tooltip="The difference between the market price and estimated price due to trade size."
           />
           <Information
             title="Minimum Received"
-            description={minReceive.toFixed(2)}
+            description={`${minReceive.toFixed(
+              6,
+            )} ${outputAsset.ticker.toUpperCase()}`}
+            tooltip="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed."
           />
-          <Information title="Fee" description={networkFee} />
+          <Information
+            title="Network Fee"
+            description={networkFee}
+            tooltip="Gas fee to submit the transaction using the thorchain protocol"
+          />
         </Styled.SwapInfo>
 
         {isApproved !== null && (
@@ -476,6 +509,13 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
               onClick={handleSwap}
               error={!isValidSwap}
             >
+              Swap
+            </FancyButton>
+          </Styled.ConfirmButtonContainer>
+        )}
+        {!wallet && (
+          <Styled.ConfirmButtonContainer>
+            <FancyButton onClick={handleSwap} error={!isValidSwap}>
               Swap
             </FancyButton>
           </Styled.ConfirmButtonContainer>

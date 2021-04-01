@@ -35,7 +35,7 @@ export const ContentPanel = styled.div`
 export const ToolContainer = styled.div`
   display: flex;
 
-  height: 80px;
+  height: 60px;
 `
 
 export const SliderWrapper = styled.div`
@@ -114,7 +114,12 @@ export const HeaderContent = styled.div`
   align-items: center;
   flex: 1;
 
-  padding: 0 20px;
+  padding: 0 10px;
+`
+
+export const HeaderMenu = styled.div`
+  display: flex;
+  align-items: center;
 `
 
 export const HeaderActions = styled.div`
@@ -124,4 +129,13 @@ export const HeaderActions = styled.div`
 
 export const ApproveBtn = styled(FancyButton)`
   margin-right: 8px;
+`
+
+export const PoolDetailLink = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  color: ${palette('text', 0)};
 `

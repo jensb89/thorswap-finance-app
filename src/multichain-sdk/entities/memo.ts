@@ -24,11 +24,17 @@ export class Memo {
     return `STAKE:${chain}.${symbol}:${address}`
   }
 
-  public static withdrawMemo(asset: Asset, percent: Percent) {
+  public static withdrawMemo(
+    asset: Asset,
+    percent: Percent,
+    targetAsset?: Asset,
+  ) {
     const { chain } = asset
     const { symbol } = asset
 
+    const target = targetAsset ? `:${targetAsset.toString()}` : ''
+
     // multiply percent by 100
-    return `WITHDRAW:${chain}.${symbol}:${percent.mul(100).toFixed(0)}`
+    return `WITHDRAW:${chain}.${symbol}:${percent.mul(100).toFixed(0)}${target}`
   }
 }

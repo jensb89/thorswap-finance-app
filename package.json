@@ -15,6 +15,7 @@
     "start": "react-scripts start",
     "build": "react-scripts --max_old_space_size=4096 build",
     "build:dev": "yarn build && yarn release-storybook",
+    "deploy": "yarn build && netlify deploy --prod",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",

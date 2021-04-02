@@ -260,7 +260,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
       Notification({
         type: 'open',
         message: 'View Send Tx.',
-        description: 'Transaction sent successfully!',
+        description: 'Transaction submitted successfully!',
         btn: (
           <a href={txURL} target="_blank" rel="noopener noreferrer">
             View Transaction

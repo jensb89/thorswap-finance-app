@@ -7,6 +7,7 @@ import { multichain } from 'services/multichain'
 
 import useDebounce from './useDebounce'
 
+// TODO: update network fee logic
 const useNetworkFee = (asset: Asset, txParam?: TxParams): string => {
   const [networkFee, setNetworkFee] = useState('')
 

@@ -29,7 +29,7 @@ export type MultiSendParams = {
 export type AddLiquidityParams = {
   pool: Pool
   runeAmount?: AssetAmount
-  assetAmount: AssetAmount
+  assetAmount?: AssetAmount
 }
 
 export type AddLiquidityTxns = {

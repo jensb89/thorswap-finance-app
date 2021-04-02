@@ -1,14 +1,12 @@
 import { MULTICHAIN_DECIMAL } from 'multichain-sdk/constants'
 
 import { Amount } from './amount'
-import { Asset } from './asset'
-import { AssetAmount } from './assetAmount'
 import { Percent } from './percent'
 import { Pool } from './pool'
 
 export type WithdrawAmount = {
-  runeAmount: AssetAmount
-  assetAmount: AssetAmount
+  runeAmount: Amount
+  assetAmount: Amount
 }
 
 export interface ILiquidity {
@@ -17,17 +15,11 @@ export interface ILiquidity {
   readonly liquidityUnits: Amount
 
   poolShare: Percent
-  assetShare: AssetAmount
-  runeShare: AssetAmount
+  assetShare: Amount
+  runeShare: Amount
 
-  getLiquidityUnits(
-    runeAddAmount: AssetAmount,
-    assetAddAmount: AssetAmount,
-  ): Amount
-  getLiquiditySlip(
-    runeAddAmount: AssetAmount,
-    assetAddAmount: AssetAmount,
-  ): Percent
+  getLiquidityUnits(runeAddAmount: Amount, assetAddAmount: Amount): Amount
+  getLiquiditySlip(runeAddAmount: Amount, assetAddAmount: Amount): Percent
   getWithdrawAmount(percent: Percent): WithdrawAmount
 }
 
@@ -52,20 +44,14 @@ export class Liquidity implements ILiquidity {
     return new Percent(this.liquidityUnits.div(this.poolUnits).assetAmount)
   }
 
-  public get assetShare(): AssetAmount {
+  public get assetShare(): Amount {
     // formula: Total Balance * liquidity Units / total Units
-    return new AssetAmount(
-      this.pool.asset,
-      this.pool.assetDepth.mul(this.liquidityUnits).div(this.poolUnits),
-    )
+    return this.pool.assetDepth.mul(this.liquidityUnits).div(this.poolUnits)
   }
 
-  public get runeShare(): AssetAmount {
+  public get runeShare(): Amount {
     // formula: Total Balance * liquidity Units / total Units
-    return new AssetAmount(
-      Asset.RUNE(),
-      this.pool.runeDepth.mul(this.liquidityUnits).div(this.poolUnits),
-    )
+    return this.pool.assetDepth.mul(this.liquidityUnits).div(this.poolUnits)
   }
 
   /**
@@ -74,10 +60,7 @@ export class Liquidity implements ILiquidity {
    * @param assetAddAmount asset amount to add
    * @returns percent object for estimated pool share
    */
-  getPoolShareEst(
-    runeAddAmount: AssetAmount,
-    assetAddAmount: AssetAmount,
-  ): Percent {
+  getPoolShareEst(runeAddAmount: Amount, assetAddAmount: Amount): Percent {
     // get units after add
     const estimatedLiquidityUnits = this.liquidityUnits.add(
       this.getLiquidityUnits(runeAddAmount, assetAddAmount),
@@ -92,15 +75,12 @@ export class Liquidity implements ILiquidity {
    * @param runeAddAmount rune amount to add
    * @param assetAddAmount asset amount to add
    */
-  getLiquidityUnits(
-    runeAddAmount: AssetAmount,
-    assetAddAmount: AssetAmount,
-  ): Amount {
+  getLiquidityUnits(runeAddAmount: Amount, assetAddAmount: Amount): Amount {
     // formula: ((R + T) (r T + R t))/(4 R T)
     const R = this.pool.runeDepth.add(runeAddAmount) // Must add r first
     const T = this.pool.assetDepth.add(assetAddAmount) // Must add t first
     const part1 = R.add(T)
-    const part2 = runeAddAmount.mul(T).amount
+    const part2 = runeAddAmount.mul(T)
     const part3 = R.mul(assetAddAmount)
     const numerator = part1.mul(part2.add(part3))
     const denominator = R.mul(T).mul(4)
@@ -114,19 +94,14 @@ export class Liquidity implements ILiquidity {
    * @param runeAddAmount rune amount to add
    * @param assetAddAmount asset amount to add
    */
-  getLiquiditySlip(
-    runeAddAmount: AssetAmount,
-    assetAddAmount: AssetAmount,
-  ): Percent {
+  getLiquiditySlip(runeAddAmount: Amount, assetAddAmount: Amount): Percent {
     // formula: (t * R - T * r)/ (T*r + R*T)
     const R = this.pool.runeDepth
     const T = this.pool.assetDepth
-    const numerator = assetAddAmount.amount
-      .mul(R)
-      .sub(T.mul(runeAddAmount.amount))
+    const numerator = assetAddAmount.mul(R).sub(T.mul(runeAddAmount))
     const denominator = T.mul(runeAddAmount).add(R.mul(T))
 
-    return numerator.div(denominator)
+    return new Percent(numerator.div(denominator).assetAmount)
   }
 
   getWithdrawAmount(percent: Percent): WithdrawAmount {

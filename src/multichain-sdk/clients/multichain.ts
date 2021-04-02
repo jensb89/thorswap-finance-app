@@ -518,11 +518,12 @@ export class MultiChain implements IMultiChain {
       )
 
       // sym stake
-      if (runeAmount && runeAmount.gt(runeAmount._0_AMOUNT)) {
-        if (assetAmount.lte(assetAmount._0_AMOUNT)) {
-          return await Promise.reject(new Error('Invalid Asset Amount'))
-        }
-
+      if (
+        runeAmount &&
+        runeAmount.gt(runeAmount._0_AMOUNT) &&
+        assetAmount &&
+        assetAmount.gt(assetAmount._0_AMOUNT)
+      ) {
         // 1. send rune (NOTE: recipient should be empty string)
         const runeTx = await this.transfer({
           assetAmount: runeAmount,
@@ -542,15 +543,29 @@ export class MultiChain implements IMultiChain {
           assetTx,
         }
       }
-      // asym stake
-      if (assetAmount.lte(assetAmount._0_AMOUNT)) {
-        return await Promise.reject(new Error('Invalid Asset Amount'))
+
+      // asym deposit for asset
+      if (!runeAmount || runeAmount.lte(runeAmount._0_AMOUNT)) {
+        if (!assetAmount || assetAmount.lte(assetAmount._0_AMOUNT)) {
+          return await Promise.reject(new Error('Invalid Asset Amount'))
+        }
+
+        const assetTx = await this.transfer({
+          assetAmount,
+          recipient: poolAddress,
+          memo: Memo.depositMemo(pool.asset),
+        })
+
+        return {
+          assetTx,
+        }
       }
 
+      // asym deposit for rune
       const assetTx = await this.transfer({
-        assetAmount,
+        assetAmount: runeAmount,
         recipient: poolAddress,
-        memo: Memo.depositMemo(pool.asset),
+        memo: Memo.depositMemo(Asset.RUNE()),
       })
 
       return {

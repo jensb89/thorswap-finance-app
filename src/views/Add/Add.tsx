@@ -12,7 +12,7 @@ import {
   Notification,
   FancyButton,
 } from 'components'
-// import { MemberPool } from 'midgard-sdk'
+import { MemberPool } from 'midgard-sdk'
 import {
   getWalletAssets,
   Amount,
@@ -20,13 +20,16 @@ import {
   getAssetBalance,
   Pool,
   Price,
-  // Liquidity,
-  // getMemberDetailByPool,
-  // MULTICHAIN_DECIMAL,
+  Liquidity,
+  getMemberDetailByPool,
+  AssetAmount,
+  Percent,
 } from 'multichain-sdk'
 
 import { useMidgard } from 'redux/midgard/hooks'
 import { useWallet } from 'redux/wallet/hooks'
+
+import useNetworkFee from 'hooks/useNetworkFee'
 
 import { multichain } from 'services/multichain'
 
@@ -80,7 +83,7 @@ const ProvideView = () => {
 const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
   const history = useHistory()
   const { wallet } = useWallet()
-  const { getMemberDetails } = useMidgard()
+  const { getMemberDetails, memberDetails } = useMidgard()
 
   const poolAsset = useMemo(() => pool.asset, [pool])
   const poolAssets = useMemo(() => {
@@ -106,22 +109,35 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
 
   const [isApproved, setApproved] = useState<boolean | null>(null)
 
+  const networkFee = useNetworkFee(poolAsset)
+
   useEffect(() => {
     getMemberDetails()
   }, [getMemberDetails])
 
-  // const poolMemberDetail: MemberPool | undefined = useMemo(() => {
-  //   return getMemberDetailByPool({ memberDetails, pool })
-  // }, [memberDetails, pool])
+  const poolMemberDetail: MemberPool | undefined = useMemo(() => {
+    return getMemberDetailByPool({ memberDetails, pool })
+  }, [memberDetails, pool])
 
-  // const liquidityUnits = useMemo(() => {
-  //   if (!poolMemberDetail) return Amount.fromAssetAmount(0, MULTICHAIN_DECIMAL)
+  const liquidityUnits = useMemo(() => {
+    if (!poolMemberDetail) return Amount.fromMidgard(0)
 
-  //   return Amount.fromMidgard(poolMemberDetail.liquidityUnits)
-  // }, [poolMemberDetail])
-  // const liquidityEntity = useMemo(() => {
-  //   return new Liquidity(pool, liquidityUnits)
-  // }, [pool, liquidityUnits])
+    return Amount.fromMidgard(poolMemberDetail.liquidityUnits)
+  }, [poolMemberDetail])
+  const liquidityEntity = useMemo(() => {
+    return new Liquidity(pool, liquidityUnits)
+  }, [pool, liquidityUnits])
+
+  const addLiquiditySlip = useMemo(() => {
+    return (liquidityEntity.getLiquiditySlip(
+      runeAmount,
+      assetAmount,
+    ) as Percent).toFixed(2)
+  }, [liquidityEntity, assetAmount, runeAmount])
+
+  const poolShareEst = useMemo(() => {
+    return liquidityEntity.getPoolShareEst(runeAmount, assetAmount).toFixed(2)
+  }, [liquidityEntity, assetAmount, runeAmount])
 
   useEffect(() => {
     const checkApproved = async () => {
@@ -183,16 +199,18 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
     (amount: Amount) => {
       if (amount.gt(poolAssetBalance)) {
         setAssetAmount(poolAssetBalance)
+        setRuneAmount(poolAssetBalance.mul(pool.assetPriceInRune))
         setPercent(100)
       } else {
         setAssetAmount(amount)
+        setRuneAmount(amount.mul(pool.assetPriceInRune))
         setPercent(amount.div(poolAssetBalance).mul(100).assetAmount.toNumber())
       }
     },
-    [poolAssetBalance],
+    [poolAssetBalance, pool],
   )
 
-  const handleChangePercent = useCallback(
+  const handleChangeAssetPercent = useCallback(
     (p: number) => {
       setPercent(p)
       const newAmount = poolAssetBalance.mul(p).div(100)
@@ -201,27 +219,76 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
     [poolAssetBalance],
   )
 
-  const handleSelectMax = useCallback(() => {
-    handleChangePercent(100)
-  }, [handleChangePercent])
+  const handleSelectAssetMax = useCallback(() => {
+    handleChangeAssetPercent(100)
+  }, [handleChangeAssetPercent])
 
   const handleChangeRuneAmount = useCallback(
     (amount: Amount) => {
       if (amount.gt(runeBalance)) {
         setRuneAmount(runeBalance)
+        setAssetAmount(runeBalance.mul(pool.runePriceInAsset))
       } else {
         setRuneAmount(amount)
+        setAssetAmount(amount.mul(pool.runePriceInAsset))
       }
     },
-    [runeBalance],
+    [runeBalance, pool],
   )
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirmAdd = useCallback(async () => {
     setVisibleConfirmModal(false)
-
     if (wallet) {
+      const runeAssetAmount = new AssetAmount(Asset.RUNE(), runeAmount)
+      const poolAssetAmount = new AssetAmount(poolAsset, assetAmount)
+      const txRes = await multichain.addLiquidity({
+        pool,
+        runeAmount: runeAssetAmount,
+        assetAmount: poolAssetAmount,
+      })
+
+      const runeTxHash = txRes?.runeTx
+      const assetTxHash = txRes?.assetTx
+
+      if (runeTxHash) {
+        const runeTxURL = multichain.getExplorerTxUrl(
+          Asset.RUNE().chain,
+          runeTxHash,
+        )
+
+        Notification({
+          type: 'open',
+          message: 'View Add RUNE Tx.',
+          description: 'Transaction submitted successfully!',
+          btn: (
+            <a href={runeTxURL} target="_blank" rel="noopener noreferrer">
+              View Transaction
+            </a>
+          ),
+          duration: 20,
+        })
+      }
+
+      if (assetTxHash) {
+        const assetTxURL = multichain.getExplorerTxUrl(
+          poolAsset.chain,
+          assetTxHash,
+        )
+
+        Notification({
+          type: 'open',
+          message: 'View Add Asset Tx.',
+          description: 'Transaction submitted successfully!',
+          btn: (
+            <a href={assetTxURL} target="_blank" rel="noopener noreferrer">
+              View Transaction
+            </a>
+          ),
+          duration: 20,
+        })
+      }
     }
-  }, [wallet])
+  }, [wallet, pool, poolAsset, runeAmount, assetAmount])
 
   const handleCancel = useCallback(() => {
     setVisibleConfirmModal(false)
@@ -252,7 +319,7 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
     }
   }, [poolAsset, wallet])
 
-  const handleProvide = useCallback(() => {
+  const handleAddLiquidity = useCallback(() => {
     if (wallet) {
       setVisibleConfirmModal(true)
     } else {
@@ -280,54 +347,59 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
     return (
       <Styled.ConfirmModalContent>
         <Information
-          title="Provide"
-          description={`${assetAmount.toFixed()} ${poolAsset.ticker.toUpperCase()}`}
+          title="Add"
+          description={`${assetAmount.toFixed()} ${poolAsset.ticker.toUpperCase()}, ${runeAmount.toFixed()} RUNE`}
         />
       </Styled.ConfirmModalContent>
     )
-  }, [assetAmount, poolAsset])
+  }, [assetAmount, runeAmount, poolAsset])
 
   const renderApproveModal = useMemo(() => {
     return (
       <Styled.ConfirmModalContent>
+        <Information
+          title="Add"
+          description={`${assetAmount.toFixed()} ${poolAsset.ticker.toUpperCase()}, ${runeAmount.toFixed()} RUNE`}
+        />
         <Information
           title="Approve Transaction"
           description={`${poolAsset.ticker.toUpperCase()}`}
         />
       </Styled.ConfirmModalContent>
     )
-  }, [poolAsset])
+  }, [poolAsset, assetAmount, runeAmount])
 
-  const title = useMemo(() => `Provide ${poolAsset.ticker} Liquidity`, [
-    poolAsset,
-  ])
+  const title = useMemo(() => `Add ${poolAsset.ticker} Liquidity`, [poolAsset])
 
   return (
     <PanelView meta={title} poolAsset={poolAsset} type="add">
       <AssetInputCard
-        title="Provide"
+        title="Add"
         asset={poolAsset}
         assets={walletAssets}
         amount={assetAmount}
         balance={poolAssetBalance}
         onChange={handleChangeAssetAmount}
         onSelect={handleSelectPoolAsset}
-        onMax={handleSelectMax}
+        onMax={handleSelectAssetMax}
         usdPrice={poolAssetPriceInUSD}
       />
       <Styled.ToolContainer>
         <Styled.SliderWrapper>
-          <Slider value={percent} onChange={handleChangePercent} withLabel />
+          <Slider
+            value={percent}
+            onChange={handleChangeAssetPercent}
+            withLabel
+          />
         </Styled.SliderWrapper>
         <Styled.SwitchPair>
           <PlusOutlined />
         </Styled.SwitchPair>
       </Styled.ToolContainer>
       <AssetInputCard
-        title="Provide"
+        title="Add"
         asset={Asset.RUNE()}
         amount={runeAmount}
-        inputProps={{ disabled: true }}
         usdPrice={runeAssetPriceInUSD}
         selectDisabled={false}
         balance={runeBalance}
@@ -337,8 +409,18 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
       <Styled.DetailContent>
         <Information
           title="Slip"
-          description="todo"
+          description={addLiquiditySlip}
           tooltip="The difference between the market price and estimated price due to trade size."
+        />
+        <Information
+          title="Pool Share Estimated"
+          description={poolShareEst}
+          tooltip="Your pool share percentage after providing the liquidity."
+        />
+        <Information
+          title="Network Fee"
+          description={networkFee}
+          tooltip="Gas fee to submit the transaction using the thorchain protocol"
         />
       </Styled.DetailContent>
 
@@ -349,20 +431,20 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
               Approve
             </Styled.ApproveBtn>
           )}
-          <FancyButton disabled={!isApproved} onClick={handleProvide}>
+          <FancyButton disabled={!isApproved} onClick={handleAddLiquidity}>
             Provide
           </FancyButton>
         </Styled.ConfirmButtonContainer>
       )}
       {!wallet && (
         <Styled.ConfirmButtonContainer>
-          <FancyButton onClick={handleProvide}>Provide</FancyButton>
+          <FancyButton onClick={handleAddLiquidity}>Provide</FancyButton>
         </Styled.ConfirmButtonContainer>
       )}
 
       <ConfirmModal
         visible={visibleConfirmModal}
-        onOk={handleConfirm}
+        onOk={handleConfirmAdd}
         onCancel={handleCancel}
       >
         {renderConfirmModalContent}

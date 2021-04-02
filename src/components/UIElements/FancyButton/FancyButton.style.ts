@@ -8,15 +8,15 @@ export const StyledButton = styled.button<FancyButtonProps>`
   justify-content: center;
   align-items: center;
 
-  font-size: 1.2rem;
+  font-size: ${(props) => (props.size === 'normal' ? '1.2rem' : '0.8rem')};
   letter-spacing: 2px;
   font-weight: 600;
   color: white;
   text-align: center;
   min-width: 50px;
   width: 100%;
-  height: 56px;
-  border-radius: 28px;
+  height: ${(props) => (props.size === 'normal' ? '56px' : '32px')};
+  border-radius: ${(props) => (props.size === 'normal' ? '28px' : '16px')};
 
   position: relative;
   overflow: hidden;
@@ -32,7 +32,7 @@ export const StyledButton = styled.button<FancyButtonProps>`
       : 'linear-gradient(to left, rgb(245, 55, 195), #00ccff, rgb(245, 55, 195))'};
 
   border: none;
-  padding: 24px;
+  padding: ${(props) => (props.size === 'normal' ? '24px' : '10px')};
   width: 220px;
   text-transform: uppercase;
   cursor: ${(props) => (!props.disabled ? 'pointer' : 'not-allowed')};

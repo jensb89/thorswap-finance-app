@@ -126,13 +126,15 @@ export const PanelView = ({
             </MenuButton>
           </Styled.HeaderMenu>
           <Styled.HeaderActions>
-            <ExternalButtonLink link={getPoolDetailRouteFromAsset(poolAsset)}>
-              <Tooltip tooltip="View Pool Analytics ↗" placement="top">
-                <Styled.PoolDetailLink>
-                  <BarChartOutlined />
-                </Styled.PoolDetailLink>
-              </Tooltip>
-            </ExternalButtonLink>
+            {type !== 'liquidity' && (
+              <ExternalButtonLink link={getPoolDetailRouteFromAsset(poolAsset)}>
+                <Tooltip tooltip="View Pool Analytics ↗" placement="top">
+                  <Styled.PoolDetailLink>
+                    <BarChartOutlined />
+                  </Styled.PoolDetailLink>
+                </Tooltip>
+              </ExternalButtonLink>
+            )}
             <SettingsOverlay />
           </Styled.HeaderActions>
         </Styled.HeaderContent>

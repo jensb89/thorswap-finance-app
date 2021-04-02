@@ -1,58 +1,43 @@
-import React, { useMemo } from 'react'
+import React, { useEffect } from 'react'
 
-import { useParams } from 'react-router'
+import { Link } from 'react-router-dom'
 
-import { Row, Col } from 'antd'
-import { Helmet } from 'components'
-import { Asset, getWalletAddressByChain, Pool } from 'multichain-sdk'
+import { PanelView, FancyButton, Label } from 'components'
+import { MemberPool } from 'midgard-sdk'
+import { Asset } from 'multichain-sdk'
+
+import { MemberPoolCard } from 'components/MemberPoolCard'
 
 import { useMidgard } from 'redux/midgard/hooks'
 import { useWallet } from 'redux/wallet/hooks'
 
+import { getAddLiquidityRoute } from 'settings/constants'
+
 import * as Styled from './Liquidity.style'
-import { PoolShare } from './PoolShare'
 
 const LiquidityView = () => {
-  const { asset: assetStr } = useParams<{ asset: string }>()
-  const { pools } = useMidgard()
+  const { memberDetails, getMemberDetails } = useMidgard()
   const { wallet } = useWallet()
-
-  const asset = Asset.fromAssetString(assetStr)
-
-  if (asset && wallet) {
-    const pool = Pool.byAsset(asset, pools)
-    const address = getWalletAddressByChain(wallet, asset.chain)
-    if (pool && address) {
-      return <LiquidityPage asset={asset} pool={pool} address={address} />
-    }
-  }
-
-  return null
-}
-
-const LiquidityPage = ({
-  asset,
-  pool,
-  address,
-}: {
-  asset: Asset
-  pool: Pool
-  address: string
-}) => {
-  const title = useMemo(() => `Manage ${asset.ticker}`, [asset])
+  useEffect(() => {
+    getMemberDetails()
+  }, [getMemberDetails])
 
   return (
-    <Styled.Container>
-      <Helmet title={title} content={title} />
-      <Row gutter={[16, 16]}>
-        <Col xs={24} sm={16} md={16}>
-          Deposit section
-        </Col>
-        <Col xs={24} sm={8} md={8}>
-          <PoolShare asset={asset} pool={pool} address={address} />
-        </Col>
-      </Row>
-    </Styled.Container>
+    <PanelView meta="Liquidity" poolAsset={Asset.BTC()} type="liquidity">
+      {!wallet && <Label>Please connect wallet.</Label>}
+      {wallet && (
+        <>
+          <Styled.ToolContainer>
+            <Link to={getAddLiquidityRoute(Asset.BTC())}>
+              <FancyButton>Add Liquidity</FancyButton>
+            </Link>
+          </Styled.ToolContainer>
+          {memberDetails.pools.map((memberPool: MemberPool, index: number) => (
+            <MemberPoolCard data={memberPool} key={index} />
+          ))}
+        </>
+      )}
+    </PanelView>
   )
 }
 

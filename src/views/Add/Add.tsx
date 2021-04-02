@@ -39,7 +39,7 @@ import { getAddLiquidityRoute } from 'settings/constants'
 
 import * as Styled from './Add.style'
 
-const ProvideView = () => {
+const AddLiquidityView = () => {
   const { asset } = useParams<{ asset: string }>()
   const [assetObj, setAssetObj] = useState<Asset>()
   const [pool, setPool] = useState<Pool>()
@@ -76,13 +76,13 @@ const ProvideView = () => {
   }, [asset])
 
   if (pool && pools.length) {
-    return <ProvidePage pool={pool} pools={pools} />
+    return <AddLiquidityPanel pool={pool} pools={pools} />
   }
 
   return null
 }
 
-const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
+const AddLiquidityPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
   const history = useHistory()
   const { wallet } = useWallet()
   const { getMemberDetails, memberDetails } = useMidgard()
@@ -383,9 +383,31 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
           title="Add"
           description={`${assetAmount.toFixed()} ${poolAsset.ticker.toUpperCase()}, ${runeAmount.toFixed()} RUNE`}
         />
+        <Information
+          title="Slip"
+          description={addLiquiditySlip}
+          tooltip="The difference between the market price and estimated price due to trade size."
+        />
+        <Information
+          title="Pool Share Estimated"
+          description={poolShareEst}
+          tooltip="Your pool share percentage after providing the liquidity."
+        />
+        <Information
+          title="Network Fee"
+          description={networkFee}
+          tooltip="Gas fee used for submitting the transaction using the thorchain protocol"
+        />
       </Styled.ConfirmModalContent>
     )
-  }, [assetAmount, runeAmount, poolAsset])
+  }, [
+    assetAmount,
+    runeAmount,
+    poolAsset,
+    addLiquiditySlip,
+    poolShareEst,
+    networkFee,
+  ])
 
   const renderApproveModal = useMemo(() => {
     return (
@@ -398,9 +420,14 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
           title="Approve Transaction"
           description={`${poolAsset.ticker.toUpperCase()}`}
         />
+        <Information
+          title="Network Fee"
+          description={networkFee}
+          tooltip="Gas fee used for submitting the transaction using the thorchain protocol"
+        />
       </Styled.ConfirmModalContent>
     )
-  }, [poolAsset, assetAmount, runeAmount])
+  }, [poolAsset, assetAmount, runeAmount, networkFee])
 
   const title = useMemo(() => `Add ${poolAsset.ticker} Liquidity`, [poolAsset])
 
@@ -460,7 +487,7 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
         <Information
           title="Network Fee"
           description={networkFee}
-          tooltip="Gas fee to submit the transaction using the thorchain protocol"
+          tooltip="Gas fee used for submitting the transaction using the thorchain protocol"
         />
       </Styled.DetailContent>
 
@@ -472,13 +499,13 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
             </Styled.ApproveBtn>
           )}
           <FancyButton disabled={!isApproved} onClick={handleAddLiquidity}>
-            Provide
+            Add
           </FancyButton>
         </Styled.ConfirmButtonContainer>
       )}
       {!wallet && (
         <Styled.ConfirmButtonContainer>
-          <FancyButton onClick={handleAddLiquidity}>Provide</FancyButton>
+          <FancyButton onClick={handleAddLiquidity}>Add Liquidity</FancyButton>
         </Styled.ConfirmButtonContainer>
       )}
 
@@ -500,4 +527,4 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
   )
 }
 
-export default ProvideView
+export default AddLiquidityView

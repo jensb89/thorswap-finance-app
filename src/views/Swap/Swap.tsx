@@ -363,7 +363,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
         <Information
           title="Network Fee"
           description={networkFee}
-          tooltip="Gas fee to submit the transaction using the thorchain protocol"
+          tooltip="Gas fee used for submitting the transaction using the thorchain protocol"
         />
       </Styled.ConfirmModalContent>
     )
@@ -388,7 +388,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
         <Information
           title="Network Fee"
           description={networkFee}
-          tooltip="Gas fee to submit the transaction using the thorchain protocol"
+          tooltip="Gas fee used for submitting the transaction using the thorchain protocol"
         />
       </Styled.ConfirmModalContent>
     )
@@ -458,7 +458,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
         <Information
           title="Network Fee"
           description={networkFee}
-          tooltip="Gas fee to submit the transaction using the thorchain protocol"
+          tooltip="Gas fee used for submitting the transaction using the thorchain protocol"
         />
       </Styled.SwapInfo>
 

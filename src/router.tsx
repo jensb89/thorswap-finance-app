@@ -66,7 +66,7 @@ const routes: Routes = [
   {
     exact: true,
     path: `${WITHDRAW_ROUTE}/:asset`,
-    component: lazy(() => import('views/Add')),
+    component: lazy(() => import('views/Withdraw')),
     background: false,
   },
   {

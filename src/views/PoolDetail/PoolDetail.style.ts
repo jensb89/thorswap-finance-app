@@ -25,3 +25,8 @@ export const Section = styled.div`
 export const Chart = styled(PoolChart)`
   height: 100%;
 `
+export const PoolAction = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`

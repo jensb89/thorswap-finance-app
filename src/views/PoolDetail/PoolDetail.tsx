@@ -10,7 +10,7 @@ import { Asset, Pool } from 'multichain-sdk'
 
 import { useMidgard } from 'redux/midgard/hooks'
 
-import { getSwapRoute } from 'settings/constants'
+import { getSwapRoute, getAddLiquidityRoute } from 'settings/constants'
 
 import * as Styled from './PoolDetail.style'
 
@@ -33,6 +33,7 @@ const PoolDetail = () => {
 
 const PoolDetailView = ({ pool }: { pool: Pool }) => {
   const swapRouter = getSwapRoute(Asset.RUNE(), pool.asset)
+  const liquidityRouter = getAddLiquidityRoute(pool.asset)
 
   return (
     <Styled.Container>
@@ -41,12 +42,17 @@ const PoolDetailView = ({ pool }: { pool: Pool }) => {
         <Styled.PoolInfo>
           <AssetData asset={pool.asset} />
         </Styled.PoolInfo>
-        <Link to={swapRouter}>
-          <Button round>
-            <SwapOutlined />
-            SWAP
-          </Button>
-        </Link>
+        <Styled.PoolAction>
+          <Link to={swapRouter}>
+            <Button round style={{ marginRight: '8px' }}>
+              <SwapOutlined />
+              SWAP
+            </Button>
+          </Link>
+          <Link to={liquidityRouter}>
+            <Button round>Liquidity</Button>
+          </Link>
+        </Styled.PoolAction>
       </Styled.Header>
       <Styled.Section>
         <Row gutter={[16, 16]}>

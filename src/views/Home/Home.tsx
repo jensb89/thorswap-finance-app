@@ -24,7 +24,11 @@ import { AlignType } from 'rc-table/lib/interface'
 import { useGlobalState } from 'redux/hooks'
 import { useMidgard } from 'redux/midgard/hooks'
 
-import { getSwapRoute, getPoolDetailRoute } from 'settings/constants'
+import {
+  getSwapRoute,
+  getPoolDetailRoute,
+  getAddLiquidityRoute,
+} from 'settings/constants'
 
 import * as Styled from './Home.style'
 
@@ -77,14 +81,18 @@ const Home = () => {
       ),
       render: (_: string, pool: Pool) => {
         const swapRouter = getSwapRoute(Asset.BNB(), pool.asset)
+        const liquidityRouter = getAddLiquidityRoute(pool.asset)
 
         return (
           <Styled.ActionContainer>
             <Link to={swapRouter} onClick={(e) => e.stopPropagation()}>
-              <Button round>
+              <Button round style={{ marginRight: '8px' }}>
                 <SwapOutlined />
                 SWAP
               </Button>
+            </Link>
+            <Link to={liquidityRouter} onClick={(e) => e.stopPropagation()}>
+              <Button round>Liquidity</Button>
             </Link>
           </Styled.ActionContainer>
         )

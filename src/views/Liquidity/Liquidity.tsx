@@ -2,11 +2,9 @@ import React, { useEffect } from 'react'
 
 import { Link } from 'react-router-dom'
 
-import { PanelView, FancyButton, Label } from 'components'
+import { PanelView, FancyButton, Label, MemberPoolCard } from 'components'
 import { MemberPool } from 'midgard-sdk'
 import { Asset } from 'multichain-sdk'
-
-import { MemberPoolCard } from 'components/MemberPoolCard'
 
 import { useMidgard } from 'redux/midgard/hooks'
 import { useWallet } from 'redux/wallet/hooks'

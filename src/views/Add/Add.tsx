@@ -11,6 +11,8 @@ import {
   Information,
   Notification,
   FancyButton,
+  LiquidityTypeOption,
+  LiquidityType,
 } from 'components'
 import { MemberPool } from 'midgard-sdk'
 import {
@@ -95,6 +97,14 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
   const walletAssets = useMemo(
     () => (wallet ? getWalletAssets(wallet) : poolAssets),
     [wallet, poolAssets],
+  )
+
+  const [liquidityType, setLiquidityType] = useState(
+    LiquidityTypeOption.SYMMETRICAL,
+  )
+  const isSymDeposit = useMemo(
+    () => liquidityType === LiquidityTypeOption.SYMMETRICAL,
+    [liquidityType],
   )
 
   const [assetAmount, setAssetAmount] = useState<Amount>(
@@ -199,15 +209,21 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
     (amount: Amount) => {
       if (amount.gt(poolAssetBalance)) {
         setAssetAmount(poolAssetBalance)
-        setRuneAmount(poolAssetBalance.mul(pool.assetPriceInRune))
         setPercent(100)
+
+        if (isSymDeposit) {
+          setRuneAmount(poolAssetBalance.mul(pool.assetPriceInRune))
+        }
       } else {
         setAssetAmount(amount)
-        setRuneAmount(amount.mul(pool.assetPriceInRune))
         setPercent(amount.div(poolAssetBalance).mul(100).assetAmount.toNumber())
+
+        if (isSymDeposit) {
+          setRuneAmount(amount.mul(pool.assetPriceInRune))
+        }
       }
     },
-    [poolAssetBalance, pool],
+    [poolAssetBalance, pool, isSymDeposit],
   )
 
   const handleChangeAssetPercent = useCallback(
@@ -215,8 +231,12 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
       setPercent(p)
       const newAmount = poolAssetBalance.mul(p).div(100)
       setAssetAmount(newAmount)
+
+      if (isSymDeposit) {
+        setRuneAmount(newAmount.mul(pool.assetPriceInRune))
+      }
     },
-    [poolAssetBalance],
+    [poolAssetBalance, isSymDeposit, pool],
   )
 
   const handleSelectAssetMax = useCallback(() => {
@@ -227,20 +247,33 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
     (amount: Amount) => {
       if (amount.gt(runeBalance)) {
         setRuneAmount(runeBalance)
-        setAssetAmount(runeBalance.mul(pool.runePriceInAsset))
+
+        if (isSymDeposit) {
+          setAssetAmount(runeBalance.mul(pool.runePriceInAsset))
+        }
       } else {
         setRuneAmount(amount)
-        setAssetAmount(amount.mul(pool.runePriceInAsset))
+
+        if (isSymDeposit) {
+          setAssetAmount(amount.mul(pool.runePriceInAsset))
+        }
       }
     },
-    [runeBalance, pool],
+    [runeBalance, pool, isSymDeposit],
   )
 
   const handleConfirmAdd = useCallback(async () => {
     setVisibleConfirmModal(false)
     if (wallet) {
-      const runeAssetAmount = new AssetAmount(Asset.RUNE(), runeAmount)
-      const poolAssetAmount = new AssetAmount(poolAsset, assetAmount)
+      const runeAssetAmount =
+        liquidityType !== LiquidityTypeOption.ASSET
+          ? new AssetAmount(Asset.RUNE(), runeAmount)
+          : undefined
+      const poolAssetAmount =
+        liquidityType !== LiquidityTypeOption.RUNE
+          ? new AssetAmount(poolAsset, assetAmount)
+          : undefined
+
       const txRes = await multichain.addLiquidity({
         pool,
         runeAmount: runeAssetAmount,
@@ -288,7 +321,7 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
         })
       }
     }
-  }, [wallet, pool, poolAsset, runeAmount, assetAmount])
+  }, [wallet, pool, poolAsset, runeAmount, assetAmount, liquidityType])
 
   const handleCancel = useCallback(() => {
     setVisibleConfirmModal(false)
@@ -373,6 +406,11 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
 
   return (
     <PanelView meta={title} poolAsset={poolAsset} type="add">
+      <LiquidityType
+        poolAsset={poolAsset}
+        selected={liquidityType}
+        onSelect={setLiquidityType}
+      />
       <AssetInputCard
         title="Add"
         asset={poolAsset}
@@ -383,6 +421,7 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
         onSelect={handleSelectPoolAsset}
         onMax={handleSelectAssetMax}
         usdPrice={poolAssetPriceInUSD}
+        inputProps={{ disabled: liquidityType === LiquidityTypeOption.RUNE }}
       />
       <Styled.ToolContainer>
         <Styled.SliderWrapper>
@@ -404,6 +443,7 @@ const ProvidePage = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
         selectDisabled={false}
         balance={runeBalance}
         onChange={handleChangeRuneAmount}
+        inputProps={{ disabled: liquidityType === LiquidityTypeOption.ASSET }}
       />
 
       <Styled.DetailContent>

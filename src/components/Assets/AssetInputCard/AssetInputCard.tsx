@@ -29,10 +29,11 @@ export type Props = {
   onMax?: () => void
   // AssetSelect Props
   asset: Asset
-  assets: Asset[]
+  assets?: Asset[]
   withSearch?: boolean
   searchDisable?: string[]
-  onSelect: (_: Asset) => void
+  onSelect?: (_: Asset) => void
+  selectDisabled?: boolean
   minWidth?: number
   searchPlaceholder?: string
 }
@@ -57,6 +58,7 @@ export const AssetInputCard: React.FC<Props> = (props: Props): JSX.Element => {
     minWidth,
     searchPlaceholder = 'Search...',
     onSelect = () => {},
+    selectDisabled = false,
     ...otherProps
   } = props
 
@@ -90,6 +92,7 @@ export const AssetInputCard: React.FC<Props> = (props: Props): JSX.Element => {
             minWidth={minWidth}
             searchPlaceholder={searchPlaceholder}
             onSelect={onSelect}
+            disabled={selectDisabled}
           />
         </AssetInfo>
       </CardContent>

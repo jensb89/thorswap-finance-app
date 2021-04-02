@@ -34,6 +34,20 @@ export const getSwapRoute = (input: Asset, output: Asset) => {
 
 export const LIQUIDITY_ROUTE = '/liquidity'
 
-export const getLiquidityRoute = (asset: Asset) => {
-  return `${LIQUIDITY_ROUTE}/${asset.toString()}`
+export const ADD_LIQUIDITY_ROUTE = '/add'
+
+export const getAddLiquidityRoute = (asset: Asset) => {
+  return `${ADD_LIQUIDITY_ROUTE}/${asset.toString()}`
+}
+
+export const CREATE_LIQUIDITY_ROUTE = '/create'
+
+export const getCreateLiquidityRoute = (asset: Asset) => {
+  return `${CREATE_LIQUIDITY_ROUTE}/${asset.toString()}`
+}
+
+export const WITHDRAW_ROUTE = '/withdraw'
+
+export const getWithdrawRoute = (asset: Asset) => {
+  return `${WITHDRAW_ROUTE}/${asset.toString()}`
 }

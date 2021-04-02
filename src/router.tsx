@@ -17,7 +17,9 @@ import {
   FAQS_ROUTE,
   TX_ROUTE,
   POOL_DETAIL_ROUTE,
+  ADD_LIQUIDITY_ROUTE,
   LIQUIDITY_ROUTE,
+  WITHDRAW_ROUTE,
 } from 'settings/constants'
 
 export type Routes = {
@@ -51,8 +53,20 @@ const routes: Routes = [
   },
   {
     exact: true,
-    path: `${LIQUIDITY_ROUTE}/:asset`,
+    path: `${LIQUIDITY_ROUTE}`,
     component: lazy(() => import('views/Liquidity')),
+    background: false,
+  },
+  {
+    exact: true,
+    path: `${ADD_LIQUIDITY_ROUTE}/:asset`,
+    component: lazy(() => import('views/Add')),
+    background: false,
+  },
+  {
+    exact: true,
+    path: `${WITHDRAW_ROUTE}/:asset`,
+    component: lazy(() => import('views/Add')),
     background: false,
   },
   {

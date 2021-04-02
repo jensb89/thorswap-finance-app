@@ -61,3 +61,18 @@ export const PoolDetailLink = styled.div`
   height: 20px;
   color: ${palette('text', 0)};
 `
+
+export const MenuIconWrapper = styled.div<{ selected: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+
+  font-weight: ${(props) => (props.selected ? 'bold' : 'normal')};
+
+  svg {
+    color: ${(props) =>
+      props.selected ? palette('primary', 0) : palette('text', 0)};
+  }
+`

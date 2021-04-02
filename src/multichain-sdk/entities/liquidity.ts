@@ -16,6 +16,7 @@ export interface ILiquidity {
   readonly poolUnits: Amount
   readonly liquidityUnits: Amount
 
+  poolShare: Percent
   assetShare: AssetAmount
   runeShare: AssetAmount
 
@@ -46,6 +47,11 @@ export class Liquidity implements ILiquidity {
     this.liquidityUnits = liquidityUnits
   }
 
+  public get poolShare(): Percent {
+    // formula: liquidity Units / total Units
+    return new Percent(this.liquidityUnits.div(this.poolUnits).assetAmount)
+  }
+
   public get assetShare(): AssetAmount {
     // formula: Total Balance * liquidity Units / total Units
     return new AssetAmount(
@@ -60,6 +66,24 @@ export class Liquidity implements ILiquidity {
       Asset.RUNE(),
       this.pool.runeDepth.mul(this.liquidityUnits).div(this.poolUnits),
     )
+  }
+
+  /**
+   * get estimated pool share after adding a liquidity
+   * @param runeAddAmount rune amount to add
+   * @param assetAddAmount asset amount to add
+   * @returns percent object for estimated pool share
+   */
+  getPoolShareEst(
+    runeAddAmount: AssetAmount,
+    assetAddAmount: AssetAmount,
+  ): Percent {
+    // get units after add
+    const estimatedLiquidityUnits = this.liquidityUnits.add(
+      this.getLiquidityUnits(runeAddAmount, assetAddAmount),
+    )
+
+    return new Percent(estimatedLiquidityUnits.div(this.poolUnits).assetAmount)
   }
 
   /**

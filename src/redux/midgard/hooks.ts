@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 
+import { THORChain } from '@xchainjs/xchain-util'
 import { ActionListParams, HistoryInterval } from 'midgard-sdk'
 
 import * as actions from 'redux/midgard/actions'
@@ -15,6 +16,8 @@ const PER_DAY = 'day' as HistoryInterval
 export const useMidgard = () => {
   const dispatch = useDispatch()
   const midgardState = useSelector((state: RootState) => state.midgard)
+  const walletState = useSelector((state: RootState) => state.wallet)
+  const wallet = useMemo(() => walletState.wallet, [walletState])
 
   const isGlobalHistoryLoading = useMemo(
     () =>
@@ -79,6 +82,16 @@ export const useMidgard = () => {
     [dispatch],
   )
 
+  const getMemberDetails = useCallback(() => {
+    if (!wallet) return
+
+    const thorAddress = wallet?.[THORChain]?.address
+
+    if (thorAddress) {
+      dispatch(actions.getMemberDetail(thorAddress))
+    }
+  }, [dispatch, wallet])
+
   return {
     ...midgardState,
     actions,
@@ -86,5 +99,6 @@ export const useMidgard = () => {
     getPoolHistory,
     getGlobalHistory,
     getTxData,
+    getMemberDetails,
   }
 }

@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { palette } from 'styled-theme'
 
-export const CoreButton = styled.button`
+export const CoreButton = styled.button<{ round?: boolean }>`
   position: relative;
 
   display: flex;
@@ -15,7 +15,7 @@ export const CoreButton = styled.button`
   height: 32px;
   margin-left: 8px;
   padding: 0.15rem 0.25rem;
-  border-radius: 0.5rem;
+  border-radius: ${(props) => (props.round ? '50%' : '0.5rem')};
 
   outline: none;
 

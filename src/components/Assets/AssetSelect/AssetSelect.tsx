@@ -41,6 +41,7 @@ export type Props = {
   minWidth?: number
   searchPlaceholder?: string
   size?: 'small' | 'normal' | 'big'
+  disabled?: boolean
 }
 
 export const AssetSelect: React.FC<Props> = (props): JSX.Element => {
@@ -55,6 +56,7 @@ export const AssetSelect: React.FC<Props> = (props): JSX.Element => {
     minWidth,
     searchPlaceholder = 'Search...',
     size = 'small',
+    disabled = false,
     ...others
   } = props
 
@@ -115,10 +117,10 @@ export const AssetSelect: React.FC<Props> = (props): JSX.Element => {
   ])
 
   const renderDropDownButton = () => {
-    const disabled = assets.length === 0
+    const invalid = assets.length === 0
     return (
-      <AssetDropdownButton disabled={disabled}>
-        {!disabled ? <DropdownCarret open={openDropdown} /> : null}
+      <AssetDropdownButton disabled={invalid || disabled}>
+        {!invalid ? <DropdownCarret open={openDropdown} /> : null}
       </AssetDropdownButton>
     )
   }

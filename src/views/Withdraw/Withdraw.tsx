@@ -330,7 +330,7 @@ const WithdrawPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
         />
       </Styled.DetailContent>
 
-      {isApproved !== null && (
+      {isApproved !== null && wallet && (
         <Styled.ConfirmButtonContainer>
           {!isApproved && (
             <Styled.ApproveBtn onClick={handleApprove}>

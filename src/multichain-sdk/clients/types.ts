@@ -68,3 +68,7 @@ export type ApproveParams = {
 export type DepositParams = TxParams & {
   router: string
 }
+
+export type UpgradeParams = {
+  runeAmount: AssetAmount
+}

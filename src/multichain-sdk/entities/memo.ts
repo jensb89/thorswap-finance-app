@@ -37,4 +37,8 @@ export class Memo {
     // multiply percent by 100
     return `WITHDRAW:${chain}.${symbol}:${percent.mul(100).toFixed(0)}${target}`
   }
+
+  public static upgradeMemo(address: string) {
+    return `SWITCH:${address}`
+  }
 }

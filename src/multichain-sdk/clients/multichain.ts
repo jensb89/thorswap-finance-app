@@ -40,6 +40,7 @@ import {
   supportedChains,
   SupportedChain,
   AddLiquidityTxns,
+  UpgradeParams,
 } from './types'
 
 // specifying non-eth client is needed for getFees method
@@ -598,6 +599,45 @@ export class MultiChain implements IMultiChain {
 
       const txHash = await this.transfer({
         assetAmount: AssetAmount.getMinAmountByChain(chain),
+        recipient: poolAddress,
+        memo,
+      })
+
+      return txHash
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  /**
+   * Upgrade asset from pool
+   * @param {UpgradeParams} params
+   */
+  Upgrade = async (params: UpgradeParams): Promise<TxHash> => {
+    /**
+     * 1. get pool address
+     * 2. get rune wallet address (BNB.RUNE or ETH.RUNE)
+     * 3. get upgrade memo
+     * 4. transfer upgrade tx
+     */
+
+    try {
+      const { runeAmount } = params
+      const { chain } = runeAmount.asset
+
+      const { address: poolAddress } = await this.getPoolAddressDataByChain(
+        chain,
+      )
+      const walletAddress = this.getWalletAddressByChain(chain)
+
+      if (!walletAddress) {
+        throw Error('rune wallet not found')
+      }
+
+      const memo = Memo.upgradeMemo(walletAddress)
+
+      const txHash = await this.transfer({
+        assetAmount: runeAmount,
         recipient: poolAddress,
         memo,
       })

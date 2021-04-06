@@ -26,6 +26,8 @@ export const getSendRoute = (asset: Asset) => {
   return `${SEND_ROUTE}/${asset.toString()}`
 }
 
+export const UPGRADE_RUNE_ROUTE = '/upgrade_rune'
+
 export const SWAP_ROUTE = '/swap'
 
 export const getSwapRoute = (input: Asset, output: Asset) => {

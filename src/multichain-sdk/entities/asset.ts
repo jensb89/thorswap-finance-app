@@ -78,6 +78,14 @@ export class Asset implements IAsset {
     return new Asset(AssetRuneNative.chain, AssetRuneNative.symbol)
   }
 
+  public static BNB_RUNE(): Asset {
+    return new Asset(AssetBNB.chain, AssetRuneNative.symbol)
+  }
+
+  public static ETH_RUNE(): Asset {
+    return new Asset(AssetRuneNative.chain, AssetRuneNative.symbol)
+  }
+
   public static BTC(): Asset {
     return new Asset(AssetBTC.chain, AssetBTC.symbol)
   }

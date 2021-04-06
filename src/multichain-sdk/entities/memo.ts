@@ -12,7 +12,7 @@ export class Memo {
   public static swapMemo(asset: Asset, address = '', limit?: Amount) {
     const { chain } = asset
     const { symbol } = asset
-    const limitString = limit?.baseAmount.toString() ?? ''
+    const limitString = limit?.baseAmount.toFixed(0) ?? ''
 
     return `SWAP:${chain}.${symbol}:${address}:${limitString}`
   }

@@ -93,6 +93,7 @@ export interface IMultiChain {
   swap(swap: Swap, recipient?: string): Promise<TxHash>
   addLiquidity(params: AddLiquidityParams): Promise<AddLiquidityTxns>
   withdraw(params: WithdrawParams): Promise<TxHash>
+  upgrade(params: UpgradeParams): Promise<TxHash>
 }
 
 export class MultiChain implements IMultiChain {
@@ -613,7 +614,7 @@ export class MultiChain implements IMultiChain {
    * Upgrade asset from pool
    * @param {UpgradeParams} params
    */
-  Upgrade = async (params: UpgradeParams): Promise<TxHash> => {
+  upgrade = async (params: UpgradeParams): Promise<TxHash> => {
     /**
      * 1. get pool address
      * 2. get rune wallet address (BNB.RUNE or ETH.RUNE)
@@ -628,7 +629,7 @@ export class MultiChain implements IMultiChain {
       const { address: poolAddress } = await this.getPoolAddressDataByChain(
         chain,
       )
-      const walletAddress = this.getWalletAddressByChain(chain)
+      const walletAddress = this.getWalletAddressByChain(THORChain)
 
       if (!walletAddress) {
         throw Error('rune wallet not found')

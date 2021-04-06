@@ -9,6 +9,7 @@ import { history } from 'helpers/history'
 import {
   HOME_ROUTE,
   SEND_ROUTE,
+  UPGRADE_RUNE_ROUTE,
   SWAP_ROUTE,
   TOOLS_ROUTE,
   EXPLORERS_ROUTE,
@@ -45,6 +46,11 @@ const routes: Routes = [
     exact: true,
     path: `${SEND_ROUTE}/:asset`,
     component: lazy(() => import('views/Send')),
+  },
+  {
+    exact: true,
+    path: `${UPGRADE_RUNE_ROUTE}`,
+    component: lazy(() => import('views/Upgrade')),
   },
   {
     exact: true,

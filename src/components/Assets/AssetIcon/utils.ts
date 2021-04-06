@@ -17,6 +17,10 @@ export const getAssetIconUrl = (asset: Asset): string => {
     return 'https://assets.coingecko.com/coins/images/2518/large/weth.png'
   }
 
+  if (asset.ticker === 'DAI') {
+    return 'https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_DAI.svg'
+  }
+
   const logoSymbol = assetIconMap[asset.ticker]
 
   if (logoSymbol) {

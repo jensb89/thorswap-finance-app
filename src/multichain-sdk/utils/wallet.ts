@@ -57,6 +57,31 @@ export const getAssetBalance = (asset: Asset, wallet: Wallet): AssetAmount => {
   return emptyAmount
 }
 
+export const getRuneToUpgrade = (wallet: Wallet): Asset[] => {
+  const runeToUpgrade = []
+
+  const bnbRuneBalance = wallet?.BNB?.balance?.find(
+    (assetAmount: AssetAmount) => assetAmount.asset.ticker === 'RUNE',
+  )
+  const ethRuneBalance = wallet?.ETH?.balance?.find(
+    (assetAmount: AssetAmount) => assetAmount.asset.ticker === 'RUNE',
+  )
+
+  if (bnbRuneBalance?.amount.baseAmount.gt(0)) {
+    runeToUpgrade.push(bnbRuneBalance.asset)
+  }
+
+  if (ethRuneBalance?.amount.baseAmount.gt(0)) {
+    runeToUpgrade.push(ethRuneBalance.asset)
+  }
+
+  return runeToUpgrade
+}
+
+export const hasOldRuneInWallet = (wallet: Wallet): boolean => {
+  return getRuneToUpgrade(wallet).length > 0
+}
+
 export const getTotalUSDPriceInBalance = (
   balance: AssetAmount[],
   pools: Pool[],

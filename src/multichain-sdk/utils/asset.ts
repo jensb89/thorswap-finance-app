@@ -1,4 +1,4 @@
-import { Chain, THORChain } from '@xchainjs/xchain-util'
+import { Chain, THORChain, BNBChain, ETHChain } from '@xchainjs/xchain-util'
 
 import { Amount, Asset, Pool, Price } from '../entities'
 
@@ -35,4 +35,15 @@ export const runeToAsset = ({
   })
 
   return price
+}
+
+export const isOldRune = (asset: Asset): boolean => {
+  if (
+    asset.ticker === 'RUNE' &&
+    (asset.chain === BNBChain || asset.chain === ETHChain)
+  ) {
+    return true
+  }
+
+  return false
 }

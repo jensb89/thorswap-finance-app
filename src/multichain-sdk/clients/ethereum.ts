@@ -62,10 +62,12 @@ export class EthChain implements IEthChain {
 
   loadBalance = async (): Promise<AssetAmount[]> => {
     try {
-      const balances: Balance[] = await this.client.getBalance(
+      let balances: Balance[] = await this.client.getBalance(
         this.client.getAddress(),
         ETHAssets,
       )
+
+      balances = balances.filter((balance: Balance) => balance.amount.gt(0))
 
       this.balances = await Promise.all(
         balances.map(async (data: Balance) => {

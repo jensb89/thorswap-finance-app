@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+import { palette } from 'styled-theme'
 
 import { Button } from 'components/UIElements'
 
@@ -22,6 +23,13 @@ export const BalanceRow = styled.div`
   align-items: center;
 
   padding: 8px 8px;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette('secondary', 1)};
+  }
 `
 
-export const SendBtn = styled(Button)``
+export const SendBtn = styled(Button).attrs({
+  sizevalue: 'small',
+})``

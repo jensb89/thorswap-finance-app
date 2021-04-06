@@ -37,6 +37,12 @@ export const AssetWETHERC20: Asset = {
   ticker: 'WETH',
 }
 
+export const AssetDAIERC20: Asset = {
+  chain: 'ETH',
+  symbol: 'DAI-0XAD6D458402F60FD3BD25163575031ACDCE07538D',
+  ticker: 'DAI',
+}
+
 // This hardcode list is for testnet only
 export const ERC20Assets = [
   AssetUSDTERC20,
@@ -45,5 +51,6 @@ export const ERC20Assets = [
   AssetTKN8ERC20,
   AssetTKN18ERC20,
   AssetWETHERC20,
+  AssetDAIERC20,
 ]
 export const ETHAssets = [AssetETH, ...ERC20Assets]

@@ -8,6 +8,7 @@ import copy from 'copy-to-clipboard'
 
 import { multichain } from 'services/multichain'
 
+import { Tooltip } from '../UIElements'
 import * as Styled from './ChainHeader.style'
 
 export type ChainHeaderProps = {
@@ -18,7 +19,7 @@ export type ChainHeaderProps = {
 }
 
 export const ChainHeader = (props: ChainHeaderProps) => {
-  const { chain, address, totalPrice = '0' } = props
+  const { chain, address } = props
 
   const miniAddress = useMemo(
     () => `${address.slice(0, 3)}...${address.slice(-3)}`,
@@ -37,23 +38,29 @@ export const ChainHeader = (props: ChainHeaderProps) => {
   return (
     <Styled.Container>
       <Styled.ChainInfo>
-        <Styled.InfoLabel weight="bold">
+        <Styled.InfoLabel weight="bold" color="primary">
           {chainToString(chain)}
         </Styled.InfoLabel>
-        <Styled.InfoLabel weight="bold">
+        {/* <Styled.InfoLabel weight="bold">
           Total: ${totalPrice} USD
-        </Styled.InfoLabel>
+        </Styled.InfoLabel> */}
       </Styled.ChainInfo>
       <Styled.Address onClick={handleCopyAddress}>
-        <Styled.AddressLabel weight="bold">{miniAddress}</Styled.AddressLabel>
-        <CopyOutlined />
+        <Tooltip placement="top" tooltip="Copy">
+          <Styled.AddressLabel weight="bold">{miniAddress}</Styled.AddressLabel>
+        </Tooltip>
+        <Tooltip placement="top" tooltip="Copy">
+          <CopyOutlined />
+        </Tooltip>
       </Styled.Address>
       <Styled.Tools>
-        <a href={accountUrl} target="_blank" rel="noopener noreferrer">
-          <Styled.ToolWrapper>
-            <ExternalLink />
-          </Styled.ToolWrapper>
-        </a>
+        <Tooltip placement="top" tooltip="Go to account">
+          <a href={accountUrl} target="_blank" rel="noopener noreferrer">
+            <Styled.ToolWrapper>
+              <ExternalLink />
+            </Styled.ToolWrapper>
+          </a>
+        </Tooltip>
       </Styled.Tools>
     </Styled.Container>
   )

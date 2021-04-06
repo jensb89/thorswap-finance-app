@@ -40,7 +40,7 @@ export const SubHeader = ({ hasBack }: SubHeaderProps) => {
   return (
     <Styled.Container>
       {hasBack && <BackLink />}
-      {oldRune && (
+      {hasBack && oldRune && (
         <Styled.Notify onClick={handleUpgrade}>{oldRune}</Styled.Notify>
       )}
     </Styled.Container>

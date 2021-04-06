@@ -23,7 +23,7 @@ export const Information = ({
         <Label weight="bold" color={error ? 'error' : 'normal'}>
           {title}:
         </Label>
-        <Label>{description}</Label>
+        <Label color={error ? 'error' : 'normal'}>{description}</Label>
       </Styled.Content>
       {tooltip && <Question placement="top" tooltip={tooltip} />}
     </Styled.Container>

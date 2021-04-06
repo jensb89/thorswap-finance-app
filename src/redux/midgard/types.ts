@@ -10,8 +10,27 @@ import {
   LiquidityHistory,
   ActionsList,
   MemberDetails,
+  Action,
+  ActionTypeEnum,
+  Transaction,
 } from 'midgard-sdk'
 import { Pool } from 'multichain-sdk'
+
+export enum TxStatus {
+  Submitting = 'Submitting',
+  Submitted = 'Submitted',
+  Pending = 'Pending',
+  Success = 'Success',
+}
+
+export interface TxTracker {
+  uuid: string
+  type: ActionTypeEnum
+  status: TxStatus
+  submitTx: Transaction | null
+  action: Action | null
+  refunded: boolean | null
+}
 
 export interface State {
   pools: Pool[]
@@ -34,4 +53,5 @@ export interface State {
   queue: Queue | null
   txData: ActionsList | null // for tx explorer
   txDataLoading: boolean
+  txTrackers: TxTracker[]
 }

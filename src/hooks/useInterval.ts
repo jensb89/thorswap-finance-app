@@ -1,33 +1,19 @@
-import { useRef, useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
-export const INACTIVE_INTERVAL = NaN
+const useInterval = (callback: Function, delay?: number | null) => {
+  const savedCallback = useRef<Function>(() => {})
 
-/**
- * Custom hook for using `setInterval`
- * Based on https://overreacted.io/making-setinterval-declarative-with-react-hooks/
- * @param callback Callback called on each interval
- * @param delay  Delay in ms
- */
-const useInterval = (
-  callback: () => void,
-  delay: number = INACTIVE_INTERVAL,
-) => {
-  const savedCallback = useRef(callback)
-
-  // Remember the latest function.
   useEffect(() => {
     savedCallback.current = callback
-  }, [callback])
+  })
 
-  // Set up the interval.
   useEffect(() => {
-    function tick() {
-      savedCallback.current()
+    if (delay !== null) {
+      const interval = setInterval(() => savedCallback.current(), delay || 0)
+      return () => clearInterval(interval)
     }
-    if (!Number.isNaN(delay)) {
-      const id = setInterval(tick, delay)
-      return () => clearInterval(id)
-    }
+
+    return undefined
   }, [delay])
 }
 

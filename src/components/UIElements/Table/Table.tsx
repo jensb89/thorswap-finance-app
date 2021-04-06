@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { LoadingOutlined } from '@ant-design/icons'
 import { TableProps } from 'antd/lib/table'
 
 import { TableWrapper } from './Table.style'
@@ -8,7 +9,17 @@ import { TableWrapper } from './Table.style'
 export type Props = TableProps<any>
 
 export const Table = (props: Props) => {
-  const { size, ...others } = props
+  const { size, loading = false, ...others } = props
 
-  return <TableWrapper pagination={false} sizeValue={size} {...others} />
+  return (
+    <TableWrapper
+      pagination={false}
+      sizeValue={size}
+      loading={{
+        spinning: loading as boolean,
+        indicator: <LoadingOutlined style={{ fontSize: 24 }} spin />,
+      }}
+      {...others}
+    />
+  )
 }

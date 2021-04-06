@@ -6,9 +6,12 @@ import { THORChain } from '@xchainjs/xchain-util'
 import { ActionListParams, HistoryInterval } from 'midgard-sdk'
 
 import * as actions from 'redux/midgard/actions'
+import { actions as sliceActions } from 'redux/midgard/slice'
 import { RootState } from 'redux/store'
 
 import { TX_PUBLIC_PAGE_LIMIT } from 'settings/constants/global'
+
+import { TxTracker } from './types'
 
 const MAX_HISTORY_COUNT = 100
 const PER_DAY = 'day' as HistoryInterval
@@ -92,6 +95,31 @@ export const useMidgard = () => {
     }
   }, [dispatch, wallet])
 
+  const addNewTxTracker = useCallback(
+    (txTracker: TxTracker) => {
+      dispatch(sliceActions.addNewTxTracker(txTracker))
+    },
+    [dispatch],
+  )
+
+  const updateTxTracker = useCallback(
+    ({ uuid, txTracker }: { uuid: string; txTracker: TxTracker }) => {
+      dispatch(sliceActions.updateTxTracker({ uuid, txTracker }))
+    },
+    [dispatch],
+  )
+
+  const pollTx = useCallback(
+    (txTracker: TxTracker) => {
+      dispatch(actions.pollTx(txTracker))
+    },
+    [dispatch],
+  )
+
+  const clearTxTrackers = useCallback(() => {
+    dispatch(sliceActions.clearTxTrackers())
+  }, [dispatch])
+
   return {
     ...midgardState,
     actions,
@@ -100,5 +128,9 @@ export const useMidgard = () => {
     getGlobalHistory,
     getTxData,
     getMemberDetails,
+    addNewTxTracker,
+    updateTxTracker,
+    clearTxTrackers,
+    pollTx,
   }
 }

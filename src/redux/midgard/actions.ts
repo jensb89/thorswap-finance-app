@@ -2,6 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 
 import { midgardApi } from 'services/midgard'
 
+import { TxTracker } from './types'
+
 export const getPools = createAsyncThunk(
   'midgard/getPools',
   midgardApi.getPools,
@@ -65,4 +67,16 @@ export const getDepthHistory = createAsyncThunk(
 export const getMemberDetail = createAsyncThunk(
   'midgard/getMemberDetail',
   midgardApi.getMemberDetail,
+)
+
+export const pollTx = createAsyncThunk(
+  'midgard/pollTx',
+  async (txTracker: TxTracker) => {
+    const response = await midgardApi.getActions({
+      limit: 1,
+      offset: 0,
+      txId: txTracker.submitTx?.txID,
+    })
+    return response
+  },
 )

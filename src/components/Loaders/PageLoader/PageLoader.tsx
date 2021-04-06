@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { LoadingOutlined } from '@ant-design/icons'
 import { Spin } from 'antd'
 import styled from 'styled-components'
 
@@ -15,7 +16,7 @@ const LoaderWrapper = styled.div`
 export const PageLoader: React.FC = (): JSX.Element => {
   return (
     <LoaderWrapper>
-      <Spin />
+      <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
     </LoaderWrapper>
   )
 }

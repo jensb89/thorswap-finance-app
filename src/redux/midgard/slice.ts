@@ -1,8 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
+import { ActionStatusEnum, ActionTypeEnum } from 'midgard-sdk'
 import { Pool } from 'multichain-sdk'
 
 import * as midgardActions from './actions'
-import { State } from './types'
+import { State, TxTracker, TxStatus } from './types'
 
 const initialState: State = {
   pools: [],
@@ -27,12 +29,37 @@ const initialState: State = {
   liquidityHistoryLoading: false,
   txData: null,
   txDataLoading: false,
+  txTrackers: [],
 }
 
 const slice = createSlice({
   name: 'app',
   initialState,
-  reducers: {},
+  reducers: {
+    addNewTxTracker(state, action: PayloadAction<TxTracker>) {
+      state.txTrackers = [...state.txTrackers, action.payload]
+    },
+    updateTxTracker(
+      state,
+      action: PayloadAction<{ uuid: string; txTracker: TxTracker }>,
+    ) {
+      const { uuid, txTracker } = action.payload
+
+      state.txTrackers = state.txTrackers.map((tracker: TxTracker) => {
+        if (tracker.uuid === uuid) {
+          return {
+            ...tracker,
+            ...txTracker,
+          }
+        }
+
+        return tracker
+      })
+    },
+    clearTxTrackers(state) {
+      state.txTrackers = []
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(midgardActions.getPools.pending, (state) => {
@@ -144,6 +171,36 @@ const slice = createSlice({
       })
       .addCase(midgardActions.getActions.rejected, (state) => {
         state.txDataLoading = true
+      })
+      // poll Tx
+      .addCase(midgardActions.pollTx.fulfilled, (state, action) => {
+        const { arg: txTracker } = action.meta
+        const { actions } = action.payload
+        const txData = actions?.[0]
+
+        if (txData) {
+          state.txTrackers = state.txTrackers.map((tracker: TxTracker) => {
+            if (tracker.uuid === txTracker.uuid) {
+              const status =
+                txData.status === ActionStatusEnum.Pending
+                  ? TxStatus.Pending
+                  : TxStatus.Success
+
+              const refunded =
+                status === TxStatus.Success &&
+                txData.type === ActionTypeEnum.Refund
+
+              return {
+                ...tracker,
+                action: txData,
+                status,
+                refunded,
+              }
+            }
+
+            return tracker
+          })
+        }
       })
   },
 })

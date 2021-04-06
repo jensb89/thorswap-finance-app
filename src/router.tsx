@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from 'react'
 
 import { Router, Route, Switch } from 'react-router'
 
-import { Layout, PageLoader, BackLink } from 'components'
+import { Layout, PageLoader, SubHeader } from 'components'
 
 import { history } from 'helpers/history'
 
@@ -128,7 +128,7 @@ const PublicRoutes = () => (
               exact={route.exact}
               render={(props) => (
                 <Layout transparent={!background}>
-                  {route.path !== HOME_ROUTE && <BackLink />}
+                  <SubHeader hasBack={route.path !== HOME_ROUTE} />
                   <Component {...props} />
                 </Layout>
               )}

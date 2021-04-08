@@ -49,6 +49,7 @@ export const Layout = (props: Props) => {
 
   const isTxPage = useMemo(() => {
     const { pathname } = window.location
+
     return (
       pathname.includes(SWAP_ROUTE) ||
       pathname.includes(ADD_LIQUIDITY_ROUTE) ||

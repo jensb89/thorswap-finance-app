@@ -16,7 +16,7 @@ const LoaderWrapper = styled.div`
 export const PageLoader: React.FC = (): JSX.Element => {
   return (
     <LoaderWrapper>
-      <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+      <Spin indicator={<LoadingOutlined style={{ fontSize: 30 }} spin />} />
     </LoaderWrapper>
   )
 }

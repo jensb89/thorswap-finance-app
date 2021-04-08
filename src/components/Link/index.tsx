@@ -19,11 +19,12 @@ export const ExternalLink = ({
 export const ExternalButtonLink = ({
   link,
   children,
+  ...others
 }: {
   link: string
   children: React.ReactChild
 }) => (
-  <a href={link} target="_blank" rel="noopener noreferrer">
+  <a href={link} target="_blank" rel="noopener noreferrer" {...others}>
     <IconButton>{children}</IconButton>
   </a>
 )

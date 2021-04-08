@@ -4,7 +4,7 @@ import { ActionStatusEnum, ActionTypeEnum } from 'midgard-sdk'
 import { Pool } from 'multichain-sdk'
 
 import * as midgardActions from './actions'
-import { State, TxTracker, TxStatus } from './types'
+import { State, TxTracker, TxTrackerStatus } from './types'
 
 const initialState: State = {
   pools: [],
@@ -30,6 +30,7 @@ const initialState: State = {
   txData: null,
   txDataLoading: false,
   txTrackers: [],
+  txCollapsed: true,
 }
 
 const slice = createSlice({
@@ -38,10 +39,11 @@ const slice = createSlice({
   reducers: {
     addNewTxTracker(state, action: PayloadAction<TxTracker>) {
       state.txTrackers = [...state.txTrackers, action.payload]
+      state.txCollapsed = false
     },
     updateTxTracker(
       state,
-      action: PayloadAction<{ uuid: string; txTracker: TxTracker }>,
+      action: PayloadAction<{ uuid: string; txTracker: Partial<TxTracker> }>,
     ) {
       const { uuid, txTracker } = action.payload
 
@@ -58,6 +60,9 @@ const slice = createSlice({
     },
     clearTxTrackers(state) {
       state.txTrackers = []
+    },
+    setTxCollapsed(state, action: PayloadAction<boolean>) {
+      state.txCollapsed = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -183,11 +188,11 @@ const slice = createSlice({
             if (tracker.uuid === txTracker.uuid) {
               const status =
                 txData.status === ActionStatusEnum.Pending
-                  ? TxStatus.Pending
-                  : TxStatus.Success
+                  ? TxTrackerStatus.Pending
+                  : TxTrackerStatus.Success
 
               const refunded =
-                status === TxStatus.Success &&
+                status === TxTrackerStatus.Success &&
                 txData.type === ActionTypeEnum.Refund
 
               return {

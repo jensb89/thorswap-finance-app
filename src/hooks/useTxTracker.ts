@@ -1,9 +1,10 @@
 import { useCallback } from 'react'
 
+import { ActionTypeEnum } from 'midgard-sdk'
 import { uuid as uuidv4 } from 'uuidv4'
 
 import { useMidgard } from 'redux/midgard/hooks'
-import { TxTracker } from 'redux/midgard/types'
+import { TxTrackerStatus, SubmitTx } from 'redux/midgard/types'
 
 /**
  * 1. send transaction and get txHash
@@ -13,18 +14,25 @@ import { TxTracker } from 'redux/midgard/types'
  *    (if action type is not "refund", action type should be matched to the send type)
  */
 
-export const UseTxTracker = () => {
-  const { addNewTxTracker, clearTxTrackers } = useMidgard()
+export const useTxTracker = () => {
+  const { addNewTxTracker, updateTxTracker, clearTxTrackers } = useMidgard()
 
-  const addNewTx = useCallback(
-    ({ type, status }: TxTracker): string => {
+  // confirm and submit a transaction
+  const submitTransaction = useCallback(
+    ({
+      type,
+      submitTx,
+    }: {
+      type: ActionTypeEnum
+      submitTx: SubmitTx
+    }): string => {
       const uuid = uuidv4()
 
       addNewTxTracker({
         uuid,
         type,
-        status,
-        submitTx: null,
+        status: TxTrackerStatus.Submitting,
+        submitTx,
         action: null,
         refunded: null,
       })
@@ -34,8 +42,23 @@ export const UseTxTracker = () => {
     [addNewTxTracker],
   )
 
+  // start polling a transaction
+  const pollTransaction = useCallback(
+    ({ uuid, submitTx }: { uuid: string; submitTx: SubmitTx }) => {
+      updateTxTracker({
+        uuid,
+        txTracker: {
+          status: TxTrackerStatus.Pending,
+          submitTx,
+        },
+      })
+    },
+    [updateTxTracker],
+  )
+
   return {
-    addNewTx,
+    submitTransaction,
+    pollTransaction,
     clearTxTrackers,
   }
 }

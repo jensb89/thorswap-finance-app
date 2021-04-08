@@ -14,7 +14,7 @@ import {
   LiquidityTypeOption,
   LiquidityType,
 } from 'components'
-import { MemberPool } from 'midgard-sdk'
+import { ActionTypeEnum, MemberPool } from 'midgard-sdk'
 import {
   getWalletAssets,
   Amount,
@@ -32,6 +32,7 @@ import { useMidgard } from 'redux/midgard/hooks'
 import { useWallet } from 'redux/wallet/hooks'
 
 import useNetworkFee from 'hooks/useNetworkFee'
+import { useTxTracker } from 'hooks/useTxTracker'
 
 import { multichain } from 'services/multichain'
 
@@ -86,6 +87,7 @@ const AddLiquidityPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
   const history = useHistory()
   const { wallet } = useWallet()
   const { getMemberDetails, memberDetails } = useMidgard()
+  const { submitTransaction, pollTransaction } = useTxTracker()
 
   const poolAsset = useMemo(() => pool.asset, [pool])
   const poolAssets = useMemo(() => {
@@ -274,6 +276,30 @@ const AddLiquidityPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
           ? new AssetAmount(poolAsset, assetAmount)
           : undefined
 
+      const inAssets = []
+      if (liquidityType !== LiquidityTypeOption.ASSET) {
+        inAssets.push({
+          asset: Asset.RUNE().toString(),
+          amount: runeAmount.toFixed(2),
+        })
+      }
+
+      if (liquidityType !== LiquidityTypeOption.RUNE) {
+        inAssets.push({
+          asset: poolAsset.toString(),
+          amount: assetAmount.toFixed(3),
+        })
+      }
+
+      // register to tx tracker
+      const trackId = submitTransaction({
+        type: ActionTypeEnum.AddLiquidity,
+        submitTx: {
+          inAssets,
+          outAssets: [],
+        },
+      })
+
       const txRes = await multichain.addLiquidity({
         pool,
         runeAmount: runeAssetAmount,
@@ -283,45 +309,28 @@ const AddLiquidityPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
       const runeTxHash = txRes?.runeTx
       const assetTxHash = txRes?.assetTx
 
-      if (runeTxHash) {
-        const runeTxURL = multichain.getExplorerTxUrl(
-          Asset.RUNE().chain,
-          runeTxHash,
-        )
-
-        Notification({
-          type: 'open',
-          message: 'View Add RUNE Tx.',
-          description: 'Transaction submitted successfully!',
-          btn: (
-            <a href={runeTxURL} target="_blank" rel="noopener noreferrer">
-              View Transaction
-            </a>
-          ),
-          duration: 20,
-        })
-      }
-
-      if (assetTxHash) {
-        const assetTxURL = multichain.getExplorerTxUrl(
-          poolAsset.chain,
-          assetTxHash,
-        )
-
-        Notification({
-          type: 'open',
-          message: 'View Add Asset Tx.',
-          description: 'Transaction submitted successfully!',
-          btn: (
-            <a href={assetTxURL} target="_blank" rel="noopener noreferrer">
-              View Transaction
-            </a>
-          ),
-          duration: 20,
+      if (runeTxHash || assetTxHash) {
+        // start polling
+        pollTransaction({
+          uuid: trackId,
+          submitTx: {
+            inAssets,
+            outAssets: [],
+            txID: runeTxHash || assetTxHash,
+          },
         })
       }
     }
-  }, [wallet, pool, poolAsset, runeAmount, assetAmount, liquidityType])
+  }, [
+    wallet,
+    pool,
+    poolAsset,
+    runeAmount,
+    assetAmount,
+    liquidityType,
+    submitTransaction,
+    pollTransaction,
+  ])
 
   const handleCancel = useCallback(() => {
     setVisibleConfirmModal(false)

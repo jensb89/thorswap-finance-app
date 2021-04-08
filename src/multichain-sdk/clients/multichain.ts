@@ -526,18 +526,21 @@ export class MultiChain implements IMultiChain {
         assetAmount &&
         assetAmount.gt(assetAmount._0_AMOUNT)
       ) {
+        const assetAddress = this.getWalletAddressByChain(chain) || ''
+        const thorAddress = this.getWalletAddressByChain(THORChain) || ''
+
         // 1. send rune (NOTE: recipient should be empty string)
         const runeTx = await this.transfer({
           assetAmount: runeAmount,
           recipient: THORCHAIN_POOL_ADDRESS,
-          memo: Memo.depositMemo(Asset.RUNE()),
+          memo: Memo.depositMemo(pool.asset, assetAddress),
         })
 
         // 2. send asset
         const assetTx = await this.transfer({
           assetAmount,
           recipient: poolAddress,
-          memo: Memo.depositMemo(pool.asset),
+          memo: Memo.depositMemo(pool.asset, thorAddress),
         })
 
         return {
@@ -567,7 +570,7 @@ export class MultiChain implements IMultiChain {
       const assetTx = await this.transfer({
         assetAmount: runeAmount,
         recipient: poolAddress,
-        memo: Memo.depositMemo(Asset.RUNE()),
+        memo: Memo.depositMemo(pool.asset),
       })
 
       return {
@@ -592,14 +595,14 @@ export class MultiChain implements IMultiChain {
     try {
       const { pool, percent } = params
       const memo = Memo.withdrawMemo(pool.asset, percent)
-      const { chain } = pool.asset
 
+      // get thorchain pool address
       const { address: poolAddress } = await this.getPoolAddressDataByChain(
-        chain,
+        THORChain,
       )
 
       const txHash = await this.transfer({
-        assetAmount: AssetAmount.getMinAmountByChain(chain),
+        assetAmount: AssetAmount.getMinAmountByChain(THORChain),
         recipient: poolAddress,
         memo,
       })

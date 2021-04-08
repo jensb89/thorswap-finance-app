@@ -5,6 +5,8 @@ import { palette } from 'styled-theme'
 import { WalletButton } from '../UIElements'
 
 export const HeaderContainer = styled.div`
+  position: relative;
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -21,7 +23,7 @@ export const HeaderContainer = styled.div`
       '#23DCC8',
     )} 0%, ${transparentize(1, theme.palette.background[0])} 100%)`};
 
-  padding: 0 10px;
+  padding: 0 60px 10px 10px;
   z-index: 999;
 `
 

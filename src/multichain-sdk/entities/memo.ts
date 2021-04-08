@@ -21,7 +21,7 @@ export class Memo {
     const { chain } = asset
     const { symbol } = asset
 
-    return `STAKE:${chain}.${symbol}:${address}`
+    return `ADD:${chain}.${symbol}:${address}`
   }
 
   public static withdrawMemo(
@@ -35,7 +35,9 @@ export class Memo {
     const target = targetAsset ? `:${targetAsset.toString()}` : ''
 
     // multiply percent by 100
-    return `WITHDRAW:${chain}.${symbol}:${percent.mul(100).toFixed(0)}${target}`
+    return `WITHDRAW:${chain}.${symbol}:${percent
+      .mul(100)
+      .assetAmount.toNumber()}${target}`
   }
 
   public static upgradeMemo(address: string) {

@@ -14,7 +14,7 @@ import {
   MemberPoolData,
   Label,
 } from 'components'
-import { MemberPool } from 'midgard-sdk'
+import { ActionTypeEnum, MemberPool } from 'midgard-sdk'
 import {
   Amount,
   Asset,
@@ -29,7 +29,7 @@ import {
 import { useMidgard } from 'redux/midgard/hooks'
 import { useWallet } from 'redux/wallet/hooks'
 
-import useNetworkFee from 'hooks/useNetworkFee'
+import { useTxTracker } from 'hooks/useTxTracker'
 
 import { multichain } from 'services/multichain'
 
@@ -81,6 +81,7 @@ const WithdrawView = () => {
 const WithdrawPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
   const { wallet } = useWallet()
   const { getMemberDetails, memberDetails } = useMidgard()
+  const { submitTransaction, pollTransaction } = useTxTracker()
 
   const poolAsset = useMemo(() => pool.asset, [pool])
 
@@ -94,11 +95,6 @@ const WithdrawPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
 
   const [percent, setPercent] = useState(0)
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false)
-  const [visibleApproveModal, setVisibleApproveModal] = useState(false)
-
-  const [isApproved, setApproved] = useState<boolean | null>(null)
-
-  const networkFee = useNetworkFee(poolAsset)
 
   useEffect(() => {
     getMemberDetails()
@@ -116,17 +112,6 @@ const WithdrawPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
   const liquidityEntity = useMemo(() => {
     return new Liquidity(pool, liquidityUnits)
   }, [pool, liquidityUnits])
-
-  useEffect(() => {
-    const checkApproved = async () => {
-      const approved = await multichain.isAssetApproved(poolAsset)
-      setApproved(approved)
-    }
-
-    if (wallet) {
-      checkApproved()
-    }
-  }, [poolAsset, wallet])
 
   const { runeAmount, assetAmount } = useMemo(() => {
     return liquidityEntity.getWithdrawAmount(
@@ -161,71 +146,58 @@ const WithdrawPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
   const handleConfirmWithdraw = useCallback(async () => {
     setVisibleConfirmModal(false)
     if (wallet) {
-      const txRes = await multichain.withdraw({
-        pool,
-        percent: new Percent(percent, AmountType.BASE_AMOUNT),
+      const outAssets = [
+        {
+          asset: Asset.RUNE().toString(),
+          amount: runeAmount.toFixed(3),
+        },
+        {
+          asset: pool.asset.toString(),
+          amount: assetAmount.toFixed(3),
+        },
+      ]
+
+      // register to tx tracker
+      const trackId = submitTransaction({
+        type: ActionTypeEnum.Withdraw,
+        submitTx: {
+          inAssets: [],
+          outAssets,
+        },
       })
 
-      const txUrl = multichain.getExplorerTxUrl(pool.asset.chain, txRes)
+      const txID = await multichain.withdraw({
+        pool,
+        percent: new Percent(percent),
+      })
 
-      Notification({
-        type: 'open',
-        message: 'View Withdraw Tx.',
-        description: 'Transaction submitted successfully!',
-        btn: (
-          <a href={txUrl} target="_blank" rel="noopener noreferrer">
-            View Transaction
-          </a>
-        ),
-        duration: 20,
+      // start polling
+      pollTransaction({
+        uuid: trackId,
+        submitTx: {
+          inAssets: [],
+          outAssets,
+          txID,
+        },
       })
     }
-  }, [wallet, pool, percent])
+  }, [
+    wallet,
+    pool,
+    percent,
+    runeAmount,
+    assetAmount,
+    submitTransaction,
+    pollTransaction,
+  ])
 
   const handleCancel = useCallback(() => {
     setVisibleConfirmModal(false)
   }, [])
 
-  const handleConfirmApprove = useCallback(async () => {
-    setVisibleApproveModal(false)
-
-    if (wallet) {
-      const txHash = await multichain.approveAsset(poolAsset)
-
-      if (txHash) {
-        console.log('txhash', txHash)
-        const txURL = multichain.getExplorerTxUrl(poolAsset.chain, txHash)
-
-        Notification({
-          type: 'open',
-          message: 'View Approve Tx.',
-          description: 'Transaction submitted successfully!',
-          btn: (
-            <a href={txURL} target="_blank" rel="noopener noreferrer">
-              View Transaction
-            </a>
-          ),
-          duration: 20,
-        })
-      }
-    }
-  }, [poolAsset, wallet])
-
-  const handleAddLiquidity = useCallback(() => {
+  const handleWithdrawLiquidity = useCallback(() => {
     if (wallet) {
       setVisibleConfirmModal(true)
-    } else {
-      Notification({
-        type: 'info',
-        message: 'Wallet Not Found',
-        description: 'Please connect wallet',
-      })
-    }
-  }, [wallet])
-
-  const handleApprove = useCallback(() => {
-    if (wallet) {
-      setVisibleApproveModal(true)
     } else {
       Notification({
         type: 'info',
@@ -239,37 +211,17 @@ const WithdrawPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
     return (
       <Styled.ConfirmModalContent>
         <Information
-          title="Add"
+          title="Withdraw"
           description={`${assetAmount.toFixed()} ${poolAsset.ticker.toUpperCase()}, ${runeAmount.toFixed()} RUNE`}
         />
         <Information
           title="Network Fee"
-          description={networkFee}
+          description="0.02 RUNE"
           tooltip="Gas fee used for submitting the transaction using the thorchain protocol"
         />
       </Styled.ConfirmModalContent>
     )
-  }, [assetAmount, runeAmount, poolAsset, networkFee])
-
-  const renderApproveModal = useMemo(() => {
-    return (
-      <Styled.ConfirmModalContent>
-        <Information
-          title="Add"
-          description={`${assetAmount.toFixed()} ${poolAsset.ticker.toUpperCase()}, ${runeAmount.toFixed()} RUNE`}
-        />
-        <Information
-          title="Approve Transaction"
-          description={`${poolAsset.ticker.toUpperCase()}`}
-        />
-        <Information
-          title="Network Fee"
-          description={networkFee}
-          tooltip="Gas fee used for submitting the transaction using the thorchain protocol"
-        />
-      </Styled.ConfirmModalContent>
-    )
-  }, [poolAsset, assetAmount, runeAmount, networkFee])
+  }, [assetAmount, runeAmount, poolAsset])
 
   const title = useMemo(() => `Withdraw ${poolAsset.ticker} Liquidity`, [
     poolAsset,
@@ -325,26 +277,18 @@ const WithdrawPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
         />
         <Information
           title="Network Fee"
-          description={networkFee}
+          description="0.02 RUNE"
           tooltip="Gas fee used for submitting the transaction using the thorchain protocol"
         />
       </Styled.DetailContent>
-
-      {isApproved !== null && wallet && (
+      {wallet && (
         <Styled.ConfirmButtonContainer>
-          {!isApproved && (
-            <Styled.ApproveBtn onClick={handleApprove}>
-              Approve
-            </Styled.ApproveBtn>
-          )}
-          <FancyButton disabled={!isApproved} onClick={handleAddLiquidity}>
-            Withdraw
-          </FancyButton>
+          <FancyButton onClick={handleWithdrawLiquidity}>Withdraw</FancyButton>
         </Styled.ConfirmButtonContainer>
       )}
       {!wallet && (
         <Styled.ConfirmButtonContainer>
-          <FancyButton onClick={handleAddLiquidity}>Withdraw</FancyButton>
+          <FancyButton onClick={handleWithdrawLiquidity}>Withdraw</FancyButton>
         </Styled.ConfirmButtonContainer>
       )}
 
@@ -354,13 +298,6 @@ const WithdrawPanel = ({ pool, pools }: { pool: Pool; pools: Pool[] }) => {
         onCancel={handleCancel}
       >
         {renderConfirmModalContent}
-      </ConfirmModal>
-      <ConfirmModal
-        visible={visibleApproveModal}
-        onOk={handleConfirmApprove}
-        onCancel={() => setVisibleApproveModal(false)}
-      >
-        {renderApproveModal}
       </ConfirmModal>
     </PanelView>
   )

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { useMidgard } from 'redux/midgard/hooks'
-import { TxTracker, TxStatus } from 'redux/midgard/types'
+import { TxTracker, TxTrackerStatus } from 'redux/midgard/types'
 
 import useInterval from 'hooks/useInterval'
 
@@ -15,14 +15,12 @@ import useInterval from 'hooks/useInterval'
 
 const POLL_TX_INTERVAL = 5000 // poll tx from midgard every 5s
 
-export const UseTxTracker = () => {
-  const { pollTx, txTrackers } = useMidgard()
+export const useTxManager = () => {
+  const { pollTx, txTrackers, txCollapsed, setTxCollapsed } = useMidgard()
 
   const pendingTransactions = useMemo(() => {
     return txTrackers.filter(
-      (tracker: TxTracker) =>
-        tracker.status !== TxStatus.Submitting &&
-        tracker.status !== TxStatus.Success,
+      (tracker: TxTracker) => tracker.status === TxTrackerStatus.Pending,
     )
   }, [txTrackers])
 
@@ -35,5 +33,7 @@ export const UseTxTracker = () => {
 
   return {
     txTrackers,
+    txCollapsed,
+    setTxCollapsed,
   }
 }

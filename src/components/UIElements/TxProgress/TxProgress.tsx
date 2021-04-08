@@ -4,7 +4,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 
 import { RefundIcon, ConfirmIcon, TimerFullIcon } from 'components/Icons'
 
-import useInterval, { INACTIVE_INTERVAL } from 'hooks/useInterval'
+import useInterval from 'hooks/useInterval'
 
 import { TxProgressWrapper } from './TxProgress.style'
 
@@ -62,7 +62,7 @@ export const TxProgress: React.FC<Props> = (props): JSX.Element => {
     onChange()
   }, [onChange])
   // Interval to inform outside world about counting
-  const countInterval = status && !isEnd ? interval : INACTIVE_INTERVAL
+  const countInterval = status && !isEnd ? interval : null
 
   useInterval(countHandler, countInterval)
 
@@ -72,8 +72,7 @@ export const TxProgress: React.FC<Props> = (props): JSX.Element => {
     setTotalDuration(diff)
   }, [startTime])
   // Interval to count seconds
-  const countSecInterval =
-    startTime && status && !isEnd ? 100 : INACTIVE_INTERVAL
+  const countSecInterval = startTime && status && !isEnd ? 100 : null
   useInterval(countSecHandler, countSecInterval)
 
   // Reset everything at end

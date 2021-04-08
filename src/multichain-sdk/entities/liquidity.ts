@@ -51,7 +51,7 @@ export class Liquidity implements ILiquidity {
 
   public get runeShare(): Amount {
     // formula: Total Balance * liquidity Units / total Units
-    return this.pool.assetDepth.mul(this.liquidityUnits).div(this.poolUnits)
+    return this.pool.runeDepth.mul(this.liquidityUnits).div(this.poolUnits)
   }
 
   /**

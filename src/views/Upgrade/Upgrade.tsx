@@ -125,8 +125,6 @@ const UpgradePanel = ({
 
       const txHash = await multichain.upgrade({ runeAmount })
 
-      console.log('txhash', txHash)
-
       const txURL = multichain.getExplorerTxUrl(selectedAsset.chain, txHash)
 
       Notification({

@@ -103,7 +103,7 @@ export const useMidgard = () => {
   )
 
   const updateTxTracker = useCallback(
-    ({ uuid, txTracker }: { uuid: string; txTracker: TxTracker }) => {
+    ({ uuid, txTracker }: { uuid: string; txTracker: Partial<TxTracker> }) => {
       dispatch(sliceActions.updateTxTracker({ uuid, txTracker }))
     },
     [dispatch],
@@ -120,6 +120,13 @@ export const useMidgard = () => {
     dispatch(sliceActions.clearTxTrackers())
   }, [dispatch])
 
+  const setTxCollapsed = useCallback(
+    (collapsed: boolean) => {
+      dispatch(sliceActions.setTxCollapsed(collapsed))
+    },
+    [dispatch],
+  )
+
   return {
     ...midgardState,
     actions,
@@ -131,6 +138,7 @@ export const useMidgard = () => {
     addNewTxTracker,
     updateTxTracker,
     clearTxTrackers,
+    setTxCollapsed,
     pollTx,
   }
 }

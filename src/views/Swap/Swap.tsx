@@ -14,6 +14,7 @@ import {
   FancyButton,
   PriceRate,
 } from 'components'
+import { ActionTypeEnum } from 'midgard-sdk'
 import {
   getWalletAssets,
   Amount,
@@ -32,6 +33,7 @@ import { useMidgard } from 'redux/midgard/hooks'
 import { useWallet } from 'redux/wallet/hooks'
 
 import useNetworkFee from 'hooks/useNetworkFee'
+import { useTxTracker } from 'hooks/useTxTracker'
 
 import { multichain } from 'services/multichain'
 
@@ -70,6 +72,7 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
   const { wallet } = useWallet()
   const { pools, poolLoading } = useMidgard()
   const { slippageTolerance } = useApp()
+  const { submitTransaction, pollTransaction } = useTxTracker()
 
   const poolAssets = useMemo(() => {
     const assets = pools.map((pool) => pool.asset)
@@ -251,25 +254,48 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
     setVisibleConfirmModal(false)
 
     if (wallet && swap) {
+      // register to tx tracker
+      const trackId = submitTransaction({
+        type: ActionTypeEnum.Swap,
+        submitTx: {
+          inAssets: [
+            {
+              asset: swap.inputAsset.toString(),
+              amount: swap.inputAmount.toFixed(3),
+            },
+          ],
+          outAssets: [
+            {
+              asset: swap.outputAsset.toString(),
+              amount: swap.outputAmount.toFixed(3),
+            },
+          ],
+        },
+      })
+
       const txHash = await multichain.swap(swap, recipient)
 
-      console.log('txhash', txHash)
-
-      const txURL = multichain.getExplorerTxUrl(swap.inputAsset.chain, txHash)
-
-      Notification({
-        type: 'open',
-        message: 'View Send Tx.',
-        description: 'Transaction submitted successfully!',
-        btn: (
-          <a href={txURL} target="_blank" rel="noopener noreferrer">
-            View Transaction
-          </a>
-        ),
-        duration: 20,
+      // start polling
+      pollTransaction({
+        uuid: trackId,
+        submitTx: {
+          inAssets: [
+            {
+              asset: swap.inputAsset.toString(),
+              amount: swap.inputAmount.toFixed(3),
+            },
+          ],
+          outAssets: [
+            {
+              asset: swap.outputAsset.toString(),
+              amount: swap.outputAmount.toFixed(3),
+            },
+          ],
+          txID: txHash,
+        },
       })
     }
-  }, [wallet, swap, recipient])
+  }, [wallet, swap, recipient, submitTransaction, pollTransaction])
 
   const handleCancel = useCallback(() => {
     setVisibleConfirmModal(false)
@@ -282,13 +308,13 @@ const SwapPage = ({ inputAsset, outputAsset }: Pair) => {
       const txHash = await multichain.approveAsset(inputAsset)
 
       if (txHash) {
-        console.log('txhash', txHash)
+        console.log('approve txhash', txHash)
         const txURL = multichain.getExplorerTxUrl(inputAsset.chain, txHash)
 
         Notification({
           type: 'open',
           message: 'View Approve Tx.',
-          description: 'Transaction sent successfully!',
+          description: 'Transaction submitted successfully!',
           btn: (
             <a href={txURL} target="_blank" rel="noopener noreferrer">
               View Transaction

@@ -21,6 +21,7 @@ import { Logo } from '../Logo'
 import { NetworkStatus } from '../NetworkStatus'
 import { Refresh } from '../Refresh'
 import { ThemeSwitch } from '../ThemeSwitch'
+import { TxManager } from '../TxManager'
 import { Tooltip, IconButton, Label } from '../UIElements'
 import { WalletDrawer } from '../WalletDrawer'
 import * as Styled from './Header.style'
@@ -106,6 +107,7 @@ export const Header = () => {
         />
         <WalletDrawer visible={drawerVisible} onClose={handleCloseDrawer} />
         <Refresh onRefresh={refreshPage} />
+        <TxManager />
       </Styled.HeaderAction>
     </Styled.HeaderContainer>
   )

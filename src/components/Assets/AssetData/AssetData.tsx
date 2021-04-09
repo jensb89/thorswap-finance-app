@@ -10,6 +10,7 @@ import * as Styled from './AssetData.style'
  *
  * |------|-------------------|-------------------|------------------|
  * | icon | ticker (optional) | amount (optional) | price (optional) |
+ *          chain
  * |------|-------------------|-------------------|------------------|
  *
  */

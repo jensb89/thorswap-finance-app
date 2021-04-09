@@ -21,6 +21,7 @@ import {
 
 import { ETHERSCAN_API_KEY, NETWORK_TYPE } from 'multichain-sdk/config'
 
+import { getChainName } from '../constants/chains'
 import {
   DEFAULT_CHAIN_DECIMAL,
   THORCHAIN_DECIMAL,
@@ -43,6 +44,7 @@ export interface IAsset {
   readonly chain: Chain
   readonly symbol: string
   readonly ticker: string
+  readonly type: string
   decimal: number
 
   // TODO: add asset icon url
@@ -62,6 +64,8 @@ export class Asset implements IAsset {
   public readonly symbol: string
 
   public readonly ticker: string
+
+  public readonly type: string
 
   public decimal: number
 
@@ -152,6 +156,7 @@ export class Asset implements IAsset {
     this.chain = chain
     this.symbol = symbol
     this.ticker = Asset.getTicker(symbol)
+    this.type = getChainName(chain)
 
     this.decimal = Asset.getDecimalByChain(chain)
   }

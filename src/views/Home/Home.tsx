@@ -17,6 +17,7 @@ import {
   PoolStatusFilter,
   Button,
   Input,
+  Label,
 } from 'components'
 import { PoolStatus } from 'midgard-sdk'
 import { Amount, Asset, Percent, Pool } from 'multichain-sdk'
@@ -109,23 +110,23 @@ const Home = () => {
         key: 'Pool',
         title: 'Pool',
         render: (pool: Pool) => (
-          <Styled.ActionContainer>
+          <Styled.CenterAlign>
             <AssetIcon asset={pool.asset} />
-          </Styled.ActionContainer>
+            <Styled.SymbolData>
+              <Label>{pool.asset.ticker}</Label>
+              <Label size="small" color="gray">
+                {pool.asset.type}
+              </Label>
+            </Styled.SymbolData>
+          </Styled.CenterAlign>
         ),
         align: centerAlign,
-      },
-      {
-        key: 'Symbol',
-        title: 'Symbol',
-        align: centerAlign,
-        render: (pool: Pool) => pool.asset.ticker,
         sortDirections: ['descend', 'ascend'],
         sorter: (a: Pool, b: Pool) => a.asset.sortsBefore(b.asset),
       },
       {
         key: 'Chain',
-        title: 'Chain',
+        title: 'Network',
         align: centerAlign,
         responsive: ['md'] as Breakpoint[],
         render: (pool: Pool) => chainToString(pool.asset.chain),

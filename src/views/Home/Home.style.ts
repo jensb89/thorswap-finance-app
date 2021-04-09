@@ -27,3 +27,16 @@ export const Table = styled(UnstyledTable)`
     cursor: pointer;
   }
 `
+
+export const CenterAlign = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const SymbolData = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 8px;
+  width: 50px;
+`

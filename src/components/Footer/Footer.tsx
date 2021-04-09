@@ -49,7 +49,7 @@ export const Footer: React.FC = (): JSX.Element => {
             <ExternalButtonLink link="https://t.me/thorchain_org">
               <Icon component={TelegramIcon} />
             </ExternalButtonLink>
-            <ExternalButtonLink link="https://twitter.com/thorswap/thorswap-finance-app">
+            <ExternalButtonLink link="https://github.com/thorswap/thorswap-finance-app">
               <GithubOutlined />
             </ExternalButtonLink>
           </div>

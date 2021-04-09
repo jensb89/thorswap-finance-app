@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Grid } from 'antd'
+
 import { Button, ButtonProps } from '../Button'
 
 type ComponentProps = {
@@ -11,6 +13,7 @@ export type Props = ComponentProps & ButtonProps
 
 export const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
   const { connected = false, loading = false, ...otherProps } = props
+  const isDesktopView = Grid.useBreakpoint()?.sm ?? false
 
   const getBtnValue = () => {
     if (loading) return 'Loading...'
@@ -22,7 +25,11 @@ export const WalletButton: React.FC<Props> = (props: Props): JSX.Element => {
     }
 
     if (connected) {
-      return 'View Wallet'
+      if (isDesktopView) {
+        return 'View Wallet'
+      }
+
+      return 'Wallet'
     }
   }
 

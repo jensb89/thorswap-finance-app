@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 
 import { SyncOutlined, SwapOutlined, SearchOutlined } from '@ant-design/icons'
 import { chainToString } from '@xchainjs/xchain-util'
+import { Breakpoint } from 'antd/lib/_util/responsiveObserve'
 import { ColumnType } from 'antd/lib/table'
 import {
   TxTable,
@@ -66,6 +67,7 @@ const Home = () => {
     () => ({
       key: 'action',
       align: centerAlign,
+      responsive: ['md'] as Breakpoint[],
       title: (
         <Styled.ActionContainer>
           <Button
@@ -125,6 +127,7 @@ const Home = () => {
         key: 'Chain',
         title: 'Chain',
         align: centerAlign,
+        responsive: ['md'] as Breakpoint[],
         render: (pool: Pool) => chainToString(pool.asset.chain),
         sortDirections: ['descend', 'ascend'],
         sorter: (a: Pool, b: Pool) =>
@@ -164,6 +167,7 @@ const Home = () => {
       {
         key: 'Volume24h',
         title: 'Volume 24h',
+        responsive: ['md'] as Breakpoint[],
         render: (pool: Pool) =>
           runeToCurrency(
             Amount.fromMidgard(pool.detail.volume24h),
@@ -179,6 +183,7 @@ const Home = () => {
       {
         key: 'APY',
         title: 'APY',
+        responsive: ['md'] as Breakpoint[],
         render: (pool: Pool) =>
           `${new Percent(pool.detail.poolAPY).toFixed(0)}`,
         align: rightAlign,

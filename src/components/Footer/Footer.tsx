@@ -28,13 +28,16 @@ export const Footer: React.FC = (): JSX.Element => {
         </FooterItem>
         <FooterItem>
           <div className="footer-links-bar">
+            <ButtonLink to="/tools">TOOLS</ButtonLink>
+            <ButtonLink to="/explorer">EXPLORERS</ButtonLink>
+            <ButtonLink to="/education">EDUCATION</ButtonLink>
             <ButtonLink to="/stats">STATS</ButtonLink>
             <ButtonLink to="/faqs">FAQS</ButtonLink>
           </div>
         </FooterItem>
         <FooterItem>
           <div className="footer-social-bar">
-            <ExternalButtonLink link="https://twitter.com/thorchain_org">
+            <ExternalButtonLink link="https://twitter.com/thorswap">
               <TwitterOutlined />
             </ExternalButtonLink>
             <ExternalButtonLink link="https://reddit.com/r/thorchain">
@@ -46,7 +49,7 @@ export const Footer: React.FC = (): JSX.Element => {
             <ExternalButtonLink link="https://t.me/thorchain_org">
               <Icon component={TelegramIcon} />
             </ExternalButtonLink>
-            <ExternalButtonLink link="https://github.com/thorchain">
+            <ExternalButtonLink link="https://twitter.com/thorswap/thorswap-finance-app">
               <GithubOutlined />
             </ExternalButtonLink>
           </div>

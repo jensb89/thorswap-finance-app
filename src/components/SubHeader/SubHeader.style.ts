@@ -1,7 +1,5 @@
 import styled from 'styled-components/macro'
 
-import { media } from 'helpers/style'
-
 export const Container = styled.div`
   position: absolute;
   top: 70px;
@@ -9,10 +7,4 @@ export const Container = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-
-  display: none;
-
-  ${media.sm`
-    display: block;
-  `}
 `

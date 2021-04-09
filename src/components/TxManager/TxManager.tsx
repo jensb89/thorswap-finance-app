@@ -1,6 +1,10 @@
 import React, { useMemo } from 'react'
 
-import { MenuFoldOutlined, LoadingOutlined } from '@ant-design/icons'
+import {
+  MenuFoldOutlined,
+  LoadingOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons'
 
 import { TxTracker, TxTrackerStatus } from 'redux/midgard/types'
 
@@ -11,7 +15,12 @@ import * as Styled from './TxManager.style'
 import { TxMonitor } from './TxMonitor'
 
 export const TxManager = () => {
-  const { txTrackers, txCollapsed, setTxCollapsed } = useTxManager()
+  const {
+    txTrackers,
+    txCollapsed,
+    setTxCollapsed,
+    clearTxTrackers,
+  } = useTxManager()
 
   const toggle = React.useCallback(() => {
     setTxCollapsed(!txCollapsed)
@@ -33,6 +42,10 @@ export const TxManager = () => {
     [txTrackers],
   )
 
+  const handleClearHistory = React.useCallback(() => {
+    clearTxTrackers()
+  }, [clearTxTrackers])
+
   return (
     <Styled.Container collapsed={txCollapsed}>
       <Styled.Header>
@@ -48,7 +61,13 @@ export const TxManager = () => {
             </Styled.EmptyContent>
           )}
           {hasTxHistory && (
-            <Styled.Content>{renderAllTxTrackers}</Styled.Content>
+            <Styled.Content>
+              {renderAllTxTrackers}
+              <Styled.ClearRow onClick={handleClearHistory}>
+                <Label>Clear History</Label>
+                <DeleteOutlined />
+              </Styled.ClearRow>
+            </Styled.Content>
           )}
         </>
       )}

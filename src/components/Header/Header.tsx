@@ -3,6 +3,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
+import { Grid } from 'antd'
 import { Asset } from 'multichain-sdk'
 
 import { CurrencySelector } from 'components/CurrencySelector'
@@ -35,6 +36,8 @@ export const Header = () => {
   const { isValidFundCaps, globalRunePooledStatus, statusColor } = useNetwork()
 
   const [drawerVisible, setDrawerVisible] = useState(false)
+
+  const isDesktopView = Grid.useBreakpoint()?.sm ?? false
 
   const isConnected = !!wallet
 
@@ -70,7 +73,7 @@ export const Header = () => {
       <Styled.HeaderLogo>
         <Styled.LogoWrapper>
           <Link to={HOME_ROUTE}>
-            <Logo type="thorswap" color={themeType} />
+            <Logo mini={!isDesktopView} type="thorswap" color={themeType} />
           </Link>
         </Styled.LogoWrapper>
         <Styled.HeaderAction>

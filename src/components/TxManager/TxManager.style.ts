@@ -59,3 +59,27 @@ export const EmptyContent = styled.div`
   border: 1px solid ${palette('gray', 0)};
   border-radius: 4px;
 `
+
+export const ClearRow = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${palette('background', 1)};
+
+  svg {
+    margin-left: 4px;
+    padding-top: 2px;
+    color: ${palette('text', 0)};
+  }
+
+  height: 30px;
+
+  &:hover {
+    cursor: pointer;
+
+    div,
+    svg {
+      color: ${palette('error', 0)};
+    }
+  }
+`

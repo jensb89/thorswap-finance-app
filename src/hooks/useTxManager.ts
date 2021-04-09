@@ -16,7 +16,13 @@ import useInterval from 'hooks/useInterval'
 const POLL_TX_INTERVAL = 5000 // poll tx from midgard every 5s
 
 export const useTxManager = () => {
-  const { pollTx, txTrackers, txCollapsed, setTxCollapsed } = useMidgard()
+  const {
+    pollTx,
+    txTrackers,
+    txCollapsed,
+    setTxCollapsed,
+    clearTxTrackers,
+  } = useMidgard()
 
   const pendingTransactions = useMemo(() => {
     return txTrackers.filter(
@@ -35,5 +41,6 @@ export const useTxManager = () => {
     txTrackers,
     txCollapsed,
     setTxCollapsed,
+    clearTxTrackers,
   }
 }

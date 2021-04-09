@@ -72,10 +72,16 @@ export const getMemberDetail = createAsyncThunk(
 export const pollTx = createAsyncThunk(
   'midgard/pollTx',
   async (txTracker: TxTracker) => {
+    let txId = txTracker.submitTx?.txID
+
+    if (txId && txId.includes('0x')) {
+      txId = txId.slice(2)
+    }
+
     const response = await midgardApi.getActions({
       limit: 1,
       offset: 0,
-      txId: txTracker.submitTx?.txID,
+      txId,
     })
     return response
   },

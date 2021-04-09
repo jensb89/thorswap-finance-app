@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import { ActionTypeEnum } from 'midgard-sdk'
-import { uuid as uuidv4 } from 'uuidv4'
+import { v4 as uuidv4 } from 'uuid'
 
 import { useMidgard } from 'redux/midgard/hooks'
 import { TxTrackerStatus, SubmitTx } from 'redux/midgard/types'

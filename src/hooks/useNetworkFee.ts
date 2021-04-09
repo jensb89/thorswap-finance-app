@@ -19,21 +19,28 @@ const useNetworkFee = (asset: Asset, txParam?: TxParams): string => {
       const { chain } = asset
       let feeStr = ''
 
-      setNetworkFee('...')
+      setNetworkFee('fee estimating...')
       try {
         if (chain === ETHChain) {
-          if (txParam) {
+          if (!asset.isETH()) {
+            setNetworkFee('Ethereum Gas Fee')
+          } else if (txParam) {
             const {
-              address: ethPoolAddress,
+              router: ethPoolAddress,
             } = await multichain.getPoolAddressDataByChain(ETHChain)
-            const feeValue = await multichain.getFees(asset.chain, {
-              ...txParam,
-              recipient: ethPoolAddress,
-            })
-            feeStr = Amount.fromBaseAmount(
-              feeValue.fastest.amount(),
-              asset.decimal,
-            ).toFixed(8)
+
+            if (ethPoolAddress) {
+              const feeValue = await multichain.getFees(asset.chain, {
+                ...txParam,
+                recipient: ethPoolAddress,
+              })
+              feeStr = Amount.fromBaseAmount(
+                feeValue.fastest.amount(),
+                asset.decimal,
+              ).toFixed(8)
+            } else {
+              setNetworkFee(`${chain} Gas Fee`)
+            }
           }
         } else {
           const feeValue = await multichain.getFees(asset.chain)
@@ -44,6 +51,7 @@ const useNetworkFee = (asset: Asset, txParam?: TxParams): string => {
         }
       } catch (error) {
         console.log('quote fee error', error)
+        setNetworkFee(`${chain} Gas Fee`)
       }
 
       const feeAsset = chainToFeeAsset(chain)

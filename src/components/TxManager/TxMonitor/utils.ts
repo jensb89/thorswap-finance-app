@@ -151,10 +151,7 @@ export const getSwapOutTxData = async (
     if (asset) {
       await asset?.setDecimal()
 
-      const amount = Amount.fromBaseAmount(
-        outTx?.coins?.[0]?.amount,
-        asset.decimal,
-      )
+      const amount = Amount.fromMidgard(outTx?.coins?.[0]?.amount)
 
       if (action.type === ActionTypeEnum.Swap) {
         return `Received ${amount.toFixed(3)} ${asset.ticker}`

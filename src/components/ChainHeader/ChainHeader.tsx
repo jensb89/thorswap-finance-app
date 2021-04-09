@@ -2,13 +2,13 @@ import React, { useCallback, useMemo } from 'react'
 
 import { ExternalLink } from 'react-feather'
 
-import { CopyOutlined } from '@ant-design/icons'
+import { CopyOutlined, SyncOutlined } from '@ant-design/icons'
 import { chainToString, Chain } from '@xchainjs/xchain-util'
 import copy from 'copy-to-clipboard'
 
 import { multichain } from 'services/multichain'
 
-import { Tooltip } from '../UIElements'
+import { CoreButton, Tooltip } from '../UIElements'
 import * as Styled from './ChainHeader.style'
 
 export type ChainHeaderProps = {
@@ -16,10 +16,11 @@ export type ChainHeaderProps = {
   address: string
   totalPrice?: string
   onReload?: () => void
+  walletLoading?: boolean
 }
 
 export const ChainHeader = (props: ChainHeaderProps) => {
-  const { chain, address } = props
+  const { chain, address, onReload, walletLoading = false } = props
 
   const miniAddress = useMemo(
     () => `${address.slice(0, 3)}...${address.slice(-3)}`,
@@ -41,6 +42,13 @@ export const ChainHeader = (props: ChainHeaderProps) => {
         <Styled.InfoLabel weight="bold" color="primary">
           {chainToString(chain)}
         </Styled.InfoLabel>
+        <Tooltip placement="top" tooltip="Reload">
+          <CoreButton onClick={onReload}>
+            <Styled.ToolWrapper>
+              <SyncOutlined spin={walletLoading} />
+            </Styled.ToolWrapper>
+          </CoreButton>
+        </Tooltip>
         {/* <Styled.InfoLabel weight="bold">
           Total: ${totalPrice} USD
         </Styled.InfoLabel> */}

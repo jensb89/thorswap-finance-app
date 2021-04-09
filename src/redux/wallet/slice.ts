@@ -1,6 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { Keystore } from '@xchainjs/xchain-crypto'
+import {
+  BTCChain,
+  BNBChain,
+  THORChain,
+  ETHChain,
+  LTCChain,
+  BCHChain,
+} from '@xchainjs/xchain-util'
 
 import { getKeystore, saveKeystore } from 'helpers/storage'
 
@@ -11,6 +19,14 @@ const initialState: State = {
   keystore: getKeystore(),
   wallet: null,
   walletLoading: false,
+  chainWalletLoading: {
+    [BTCChain]: false,
+    [BNBChain]: false,
+    [THORChain]: false,
+    [ETHChain]: false,
+    [LTCChain]: false,
+    [BCHChain]: false,
+  },
   isConnectModalOpen: false,
 }
 
@@ -45,8 +61,13 @@ const slice = createSlice({
       .addCase(walletActions.loadAllWallets.rejected, (state) => {
         state.walletLoading = false
       })
-      .addCase(walletActions.getWalletByChain.pending, (state) => {
-        state.walletLoading = true
+      .addCase(walletActions.getWalletByChain.pending, (state, action) => {
+        const { arg: chain } = action.meta
+
+        state.chainWalletLoading = {
+          ...state.chainWalletLoading,
+          [chain]: true,
+        }
       })
       .addCase(walletActions.getWalletByChain.fulfilled, (state, action) => {
         const { chain, data } = action.payload
@@ -56,10 +77,19 @@ const slice = createSlice({
             [chain]: data,
           }
         }
-        state.walletLoading = false
+
+        state.chainWalletLoading = {
+          ...state.chainWalletLoading,
+          [chain]: false,
+        }
       })
-      .addCase(walletActions.getWalletByChain.rejected, (state) => {
-        state.walletLoading = false
+      .addCase(walletActions.getWalletByChain.rejected, (state, action) => {
+        const { arg: chain } = action.meta
+
+        state.chainWalletLoading = {
+          ...state.chainWalletLoading,
+          [chain]: false,
+        }
       })
   },
 })

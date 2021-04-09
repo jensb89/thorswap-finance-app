@@ -29,9 +29,6 @@ export const CoreButton = styled.button<{ round?: boolean; focused?: boolean }>`
     background-color: ${palette('background', 2)};
   }
 
-  svg {
-    margin-top: 2px;
-  }
   > * {
     stroke: ${palette('text', 0)};
   }

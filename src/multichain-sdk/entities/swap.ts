@@ -268,7 +268,7 @@ export class Swap implements ISwap {
     inputAmount: AssetAmount,
     pool: Pool,
   ): AssetAmount {
-    // formula: getSwapOutput() - network fee (1 RUNE)
+    // formula: getSwapOutput() - network fee (0.02 RUNE)
     const toRUNE = !inputAmount.asset.isRUNE()
     const swapOutputAmount = Swap.getSingleSwapOutput(inputAmount, pool)
     const runeDepthAfterSwap = toRUNE
@@ -294,8 +294,8 @@ export class Swap implements ISwap {
   }
 
   private getNetworkFee(pool: Pool, toRUNE: boolean): AssetAmount {
-    // network fee is 1 RUNE
-    const networkFeeInRune = Amount.fromAssetAmount(1, MULTICHAIN_DECIMAL)
+    // network fee is 0.02 RUNE
+    const networkFeeInRune = Amount.fromAssetAmount(0.02, MULTICHAIN_DECIMAL)
 
     const feeAmount: Amount = toRUNE
       ? networkFeeInRune

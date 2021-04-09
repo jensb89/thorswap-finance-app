@@ -32,6 +32,7 @@ export const WalletDrawer = (props: WalletDrawerProps) => {
     getWalletByChain,
     walletLoading,
     wallet,
+    chainWalletLoading,
     disconnectWallet,
   } = useWallet()
 
@@ -79,6 +80,7 @@ export const WalletDrawer = (props: WalletDrawerProps) => {
       {wallet && (
         <BalanceView
           wallet={wallet}
+          chainWalletLoading={chainWalletLoading}
           onReloadChain={handleReloadChain}
           onSendAsset={handleSendAsset}
         />

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { Chain } from '@xchainjs/xchain-util'
+
+import { SupportedChain } from 'multichain-sdk/clients/types'
 
 import { multichain } from 'services/multichain'
 
@@ -10,7 +11,7 @@ export const loadAllWallets = createAsyncThunk(
 
 export const getWalletByChain = createAsyncThunk(
   'midgard/getWalletByChain',
-  async (chain: Chain) => {
+  async (chain: SupportedChain) => {
     const data = await multichain.getWalletByChain(chain)
 
     return {

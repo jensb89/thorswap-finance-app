@@ -25,9 +25,6 @@ export const IconButton = styled.button`
     background-color: ${palette('background', 2)};
   }
 
-  svg {
-    margin-top: 2px;
-  }
   > * {
     stroke: ${palette('text', 0)};
   }

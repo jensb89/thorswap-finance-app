@@ -24,7 +24,11 @@ export const Container = styled.div`
 
 export const ChainInfo = styled.div`
   display: flex;
-  flex-direction: column;
+  align-items: center;
+
+  button {
+    margin-left: 0;
+  }
 `
 
 export const InfoLabel = styled(Label)``
@@ -56,6 +60,7 @@ export const ToolWrapper = styled.div`
   cursor: ponter;
 
   svg {
-    width: 16px;
+    width: 14px;
+    height: 14px;
   }
 `

@@ -24,12 +24,18 @@ import * as Styled from './BalanceView.style'
 
 export type BalanceViewProps = {
   wallet: Wallet
+  chainWalletLoading: { [key in SupportedChain]: boolean }
   onReloadChain?: (chain: SupportedChain) => void
   onSendAsset?: (asset: Asset) => void
 }
 
 export const BalanceView = (props: BalanceViewProps) => {
-  const { wallet, onReloadChain = () => {}, onSendAsset = () => {} } = props
+  const {
+    wallet,
+    onReloadChain = () => {},
+    onSendAsset = () => {},
+    chainWalletLoading,
+  } = props
   const { pools } = useMidgard()
 
   const history = useHistory()
@@ -121,12 +127,13 @@ export const BalanceView = (props: BalanceViewProps) => {
             address={address}
             totalPrice={totalPrice}
             onReload={() => onReloadChain(chain)}
+            walletLoading={chainWalletLoading?.[chain]}
           />
           {renderBalance(balance)}
         </Styled.ChainContainer>
       )
     },
-    [renderBalance, onReloadChain, pools],
+    [renderBalance, onReloadChain, pools, chainWalletLoading],
   )
 
   return (

@@ -154,7 +154,7 @@ const UpgradePanel = ({
       <Styled.ConfirmModalContent>
         <Information
           title="Upgrade"
-          description={selectedAsset.symbol.toUpperCase()}
+          description={`${selectedAsset.ticker.toUpperCase()} (${selectedAsset.type.toUpperCase()})`}
         />
         <Information
           title="Network Fee"

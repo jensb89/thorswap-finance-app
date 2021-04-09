@@ -188,6 +188,10 @@ export class EthChain implements IEthChain {
         : { gasPrice },
     ]
 
+    if (!router) {
+      throw Error('invalid router')
+    }
+
     const res: any = await this.client.call(
       router,
       TCRopstenAbi,

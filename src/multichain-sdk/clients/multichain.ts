@@ -629,9 +629,10 @@ export class MultiChain implements IMultiChain {
       const { runeAmount } = params
       const { chain } = runeAmount.asset
 
-      const { address: poolAddress } = await this.getPoolAddressDataByChain(
-        chain,
-      )
+      const {
+        address: poolAddress,
+        router,
+      } = await this.getPoolAddressDataByChain(chain)
       const walletAddress = this.getWalletAddressByChain(THORChain)
 
       if (!walletAddress) {
@@ -640,13 +641,26 @@ export class MultiChain implements IMultiChain {
 
       const memo = Memo.upgradeMemo(walletAddress)
 
-      const txHash = await this.transfer({
-        assetAmount: runeAmount,
-        recipient: poolAddress,
-        memo,
-      })
+      if (chain === BNBChain) {
+        const txHash = await this.transfer({
+          assetAmount: runeAmount,
+          recipient: poolAddress,
+          memo,
+        })
+        return txHash
+      }
 
-      return txHash
+      if (chain === ETHChain && router) {
+        const txHash = await this.transfer({
+          router,
+          assetAmount: runeAmount,
+          recipient: poolAddress,
+          memo,
+        })
+        return txHash
+      }
+
+      throw Error('upgrade failed')
     } catch (error) {
       return Promise.reject(error)
     }

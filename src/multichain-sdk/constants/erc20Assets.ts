@@ -53,4 +53,5 @@ export const ERC20Assets = [
   AssetWETHERC20,
   AssetDAIERC20,
 ]
+
 export const ETHAssets = [AssetETH, ...ERC20Assets]

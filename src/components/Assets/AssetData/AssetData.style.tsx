@@ -16,12 +16,28 @@ export const Wrapper = styled(Row).attrs({
 
 export const AssetIcon = styled(UIAssetIcon)``
 
+export const TickerRow = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 export const TickerLabel = styled(Label).attrs({
   textTransform: 'uppercase',
   weight: '600',
 })`
   min-width: 50px;
   padding-left: 10px;
+  line-height: normal;
+`
+
+export const TypeLabel = styled(Label).attrs({
+  textTransform: 'uppercase',
+  size: 'small',
+  color: 'gray',
+})`
+  min-width: 50px;
+  padding-left: 10px;
+  line-height: normal;
 `
 
 export const AmountLabel = styled(Label).attrs({
